@@ -16,53 +16,9 @@ sealed class Destination(protected val route: String, vararg arguments: Any) {
     }
 
     object Splash : NoArgumentsDestination(AppRoutes.SPLASH)
-    object MobileNo : Destination(AppRoutes.MOBILE_NO, "mobileNo_id") {
-        const val MOBILE_N = "mobileNo_id"
-        const val DUMMY_NUMBER = "0000000000"
-        operator fun invoke(number: String = DUMMY_NUMBER): String = route.appendParams(
-            MOBILE_N to number
-        )
-    }
-    object Otp : Destination(route = AppRoutes.OTP, "mobileNo_id") {
-        const val MOBILE_NO = "mobileNo_id"
+    object Login : NoArgumentsDestination(AppRoutes.LOGIN)
+    object Otp : NoArgumentsDestination(AppRoutes.OTP)
 
-        operator fun invoke(number: String): String = route.appendParams(
-            MOBILE_NO to number
-        )
-    }
-
-    // object Otp : NoArgumentsDestination(AppRoutes.OTP )
-    object Dashboard : NoArgumentsDestination(AppRoutes.DASHBOARD)
-
-    //    object Register : NoArgumentsDestination(AppRoutes.REGISTER)
-    object Register : Destination(route = AppRoutes.REGISTER, "mobileNo_id") {
-        const val MOBILE_NO = "mobileNo_id"
-        operator fun invoke(number: String): String = route.appendParams(
-            MOBILE_NO to number
-        )
-    }
-
-    object Billing : NoArgumentsDestination(AppRoutes.BILLING)
-    object BillPreview : NoArgumentsDestination(AppRoutes.BILL_PREVIEW)
-    object AddVendorSuccess : NoArgumentsDestination(AppRoutes.ADD_VENDOR_SUCCESS)
-    object StockEntry : NoArgumentsDestination(AppRoutes.STOCK_ENTRY)
-    object ManageExpense : NoArgumentsDestination(AppRoutes.MANAGE_EXPENSE)
-    object AllVendors : NoArgumentsDestination(AppRoutes.ALL_VENDOR)
-    object AddVendor : NoArgumentsDestination(AppRoutes.ADD_VENDOR)
-    object UpdateVendor : NoArgumentsDestination(AppRoutes.UPDATE_VENDOR)
-//    object AddVendor : Destination(AppRoutes.ADD_VENDOR,"added_vendor_id"){
-//        const val ADDED_VENDOR = "added_vendor_id"
-//        operator fun invoke(vendor: String): String = route.appendParams(
-//            ADDED_VENDOR to vendor
-//        )
-//    }
-//    object AddVendorSuccess : Destination(AppRoutes.ADD_VENDOR_SUCCESS, "added_vendor_id") {
-//        const val ADDED_VENDORR = "added_vendor_id"
-//        operator fun invoke(vendor: String): String = route.appendParams(
-//            ADDED_VENDORR to vendor
-//        )
-//
-//    }
 }
 
 private fun String.appendParams(vararg params: Pair<String, Any?>): String {

@@ -9,12 +9,12 @@ class JayaPackagingApp: Application() {
 
     override fun onCreate() {
         super.onCreate()
-        appInstance = this
-
         Metar.initialize(this)
+        app = this
     }
 
     companion object {
-        lateinit var appInstance: JayaPackagingApp
+       // lateinit var appInstance: JayaPackagingApp
+        var app: JayaPackagingApp? = null
     }
 }
