@@ -157,6 +157,7 @@ val context= LocalContext.current
                         fontSize = 20.sp,
                     )
                 }
+
                 Text(
                     text = "Resend OTP.",
                     modifier = Modifier
