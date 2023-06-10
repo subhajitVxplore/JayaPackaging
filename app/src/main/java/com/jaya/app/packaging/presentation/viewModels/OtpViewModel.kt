@@ -29,10 +29,10 @@ class OtpViewModel @Inject constructor(
 
 
 
-    fun onSplashToLogin() {
+    fun onOtpToDashboard() {
         appNavigator.tryNavigateTo(
-            route = Destination.Login(),
-            popUpToRoute = Destination.Splash(),
+            route = Destination.Dashboard(),
+            popUpToRoute = Destination.Otp(),
             isSingleTop = true,
             inclusive = true
         )

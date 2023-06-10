@@ -11,3 +11,6 @@ val PurpleGrey40 = Color(0xFF625b71)
 val Pink40 = Color(0xFF7D5260)
 
 val SplashGreen = Color(0xFF4BB26D)
+val AppBarYellow = Color(0xFFFFEB56)
+val LighrYellow = Color(0xFFE4DA90)
+val LogoutRed = Color(0xFFB41616)

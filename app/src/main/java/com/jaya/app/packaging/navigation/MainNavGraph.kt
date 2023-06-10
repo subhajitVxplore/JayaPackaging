@@ -9,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.example.core.utils.NavigationIntent
 import com.jaya.app.core.common.Destination
+import com.jaya.app.packaging.presentation.ui.screen.DashboardScreen
 import com.jaya.app.packaging.presentation.ui.screen.LoginScreen
 import com.jaya.app.packaging.presentation.ui.screen.OtpScreen
 import com.jaya.app.packaging.presentation.ui.screen.SplashScreen
@@ -45,6 +46,9 @@ fun MainNavGraph(
 
         composable(destination = Destination.Otp) {
             OtpScreen(navHostController)
+        }
+        composable(destination = Destination.Dashboard) {
+            DashboardScreen(navHostController)
         }
 
 

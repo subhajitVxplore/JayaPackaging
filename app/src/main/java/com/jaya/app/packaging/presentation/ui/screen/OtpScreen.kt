@@ -129,9 +129,9 @@ fun OtpScreen(
 val context= LocalContext.current
                 Button(
                     onClick = {
-                        Toast.makeText(context, "Verify Now", Toast.LENGTH_SHORT).show()
+                       // Toast.makeText(context, "Verify Now", Toast.LENGTH_SHORT).show()
                         //viewModel.loader.value=true
-                       // viewModel.onLoginToOtp()
+                        viewModel.onOtpToDashboard()
 
                     },
                     //enabled = true,

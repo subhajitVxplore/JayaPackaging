@@ -18,6 +18,7 @@ sealed class Destination(protected val route: String, vararg arguments: Any) {
     object Splash : NoArgumentsDestination(AppRoutes.SPLASH)
     object Login : NoArgumentsDestination(AppRoutes.LOGIN)
     object Otp : NoArgumentsDestination(AppRoutes.OTP)
+    object Dashboard : NoArgumentsDestination(AppRoutes.DASHBOARD)
 
 }
 
