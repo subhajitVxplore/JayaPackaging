@@ -129,7 +129,7 @@ fun DashboardScreen(
 
                     Image(
                         painter = painterResource(id = R.drawable.cropped_logo),
-                        contentDescription = "countryImage",
+                        contentDescription = "jayaLogo",
                         modifier = Modifier
                             .align(Alignment.Center)
                             .padding(8.dp)

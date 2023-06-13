@@ -7,7 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class AddProductViewModel @Inject constructor(
+class AddProduchdddddtViewModel @Inject constructor(
     // private val dashBoardUseCases: DashboardUseCases,
     private val appNavigator: AppNavigator,
     savedStateHandle: SavedStateHandle
