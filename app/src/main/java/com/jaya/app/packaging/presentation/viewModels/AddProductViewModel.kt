@@ -1,5 +1,6 @@
 package com.jaya.app.packaging.presentation.viewModels;
 
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -20,7 +21,16 @@ class AddProductViewModel @Inject constructor(
 ) : ViewModel() {
 
     val loader = SavableMutableState(UiData.LOADER, savedStateHandle, false)
-    var mobile= mutableStateOf("")
+    var productName= mutableStateOf("")
+    var packingName= mutableStateOf("")
+    var batchNumber= mutableStateOf("")
+    var selectedProduct= mutableStateOf("Choose Product")
+
+    var startTimeSelected = mutableStateOf("Start Time")
+    var endTimeSelected = mutableStateOf("End Time")
+
+
+    var videoClipList= mutableStateListOf(0)
 
     init {
 
@@ -28,11 +38,10 @@ class AddProductViewModel @Inject constructor(
 
 
 
-
-    fun onLoginToOtp() {
+    fun onAddProductToDashboard() {
         appNavigator.tryNavigateTo(
-            route = Destination.Otp(),
-            popUpToRoute = Destination.Login(),
+            route = Destination.Dashboard(),
+            popUpToRoute = Destination.AddProduct(),
             isSingleTop = true,
             inclusive = true
         )

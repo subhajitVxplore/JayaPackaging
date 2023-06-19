@@ -27,13 +27,13 @@ import com.jaya.app.packaging.presentation.extensions.bottomToUp
 import com.jaya.app.packaging.presentation.extensions.screenHeight
 import com.jaya.app.packaging.presentation.extensions.screenWidth
 import com.jaya.app.packaging.presentation.extensions.upToBottom
+import com.jaya.app.packaging.presentation.viewModels.AddProductViewModel
 import com.jaya.app.packaging.presentation.viewModels.BaseViewModel
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun ProductsDropdown(
-    label:String="",
-    baseViewModel: BaseViewModel,
+    viewModel: AddProductViewModel,
     loading: Boolean,
     //dataList: List<ExpenseTypes>,
     dataList: List<String>,
@@ -45,7 +45,7 @@ fun ProductsDropdown(
 
     //  mSelectedText=baseViewModel.prefilledExpenseType
     if (mSelectedText.isEmpty()) {
-        mSelectedText = label
+        mSelectedText = viewModel.selectedProduct.value
     }
 
     val icon = if (mExpanded)
@@ -65,7 +65,7 @@ fun ProductsDropdown(
     ) {
         if (!it) {
 
-            Column(modifier = Modifier.padding(bottom = 10.dp)) {
+            Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp)) {
                 Surface(
                     border = BorderStroke(1.dp, Color.Gray),
                     shape = RoundedCornerShape(4.dp),
@@ -101,32 +101,36 @@ fun ProductsDropdown(
 
 //------------------------------------------------------------------------------------//
 
-                DropdownMenu(
-                    modifier = Modifier.wrapContentHeight(),
-                    expanded = mExpanded,
 
+                DropdownMenu(
+                    modifier= Modifier.wrapContentHeight(),
+                    expanded = mExpanded,
                     onDismissRequest = { mExpanded = false },
                 ) {
-                    dataList.forEach {
-                        
-                        DropdownMenuItem(text = { /*TODO*/ }, onClick = { /*TODO*/ })
-//                        DropdownMenuItem(onClick = {
-//                            mSelectedText = it
-//                            mExpanded = false
-//                            onSelect(mSelectedText)
-//                        }) {
-//                            Column {
-//                                Text(text = it)
-//                                Divider(
-//                                    color = Color.LightGray,
-//                                    thickness = 0.8.dp,
-//                                    modifier = Modifier.padding(top = 10.dp)
-//                                )
-//                            }
-//                        }
+                    dataList.forEach { item ->
+                        DropdownMenuItem(
+                            text = {
+                                Column {
+                                    Text(text = item)
+                                    Divider(
+                                        color = Color.LightGray,
+                                        thickness = 0.8.dp,
+                                        modifier = Modifier.padding(top = 10.dp)
+                                    )
+                                }
+                                   },
+                            onClick = {
+                            mSelectedText = item
+                            mExpanded = false
+                            onSelect(mSelectedText)
+                        })
+
                     }
                 }//DropdownMenu
-//}
+
+
+
+
 
             }
 
