@@ -94,6 +94,23 @@ dependencies {
     releaseImplementation "com.github.chuckerteam.chucker:library-no-op:3.5.2"
 
 
+
+    // CameraX
+    def cameraxVersion = '1.2.0-beta01'
+    implementation "androidx.camera:camera-lifecycle:1.3.0-alpha07"
+    implementation "androidx.camera:camera-video:1.3.0-alpha07"
+    implementation "androidx.camera:camera-view:1.3.0-alpha07"
+    implementation "androidx.camera:camera-extensions:1.3.0-alpha07"
+
+    // Accompanist
+    def accompanistPermissionsVersion = '0.23.1'
+    implementation "com.google.accompanist:accompanist-permissions:$accompanistPermissionsVersion"
+   // implementation "com.google.accompanist:accompanist-permissions:0.28.0"
+
+    //ExoPlayer Library
+    implementation "com.google.android.exoplayer:exoplayer:2.18.7"
+
+
 }
 
 

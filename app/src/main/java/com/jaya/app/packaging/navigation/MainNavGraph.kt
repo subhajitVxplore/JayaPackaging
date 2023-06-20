@@ -1,6 +1,8 @@
 package com.jaya.app.packaging.navigation
 
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -14,10 +16,12 @@ import com.jaya.app.packaging.presentation.ui.screen.DashboardScreen
 import com.jaya.app.packaging.presentation.ui.screen.LoginScreen
 import com.jaya.app.packaging.presentation.ui.screen.OtpScreen
 import com.jaya.app.packaging.presentation.ui.screen.SplashScreen
+import com.jaya.app.packaging.presentation.ui.screen.VideoCaptureScreen
 import com.jaya.app.packaging.presentation.viewModels.BaseViewModel
 
 import kotlinx.coroutines.channels.Channel
 
+@RequiresApi(Build.VERSION_CODES.P)
 @Composable
 fun MainNavGraph(
     navHostController: NavHostController,
@@ -52,10 +56,11 @@ fun MainNavGraph(
             DashboardScreen(navHostController)
         }
         composable(destination = Destination.AddProduct) {
-            AddProductScreen(navHostController)
+            AddProductScreen(baseViewModel)
         }
-
-
+        composable(destination = Destination.CaptureVideo) {
+            VideoCaptureScreen(baseViewModel)
+        }
 
 
     }

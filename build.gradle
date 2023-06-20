@@ -7,3 +7,23 @@ plugins {
     id 'com.google.dagger.hilt.android' version '2.44' apply false
 
 }
+
+//buildscript {
+//    ext {
+//        composeVersion = '1.2.1'
+//
+//        // CameraX
+//        cameraxVersion = '1.2.0-beta01'
+//
+//        // Accompanist
+//        accompanistPermissionsVersion = '0.23.1'
+//
+//        // ExoPlayer
+//        exoPlayerVersion = '2.18.1'
+//    }
+//}
+
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

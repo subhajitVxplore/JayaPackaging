@@ -58,25 +58,27 @@ import com.jaya.app.packaging.R
 import com.jaya.app.packaging.presentation.extensions.screenWidth
 import com.jaya.app.packaging.presentation.ui.custom_view.ProductsDropdown
 import com.jaya.app.packaging.presentation.viewModels.AddProductViewModel
+import com.jaya.app.packaging.presentation.viewModels.BaseViewModel
 import com.jaya.app.packaging.ui.theme.AppBarYellow
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.io.File
 import java.util.Calendar
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddProductScreen(
-    navController: NavController,
+    baseViewModel: BaseViewModel,
     viewModel: AddProductViewModel = hiltViewModel(),
-    // baseViewModel: BaseViewModel,
-) {
+
+    ) {
 
     Surface(modifier = Modifier.fillMaxSize()) {
 
 
-        val context= LocalContext.current
+        val context = LocalContext.current
 //=====================================================================================
         val startContext = LocalContext.current
         val startCalendar = Calendar.getInstance()
@@ -97,10 +99,10 @@ fun AddProductScreen(
         val endTimePickerDialog = TimePickerDialog(
             endContext,
             { _, endHour: Int, endMinute: Int ->
-               // if ((startHour>=endHour)&&(startMinute>endMinute)) {
-                if ((endHour>=startHour)&&(endMinute>startMinute)) {
+                // if ((startHour>=endHour)&&(startMinute>endMinute)) {
+                if ((endHour >= startHour) && (endMinute > startMinute)) {
                     viewModel.endTimeSelected.value = "$endHour:$endMinute"
-                }else{
+                } else {
                     Toast.makeText(context, "Invalid End Time", Toast.LENGTH_SHORT).show()
                 }
             }, endHour, endMinute, false
@@ -200,10 +202,11 @@ fun AddProductScreen(
 
 
                 val context = LocalContext.current
+                val lst=listOf("Butter D-Lite", "Jaya Marie", "Jaya Kaju", "Jaya Cream")
                 ProductsDropdown(
                     viewModel,
                     false,
-                    listOf("Butter D-Lite", "Jaya Marie", "Jaya Kaju", "Jaya Cream"),
+                    lst,
                     onSelect = {
                         //  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                         //viewModel.selectedPincode.value = it
@@ -268,16 +271,15 @@ fun AddProductScreen(
                                 .wrapContentSize()
                         ) {
 
-                      //      if ((startHour>=endHour)&&(startMinute>endMinute)){
+                            //      if ((startHour>=endHour)&&(startMinute>endMinute)){
                             //       if (startHour>=endHour){
-                                Text(
-                                    text = "${viewModel.endTimeSelected.value}",
-                                    color = Color.DarkGray,
-                                    fontSize = 15.sp,
-                                    modifier = Modifier.padding(15.dp)
-                                )
-                       //     }
-
+                            Text(
+                                text = "${viewModel.endTimeSelected.value}",
+                                color = Color.DarkGray,
+                                fontSize = 15.sp,
+                                modifier = Modifier.padding(15.dp)
+                            )
+                            //     }
 
 
                             Image(painter = painterResource(R.drawable.outline_watch_round),
@@ -330,7 +332,9 @@ fun AddProductScreen(
 
                     Button(
                         onClick = {
-                            viewModel.videoClipList += 1
+                            viewModel.videoClipIndex += 1
+
+                            // baseViewModel.videoClipList += ""
                         },
                         colors = ButtonDefaults.buttonColors(colorResource(R.color.addBtnGreenColor)),
                         modifier = Modifier.wrapContentSize(),
@@ -348,100 +352,103 @@ fun AddProductScreen(
                 }//row
 
 
-                for ((index, videoClips) in viewModel.videoClipList.withIndex()) {
+                for ((index, videoClips) in viewModel.videoClipIndex.withIndex()) {
+                    //LaunchedEffect(true){viewModel.videoUriList += baseViewModel.videoUri}
+                    //for ((index, videoClips) in baseViewModel.videoClipList.withIndex()) {
                     if (index > 0) {
-                        Card(
-                            border = BorderStroke(1.dp, Color.Gray),
-                            shape = RoundedCornerShape(5.dp),
-                            colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.whitishGray)),
+                    Card(
+                        border = BorderStroke(1.dp, Color.Gray),
+                        shape = RoundedCornerShape(5.dp),
+                        colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.whitishGray)),
+                        modifier = Modifier
+                            .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
+                    ) {
+                        Row(
                             modifier = Modifier
-                                .padding(start = 20.dp, end = 20.dp, bottom = 10.dp)
-                                .fillMaxWidth()
-                                .wrapContentHeight(),
+                                .padding(start = 10.dp, top = 10.dp, bottom = 10.dp)
+                                .wrapContentSize()
                         ) {
-                            Row(
+
+                            Card(
+                                border = BorderStroke(1.dp, Color.Gray),
+                                shape = RoundedCornerShape(5.dp),
+                                colors = CardDefaults.cardColors(containerColor = Color.White),
                                 modifier = Modifier
-                                    .padding(start = 10.dp, top = 10.dp, bottom = 10.dp)
-                                    .wrapContentSize()
+                                    .align(Alignment.CenterVertically)
+                                    .wrapContentSize(),
                             ) {
-
-                                Card(
-                                    border = BorderStroke(1.dp, Color.Gray),
-                                    shape = RoundedCornerShape(5.dp),
-                                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                                Row(
                                     modifier = Modifier
-                                        .align(Alignment.CenterVertically)
-                                        .wrapContentSize(),
+                                        .wrapContentSize()
                                 ) {
-                                    Row(
+
+                                    Text(
+                                        text = "Time$videoClips",
+                                        color = Color.DarkGray,
+                                        fontSize = 15.sp,
+                                        modifier = Modifier.padding(15.dp)
+                                    )
+
+                                    Image(
+                                        painter = painterResource(R.drawable.outline_watch_round),
+                                        colorFilter = ColorFilter.tint(Color.Gray),
+                                        contentDescription = "time button",
                                         modifier = Modifier
-                                            .wrapContentSize()
-                                    ) {
-
-                                        Text(
-                                            text = "Time",
-                                            color = Color.DarkGray,
-                                            fontSize = 15.sp,
-                                            modifier = Modifier.padding(15.dp)
-                                        )
-
-                                        Image(
-                                            painter = painterResource(R.drawable.outline_watch_round),
-                                            colorFilter = ColorFilter.tint(Color.Gray),
-                                            contentDescription = "time button",
-                                            modifier = Modifier
-                                                .height(30.dp)
-                                                .align(Alignment.CenterVertically)
-                                                .padding(horizontal = 10.dp)
-                                        )
+                                            .height(30.dp)
+                                            .align(Alignment.CenterVertically)
+                                            .padding(horizontal = 10.dp)
+                                    )
 
 
-                                    }//row
-                                }//card
+                                }//row
+                            }//card
 
-                                Spacer(modifier = Modifier.width(width = 10.dp))
-                                Card(
-                                    border = BorderStroke(1.dp, Color.Gray),
-                                    shape = RoundedCornerShape(5.dp),
-                                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                            Spacer(modifier = Modifier.width(width = 10.dp))
+                            Card(
+                                border = BorderStroke(1.dp, Color.Gray),
+                                shape = RoundedCornerShape(5.dp),
+                                colors = CardDefaults.cardColors(containerColor = Color.White),
+                                modifier = Modifier
+                                    .clickable {
+                                        viewModel.onUploadVideoToVideoCapture()
+                                    }
+                                    .weight(1f)
+                                    .wrapContentSize(),
+                            ) {
+                                Row(
                                     modifier = Modifier
-                                        .clickable {
-
-                                        }
-                                        .weight(1f)
-                                        .wrapContentSize(),
+                                        .wrapContentSize()
                                 ) {
-                                    Row(
+
+                                    Text(
+                                        text = "Upload Video",
+                                        //text = "${viewModel.videoUriList[index]}",
+                                        color = Color.DarkGray,
+                                        fontSize = 15.sp,
+                                        // fontWeight = FontWeight.Bold,
+                                        modifier = Modifier.padding(15.dp)
+                                    )
+
+                                    Image(
+                                        painter = painterResource(R.drawable.outline_file_upload_24),
+                                        contentDescription = "time button",
+                                        // colorFilter = ColorFilter.tint(colorResource(R.color.app_green)),
                                         modifier = Modifier
-                                            .wrapContentSize()
-                                    ) {
+                                            .height(30.dp)
+                                            .align(Alignment.CenterVertically)
+                                            .padding(horizontal = 10.dp)
+                                    )
 
-                                        Text(
-                                            text = "Upload Video",
-                                            color = Color.DarkGray,
-                                            fontSize = 15.sp,
-                                            // fontWeight = FontWeight.Bold,
-                                            modifier = Modifier.padding(15.dp)
-                                        )
-
-                                        Image(
-                                            painter = painterResource(R.drawable.outline_file_upload_24),
-                                            contentDescription = "time button",
-                                            // colorFilter = ColorFilter.tint(colorResource(R.color.app_green)),
-                                            modifier = Modifier
-                                                .height(30.dp)
-                                                .align(Alignment.CenterVertically)
-                                                .padding(horizontal = 10.dp)
-                                        )
-
-                                    }//row
-                                }//card
+                                }//row
+                            }//card
 
 
-                            }//parentrow
+                        }//parentrow
 
-                        }
                     }
+                      }//if (index > 0)
 
 
                 }//for
@@ -457,28 +464,36 @@ fun AddProductScreen(
             val context = LocalContext.current
             Button(
                 onClick = {
-
-                    if (viewModel.productName.value.isNullOrEmpty()) {
-                        Toast.makeText(context, "Product name can not be empty", Toast.LENGTH_SHORT)
-                            .show()
-                    } else if (viewModel.packingName.value.isNullOrEmpty()) {
-                        Toast.makeText(context, "Packing name can not be empty", Toast.LENGTH_SHORT)
-                            .show()
-                    } else if (viewModel.batchNumber.value.isNullOrEmpty()) {
-                        Toast.makeText(context, "Batch Number can not be empty", Toast.LENGTH_SHORT)
-                            .show()
-                    } else if (viewModel.selectedProduct.value == "Choose Product") {
-                        Toast.makeText(context, "Please choose a product", Toast.LENGTH_SHORT)
-                            .show()
-                    } else if (viewModel.startTimeSelected.value == "Start Time") {
-                        Toast.makeText(context, "Please select start time", Toast.LENGTH_SHORT)
-                            .show()
-                    } else if (viewModel.endTimeSelected.value == "End Time") {
-                        Toast.makeText(context, "Please select end time", Toast.LENGTH_SHORT).show()
-                    }
+//
+//                    if (viewModel.productName.value.isNullOrEmpty()) {
+//                        Toast.makeText(context, "Product name can not be empty", Toast.LENGTH_SHORT)
+//                            .show()
+//                    } else if (viewModel.packingName.value.isNullOrEmpty()) {
+//                        Toast.makeText(context, "Packing name can not be empty", Toast.LENGTH_SHORT)
+//                            .show()
+//                    } else if (viewModel.batchNumber.value.isNullOrEmpty()) {
+//                        Toast.makeText(context, "Batch Number can not be empty", Toast.LENGTH_SHORT)
+//                            .show()
+//                    } else if (viewModel.selectedProduct.value == "Choose Product") {
+//                        Toast.makeText(context, "Please choose a product", Toast.LENGTH_SHORT)
+//                            .show()
+//                    } else if (viewModel.startTimeSelected.value == "Start Time") {
+//                        Toast.makeText(context, "Please select start time", Toast.LENGTH_SHORT)
+//                            .show()
+//                    } else if (viewModel.endTimeSelected.value == "End Time") {
+//                        Toast.makeText(context, "Please select end time", Toast.LENGTH_SHORT).show()
+//                    }
                     //
                     //viewModel.loader.value=true
                     // viewModel.onAddProductToDashboard()
+
+                    if (baseViewModel.videoUri != null) {
+                        val file = File(baseViewModel.videoUri?.path)
+                        Toast.makeText(context, "${file.name}", Toast.LENGTH_SHORT).show()
+                    }else{
+                        Toast.makeText(context, "null-uri", Toast.LENGTH_SHORT).show()
+                    }
+
 
                 },
                 //enabled = true,

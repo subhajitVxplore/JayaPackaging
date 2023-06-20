@@ -20,6 +20,7 @@ sealed class Destination(protected val route: String, vararg arguments: Any) {
     object Otp : NoArgumentsDestination(AppRoutes.OTP)
     object Dashboard : NoArgumentsDestination(AppRoutes.DASHBOARD)
     object AddProduct : NoArgumentsDestination(AppRoutes.ADD_PRODUCT)
+    object CaptureVideo : NoArgumentsDestination(AppRoutes.CAPTURE_VIDEO)
 
 }
 
