@@ -1,5 +1,6 @@
 package com.jaya.app.packaging.presentation.ui.screen
 
+import android.text.TextUtils
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Box
@@ -13,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -29,18 +31,21 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.jaya.app.packaging.R
+import com.jaya.app.packaging.presentation.viewModels.BaseViewModel
 import com.jaya.app.packaging.presentation.viewModels.LoginViewModel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
-    navController : NavController,
+    baseViewModel: BaseViewModel,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     Column(
@@ -82,10 +87,10 @@ fun LoginScreen(
                 )
 
                 OutlinedTextField(
-                    value = viewModel.mobile.value,
-                    onValueChange = { viewModel.mobile.value = it },
+                    value = viewModel.emailText.value,
+                    onValueChange = { viewModel.emailText.value = it },
                     //label = { Text("your mobile number") },
-                    placeholder = { Text("Email or mobile number") },
+                    placeholder = { Text("Enter your email Id") },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Color.Gray,
                         unfocusedBorderColor = Color.Gray
@@ -93,16 +98,34 @@ fun LoginScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 10.dp, vertical = 5.dp),
-                    singleLine = true
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done,
+                        keyboardType = KeyboardType.Email
+                    ),
                 )
 
 
 val context= LocalContext.current
+ //----------------------------------------------------------------------------------------------------------------
+                fun String.isValidEmail(): Boolean {
+                    return !TextUtils.isEmpty(this) && android.util.Patterns.EMAIL_ADDRESS.matcher(this)
+                        .matches()
+                }
+//----------------------------------------------------------------------------------------------------------------
+
                 Button(
                     onClick = {
                      //   Toast.makeText(context, "continue", Toast.LENGTH_SHORT).show()
                         //viewModel.loader.value=true
-                        viewModel.onLoginToOtp()
+
+                        if (!viewModel.emailText.value.isValidEmail()){
+                            Toast.makeText(context, "Please enter a valid email", Toast.LENGTH_SHORT).show()
+                        }else{
+                            baseViewModel.storedLoginEmail.value=viewModel.emailText.value
+                            viewModel.onLoginToOtp()
+                        }
+
 
                     },
                     //enabled = true,
@@ -123,15 +146,12 @@ val context= LocalContext.current
 //                        CircularProgressIndicator(color = Color.White)
 //                    }
                     Text(
-                        text = "Continue",
+                        text = "Get OTP Verification",
                         color = Color.White,
                         fontSize = 20.sp,
                     )
 
                 }
-
-
-
 
             }
             Box(modifier = Modifier.fillMaxSize(),
@@ -150,5 +170,14 @@ val context= LocalContext.current
 
 
     }
+ //------------------------------------------------------------------------------
 
+}//LoginScreen
+
+//=====================================================================================
+
+
+
+fun isNumeric(toCheck: String): Boolean {
+    return toCheck.all { char -> char.isDigit() }
 }

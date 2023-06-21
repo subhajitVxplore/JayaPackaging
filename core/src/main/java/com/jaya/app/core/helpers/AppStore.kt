@@ -2,9 +2,11 @@ package com.jaya.app.core.helpers
 
 interface AppStore {
 
-
-    suspend fun intro(status: Boolean)
-    suspend fun isIntroDone(): Boolean
+    suspend fun storeBaseUrl(url: String)
+    suspend fun login(userId:String,)
+    suspend fun userId(): String
+    suspend fun logout()
+    suspend fun isLoggedIn(): Boolean
 
 }
 

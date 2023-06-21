@@ -1,7 +1,9 @@
 package com.jaya.app.packaging.presentation.ui.screen
 
+import android.text.TextUtils
 import android.widget.Toast
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -14,15 +16,19 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +51,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.jaya.app.packaging.R
 import com.jaya.app.packaging.presentation.ui.custom_view.OtpTextField
+import com.jaya.app.packaging.presentation.viewModels.BaseViewModel
 import com.jaya.app.packaging.presentation.viewModels.LoginViewModel
 import com.jaya.app.packaging.presentation.viewModels.OtpViewModel
 
@@ -52,10 +59,9 @@ import com.jaya.app.packaging.presentation.viewModels.OtpViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OtpScreen(
-    navController : NavController,
+    baseViewModel: BaseViewModel,
     viewModel: OtpViewModel = hiltViewModel()
 ) {
-
     var otpValue by remember {
         mutableStateOf("")
     }
@@ -99,14 +105,28 @@ fun OtpScreen(
                 )
 
                 OutlinedTextField(
-                    value = viewModel.mobile.value,
-                    onValueChange = { viewModel.mobile.value = it },
+                    value = baseViewModel.storedLoginEmail.value,
+                    onValueChange = { baseViewModel.storedLoginEmail.value = it },
                     //label = { Text("your mobile number") },
-                    placeholder = { Text("Email or mobile number") },
+                    placeholder = { Text("Enter your email Id") },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Color.Gray,
                         unfocusedBorderColor = Color.Gray
                     ),
+                    readOnly = viewModel.isEmailReadOnly.value,
+                    trailingIcon = {
+                        Icon(
+                            Icons.Filled.Edit,
+                            "contentDescription",
+                            Modifier
+                                .padding(end = 4.dp)
+
+                                .clickable {
+                                    viewModel.isEmailReadOnly.value = !viewModel.isEmailReadOnly.value
+                                }
+                        )
+
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 10.dp, vertical = 5.dp),
@@ -123,15 +143,28 @@ fun OtpScreen(
                     onOtpTextChange = { value, otpInputFilled ->
                         otpValue = value
                     },
-                    modifier = Modifier.align(Alignment.CenterHorizontally).padding(top = 10.dp, start = 10.dp)
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = 10.dp, start = 10.dp)
                 )
 
 val context= LocalContext.current
+                fun String.isValidEmail(): Boolean {
+                    return !TextUtils.isEmpty(this) && android.util.Patterns.EMAIL_ADDRESS.matcher(this)
+                        .matches()
+                }
                 Button(
                     onClick = {
-                       // Toast.makeText(context, "Verify Now", Toast.LENGTH_SHORT).show()
+
+                        if (!baseViewModel.storedLoginEmail.value.isValidEmail()){
+                            Toast.makeText(context, "Please enter a valid email", Toast.LENGTH_SHORT).show()
+                        }else{
+                            viewModel.onOtpToDashboard()
+                        }
+
+                        // Toast.makeText(context, "Verify Now", Toast.LENGTH_SHORT).show()
                         //viewModel.loader.value=true
-                        viewModel.onOtpToDashboard()
+
 
                     },
                     //enabled = true,
@@ -152,13 +185,11 @@ val context= LocalContext.current
 //                        CircularProgressIndicator(color = Color.White)
 //                    }
                     Text(
-                        text = "Continue",
+                        text = "Verify Now",
                         color = Color.White,
                         fontSize = 20.sp,
                     )
                 }
-
-
 
                 Text(
                     text = "Resend OTP.",
@@ -172,6 +203,7 @@ val context= LocalContext.current
 
 
             }
+
             Box(modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.BottomStart
             ){
@@ -190,4 +222,6 @@ val context= LocalContext.current
 
     }
 
-}
+    LaunchedEffect(true){viewModel.isEmailReadOnly.value}
+
+}//OtpScreen

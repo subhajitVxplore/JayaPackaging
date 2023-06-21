@@ -1,9 +1,12 @@
 package com.jaya.app.packaging
 
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,15 +27,21 @@ import com.jaya.app.packaging.presentation.viewModels.BaseViewModel
 import com.jaya.app.packaging.ui.theme.JayaPackagingTheme
 import dagger.hilt.android.AndroidEntryPoint
 
+@Suppress("DEPRECATION")
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val baseViewModel by viewModels<BaseViewModel>()
+    @RequiresApi(Build.VERSION_CODES.P)
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         //changeStatusBarColor(0xFF4BB26D)
       //  window.statusBarColor = ContextCompat.getColor(this, R.color.black)
         super.onCreate(savedInstanceState)
+//        val manager = this.packageManager
+//        val info = manager.getPackageInfo(this.packageName, PackageManager.GET_ACTIVITIES)
+//        baseViewModel.versionCode.value=info.versionCode
+
         setContent {
             JayaPackagingTheme {
                 Scaffold(
@@ -52,18 +61,4 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    JayaPackagingTheme {
-        Greeting("Android")
-    }
-}

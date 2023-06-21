@@ -33,7 +33,7 @@ fun MainNavGraph(
 
     AppNavHost(
         navController = navHostController,
-        startDestination = Destination.AddProduct,
+        startDestination = Destination.Splash,
         modifier = Modifier.padding(paddingValues),
         enterTransition = AppScreenTransitions.ScreenEnterTransition,
         popEnterTransition = AppScreenTransitions.ScreenPopEnterTransition,
@@ -46,11 +46,11 @@ fun MainNavGraph(
         }
 
         composable(destination = Destination.Login) {
-            LoginScreen(navHostController)
+            LoginScreen(baseViewModel)
         }
 
         composable(destination = Destination.Otp) {
-            OtpScreen(navHostController)
+            OtpScreen(baseViewModel)
         }
         composable(destination = Destination.Dashboard) {
             DashboardScreen(navHostController)

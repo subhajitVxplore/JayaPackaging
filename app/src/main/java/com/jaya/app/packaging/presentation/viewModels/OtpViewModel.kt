@@ -20,7 +20,7 @@ class OtpViewModel @Inject constructor(
 ) : ViewModel() {
 
     val loader = SavableMutableState(UiData.LOADER, savedStateHandle, false)
-    var mobile= mutableStateOf("")
+    var isEmailReadOnly= mutableStateOf(true)
 
     init {
 

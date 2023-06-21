@@ -20,7 +20,7 @@ class LoginViewModel @Inject constructor(
 ) : ViewModel() {
 
     val loader = SavableMutableState(UiData.LOADER, savedStateHandle, false)
-    var mobile= mutableStateOf("")
+    var emailText= mutableStateOf("")
 
     init {
 
