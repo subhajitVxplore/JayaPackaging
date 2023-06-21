@@ -328,13 +328,14 @@ fun AddProductScreen(
                         modifier = Modifier
                             .weight(1f)
                             .align(Alignment.CenterVertically)
+//                            .clickable {
+//                                viewModel.onUploadVideoToVideoCapture()
+//                            }
                     )
 
                     Button(
                         onClick = {
-                            viewModel.videoClipIndex += 1
-
-                            // baseViewModel.videoClipList += ""
+                            viewModel.onUploadVideoToVideoCapture()
                         },
                         colors = ButtonDefaults.buttonColors(colorResource(R.color.addBtnGreenColor)),
                         modifier = Modifier.wrapContentSize(),
@@ -352,10 +353,8 @@ fun AddProductScreen(
                 }//row
 
 
-                for ((index, videoClips) in viewModel.videoClipIndex.withIndex()) {
-                    //LaunchedEffect(true){viewModel.videoUriList += baseViewModel.videoUri}
-                    //for ((index, videoClips) in baseViewModel.videoClipList.withIndex()) {
-                    if (index > 0) {
+                for ((index, videoClips) in baseViewModel.videoUriList.withIndex()) {
+
                     Card(
                         border = BorderStroke(1.dp, Color.Gray),
                         shape = RoundedCornerShape(5.dp),
@@ -385,7 +384,8 @@ fun AddProductScreen(
                                 ) {
 
                                     Text(
-                                        text = "Time$videoClips",
+                                        //text = "${baseViewModel.videoShootTime}",
+                                        text = baseViewModel.videoShootTime[index].toString(),
                                         color = Color.DarkGray,
                                         fontSize = 15.sp,
                                         modifier = Modifier.padding(15.dp)
@@ -411,9 +411,6 @@ fun AddProductScreen(
                                 shape = RoundedCornerShape(5.dp),
                                 colors = CardDefaults.cardColors(containerColor = Color.White),
                                 modifier = Modifier
-                                    .clickable {
-                                        viewModel.onUploadVideoToVideoCapture()
-                                    }
                                     .weight(1f)
                                     .wrapContentSize(),
                             ) {
@@ -424,10 +421,8 @@ fun AddProductScreen(
 
                                     Text(
                                         text = "Upload Video",
-                                        //text = "${viewModel.videoUriList[index]}",
                                         color = Color.DarkGray,
                                         fontSize = 15.sp,
-                                        // fontWeight = FontWeight.Bold,
                                         modifier = Modifier.padding(15.dp)
                                     )
 
@@ -448,7 +443,7 @@ fun AddProductScreen(
                         }//parentrow
 
                     }
-                      }//if (index > 0)
+                  //    }//if (index > 0)
 
 
                 }//for
@@ -487,12 +482,12 @@ fun AddProductScreen(
                     //viewModel.loader.value=true
                     // viewModel.onAddProductToDashboard()
 
-                    if (baseViewModel.videoUri != null) {
-                        val file = File(baseViewModel.videoUri?.path)
-                        Toast.makeText(context, "${file.name}", Toast.LENGTH_SHORT).show()
-                    }else{
-                        Toast.makeText(context, "null-uri", Toast.LENGTH_SHORT).show()
-                    }
+//                    if (baseViewModel.videoUri != null) {
+//                        val file = File(baseViewModel.videoUri?.path)
+//                        Toast.makeText(context, "${file.name}", Toast.LENGTH_SHORT).show()
+//                    }else{
+//                        Toast.makeText(context, "null-uri", Toast.LENGTH_SHORT).show()
+//                    }
 
 
                 },

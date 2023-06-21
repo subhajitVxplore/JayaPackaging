@@ -35,45 +35,6 @@ class AddProductViewModel @Inject constructor(
     var endTimeSelected = mutableStateOf("End Time")
 
 
-    var videoClipIndex= mutableStateListOf(0)
-    //var videoUriList=listOf<Uri?>(null)
-    //var videoUriList=listOf<String>("uri-1","uri-2","uri-3","uri-4","uri-5")
-    var videoUriList=listOf<Uri?>(null)
-
-    private val _videoClipList = MutableStateFlow<MutableList<VideoUploadingModel>?>(null)
-    val videoClipList = _videoClipList.asStateFlow()
-
-    init {
-
-    }
-
-    fun onChangeVideoList(position: Int, videoUploadingModel: VideoUploadingModel) {
-        _videoClipList.update {
-            val tmp = it?.toMutableList()
-            if (tmp != null) {
-                tmp[position] = videoUploadingModel
-                return@update tmp
-            }
-            it
-        }
-    }
-//    _videoClipList.compareAndSet(null, MutableList(videoClipSize.size) {
-//        PaperWithQuantity()
-//    })
-
-
-
-
-
-    fun onAddProductToDashboard() {
-        appNavigator.tryNavigateTo(
-            route = Destination.Dashboard(),
-            popUpToRoute = Destination.AddProduct(),
-            isSingleTop = true,
-            inclusive = true
-        )
-    }
-
  fun onUploadVideoToVideoCapture() {
         appNavigator.tryNavigateTo(
             route = Destination.CaptureVideo(),

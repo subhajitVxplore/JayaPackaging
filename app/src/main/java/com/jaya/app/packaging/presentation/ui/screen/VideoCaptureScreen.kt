@@ -3,6 +3,7 @@ package com.jaya.app.packaging.presentation.ui.screen
 import android.Manifest
 import android.net.Uri
 import android.os.Build
+import android.os.CountDownTimer
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -26,6 +27,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalTextStyle
@@ -36,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
@@ -61,13 +65,14 @@ import com.jaya.app.packaging.ui.theme.AppBarYellow
 import com.jaya.app.packaging.ui.theme.SplashGreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import java.util.Calendar
 
 @RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun VideoCaptureScreen(
     baseViewModel: BaseViewModel,
-viewModel: VideoCaptureViewModel= hiltViewModel(),
+    viewModel: VideoCaptureViewModel = hiltViewModel(),
 ) {
 
     BackPressHandler(onBackPressed = {
@@ -147,6 +152,7 @@ viewModel: VideoCaptureViewModel= hiltViewModel(),
             permissionsNotGrantedContent = { /* ... */ },
             permissionsNotAvailableContent = { /* ... */ }
         ) {
+
             Box(
                 modifier = Modifier.fillMaxSize()
             ) {
@@ -154,10 +160,19 @@ viewModel: VideoCaptureViewModel= hiltViewModel(),
                     factory = { previewView },
                     modifier = Modifier.fillMaxSize()
                 )
-                IconButton(
+
+                Button(
+                    colors = ButtonDefaults.buttonColors(SplashGreen),
                     onClick = {
                         if (!recordingStarted.value) {
                             videoCapture.value?.let { videoCapture ->
+
+                                val calendarInstance = Calendar.getInstance()
+
+                                val hour = calendarInstance.get(Calendar.HOUR)
+                                val minute = calendarInstance.get(Calendar.MINUTE)
+                                val ampm = if(calendarInstance.get(Calendar.AM_PM)==0) "AM " else "PM "
+                                baseViewModel.videoShootTime.add("$hour:$minute$ampm")
                                 recordingStarted.value = true
                                 val mediaDir = context.externalCacheDirs.firstOrNull()?.let {
                                     File(
@@ -172,24 +187,13 @@ viewModel: VideoCaptureViewModel= hiltViewModel(),
                                     videoCapture = videoCapture,
                                     outputDirectory = if (mediaDir != null && mediaDir.exists()) mediaDir else context.filesDir,
                                     executor = context.mainExecutor,
-                                    audioEnabled = audioEnabled.value
+                                    audioEnabled = true
                                 ) { event ->
                                     if (event is VideoRecordEvent.Finalize) {
                                         val uri = event.outputResults.outputUri
-                                        Log.d("VideoCaptureScreen", "VideoCaptureScreen:$uri ")
                                         if (uri != Uri.EMPTY) {
-
-                                            baseViewModel.videoUri=uri
+                                            baseViewModel.videoUriList.add(uri)
                                             viewModel.onVideoCaptureToAddProduct()
-
-//                                            for ((index, videoClips) in baseViewModel.videoClipList.withIndex()) {
-//                                                baseViewModel.videoClipList[index]=uri.toString()
-//                                            }
-//                                            val uriEncoded = URLEncoder.encode(
-//                                                uri.toString(),
-//                                                StandardCharsets.UTF_8.toString()
-//                                            )
-                                            // navController.navigate("${Route.VIDEO_PREVIEW}/$uriEncoded")
                                         }
                                     }
                                 }
@@ -198,62 +202,40 @@ viewModel: VideoCaptureViewModel= hiltViewModel(),
                             recordingStarted.value = false
                             recording?.stop()
                         }
+
+
+                        val timer = object : CountDownTimer(10000, 1000) {
+                            override fun onTick(millisUntilFinished: Long) {
+                                viewModel.timerX.value = (millisUntilFinished / 1000).toString()
+                                // Toast.makeText(context, "${viewModel.timerX.value}", Toast.LENGTH_SHORT).show()
+                            }
+
+                            override fun onFinish() {
+                                recordingStarted.value = false
+                                recording?.stop()
+                            }
+                        }
+                        timer.start()
+
+
                     },
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
                         .padding(bottom = 32.dp)
                 ) {
-                    Icon(
-                        painter = painterResource(if (recordingStarted.value) R.drawable.ic_stop else R.drawable.ic_record),
-                        contentDescription = "",
-                        modifier = Modifier.size(50.dp),
-                        tint = SplashGreen
+                    Text(
+                        text = if (viewModel.timerX.value == "") "Start" else "00:0${viewModel.timerX.value}",
+                        //text = "00:0${viewModel.timerX.value}",
+                        color = Color.White,
+                        fontSize = 20.sp,
                     )
-                }
-                if (!recordingStarted.value) {
-                    IconButton(
-                        onClick = {
-                            audioEnabled.value = !audioEnabled.value
-                        },
-                        modifier = Modifier
-                            .align(Alignment.BottomStart)
-                            .padding(bottom = 32.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(if (audioEnabled.value) R.drawable.ic_mic_on else R.drawable.ic_mic_off),
-                            contentDescription = "",
-                            modifier = Modifier.size(50.dp),
-                            tint = SplashGreen
-                        )
-                    }
-                }
-                if (!recordingStarted.value) {
-                    IconButton(
-                        onClick = {
-                            cameraSelector.value =
-                                if (cameraSelector.value == CameraSelector.DEFAULT_BACK_CAMERA) CameraSelector.DEFAULT_FRONT_CAMERA
-                                else CameraSelector.DEFAULT_BACK_CAMERA
-                            lifecycleOwner.lifecycleScope.launch {
-                                videoCapture.value = context.createVideoCaptureUseCase(
-                                    lifecycleOwner = lifecycleOwner,
-                                    cameraSelector = cameraSelector.value,
-                                    previewView = previewView
-                                )
-                            }
-                        },
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .padding(bottom = 32.dp)
-                    ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_switch_camera),
-                            contentDescription = "",
-                            modifier = Modifier.size(50.dp),
-                            tint = SplashGreen
-                        )
-                    }
-                }
+
+                }//IconButton(play/pause)
+
+
             }//Box
+
+
         }//PermissionsRequired
     }//parentColumn
 }//VideoCaptureScreen

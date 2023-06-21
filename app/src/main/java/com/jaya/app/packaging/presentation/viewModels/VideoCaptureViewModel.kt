@@ -18,7 +18,7 @@ class VideoCaptureViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-
+var timerX= mutableStateOf("")
 
 
     fun onVideoCaptureToAddProduct() {
