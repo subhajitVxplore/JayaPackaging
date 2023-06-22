@@ -8,8 +8,9 @@ data class AppVersionModel(
 
 data class AppVersion(
     val isSkipable: Boolean,
-    val link: String,
+    val versionLink: String,
     val releaseDate: String,
     val versionCode: Int,
-    val versionMessage: String
+    val versionMessage: String,
+    val versionTitle: String
 )

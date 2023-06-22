@@ -209,7 +209,6 @@ fun VideoCaptureScreen(
                                 viewModel.timerX.value = (millisUntilFinished / 1000).toString()
                                 // Toast.makeText(context, "${viewModel.timerX.value}", Toast.LENGTH_SHORT).show()
                             }
-
                             override fun onFinish() {
                                 recordingStarted.value = false
                                 recording?.stop()

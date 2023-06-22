@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -36,12 +37,16 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.SemanticsProperties.Text
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jaya.app.core.domain.models.AppVersion
+import com.jaya.app.packaging.R
 import com.jaya.app.packaging.R.drawable
 import com.jaya.app.packaging.extensions.OnEffect
 import com.jaya.app.packaging.presentation.viewModels.SplashViewModel
+import com.jaya.app.packaging.ui.theme.AppBarYellow
+import com.jaya.app.packaging.ui.theme.LogoutRed
 import com.jaya.app.packaging.ui.theme.SplashGreen
 import kotlinx.coroutines.delay
 
@@ -71,9 +76,9 @@ fun SplashScreen(
                         OvershootInterpolator(4f).getInterpolation(it)
                     })
             )
-            delay(3000L)
+            delay(2000L)
             //navController.navigate(AppRoutes.MOBILE_NO)
-            viewModel.onSplashToLogin()
+          //  viewModel.onSplashToLogin()
         }
 
         // Image
@@ -95,37 +100,60 @@ fun SplashScreen(
         }
     }//box
 
-
+    val context = LocalContext.current
     viewModel.versionUpdateDialog.value?.apply {
         if (currentState()) {
             AlertDialog(
+                containerColor = AppBarYellow,
+                shape = RoundedCornerShape(10.dp),
                 onDismissRequest = {
                    // openDialog.value = false
                 },
                 title = {
-                    Text(text = "Dialog Title Will Show Here")
+                   // Text(text = context.getString(R.string.app_name), color = Color.DarkGray)
+                    currentData?.title?.let {
+                        Text(text =it,color = Color.DarkGray,fontSize = 20.sp)
+                    }
                 },
                 text = {
-                    Text("Here is a description text of the dialog")
-                },
-                confirmButton = {
-                    Button(
 
-                        onClick = {
-                           // openDialog.value = false
-                        }) {
-                        Text("Confirm Button")
+                    currentData?.message?.let {
+                        Text(text = it,color =Color.Gray,fontSize = 15.sp ) //version message from Api
                     }
+
                 },
                 dismissButton = {
-                    Button(
+                  //  if (!(currentData?.data as AppVersion).isSkipable) {
+                        currentData?.negative?.let {
+                            Button(
+                                onClick = {
+                                    onDismiss?.invoke(null)
+                                },
+                                colors = ButtonDefaults.buttonColors(LogoutRed),
+                                shape = RoundedCornerShape(7.dp),
+                                modifier = Modifier.padding(end = 10.dp)
 
-                        onClick = {
-                           // openDialog.value = false
-                        }) {
-                        Text("Dismiss Button")
+                            ) {
+                                Text(text = it)
+                            }
+                        }
+                  //  }
+
+                },
+                confirmButton = {
+                    currentData?.positive?.let {
+                        Button(
+                            onClick = { onConfirm?.invoke(currentData?.data) },
+                            colors = ButtonDefaults.buttonColors(SplashGreen),
+                            shape = RoundedCornerShape(7.dp),
+                        ) {
+                            Text(text = it)
+                        }
                     }
+
+
                 }
+
             )
         }
     }

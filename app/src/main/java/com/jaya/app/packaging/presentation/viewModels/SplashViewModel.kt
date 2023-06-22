@@ -83,10 +83,10 @@ class SplashViewModel @Inject constructor(
                             castValueToRequiredTypes<AppVersion>()?.let { appVersion ->
                                 versionUpdateDialog.value = MyDialog(
                                     data = DialogData(
-                                        title = "Version Update",
+                                        title = appVersion.versionTitle,
                                         message = appVersion.versionMessage,
-                                        positive = "Update Now",
-                                        negative = "Update Later",
+                                        positive = "Yes",
+                                        negative = "No",
                                         data = appVersion
                                     )
                                 )
@@ -121,7 +121,7 @@ class SplashViewModel @Inject constructor(
     private fun handleDialogEvents() {
         versionUpdateDialog.value?.onConfirm = {
             it?.castValueToRequiredTypes<AppVersion>()?.apply {
-                versionUpdateLink.setValue(link)
+                versionUpdateLink.setValue(versionLink)
             }
         }
         versionUpdateDialog.value?.onDismiss = {
