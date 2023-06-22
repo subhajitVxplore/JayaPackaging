@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -39,6 +40,7 @@ import androidx.compose.ui.unit.sp
 import com.jaya.app.packaging.R
 import com.jaya.app.packaging.presentation.viewModels.DashboardViewModel
 import com.jaya.app.packaging.ui.theme.AppBarYellow
+import com.jaya.app.packaging.ui.theme.SplashGreen
 import io.ktor.util.reflect.*
 
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
@@ -63,8 +65,8 @@ fun HomePage(
                     modifier = Modifier.size(55.dp),
 
                     //backgroundColor = WhiteGray,
-                    contentColor = Color.DarkGray,
-                    containerColor = Color.LightGray,
+                    contentColor = Color.White,
+                    containerColor = SplashGreen,
                     shape = RoundedCornerShape(200.dp)
 
                 ) {
@@ -133,7 +135,7 @@ fun HomePage(
                                     //.align(Alignment.CenterVertically)
                                     .padding(start = 7.dp),
                                 fontSize = 16.sp,
-                                color = Color.Green,
+                                color = SplashGreen,
                                 //textAlign =
                             )
                         }

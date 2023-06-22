@@ -3,6 +3,7 @@ package com.jaya.app.packaging.module
 import com.jaya.app.core.domain.models.AppVersionModel
 import com.jaya.app.core.domain.models.BaseUrlModel
 import com.jaya.app.core.domain.models.GetOtpModel
+import com.jaya.app.core.domain.models.VerifyOtpModel
 import retrofit2.http.*
 
 interface MyApiList {
@@ -15,6 +16,9 @@ interface MyApiList {
 
     @GET("e3e6637118816ba631ca")
     suspend fun getOtp(): GetOtpModel
+
+    @GET("16549f6d32a350455f94")
+    suspend fun verifyOtp(): VerifyOtpModel
 
 
 }

@@ -3,6 +3,7 @@ package com.jaya.app.packaging.presentation.extensions
 import android.app.Activity
 import android.content.Context
 import android.content.res.Resources
+import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.compose.animation.*
@@ -182,3 +183,5 @@ fun Activity.changeStatusBarColor(color: Long) {
     window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
     window.statusBarColor = color.toInt()
 }
+
+

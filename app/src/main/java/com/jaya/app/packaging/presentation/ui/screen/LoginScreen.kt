@@ -137,7 +137,6 @@ val context= LocalContext.current
                         }else{
                             viewModel.loadingg.value=true
                             baseViewModel.storedLoginEmail.value=viewModel.emailText.value
-                           // viewModel.onLoginToOtp()
                             viewModel.getOtp()
 
                             val timer = object : CountDownTimer(5000, 1000) {

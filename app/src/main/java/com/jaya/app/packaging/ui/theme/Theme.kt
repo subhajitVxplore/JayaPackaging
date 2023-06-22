@@ -39,8 +39,9 @@ private val LightColorScheme = lightColorScheme(
 
 @Composable
 fun JayaPackagingTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+   // darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
+    darkTheme: Boolean = false,
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {

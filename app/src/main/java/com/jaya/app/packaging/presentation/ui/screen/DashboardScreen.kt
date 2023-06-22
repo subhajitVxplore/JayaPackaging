@@ -87,10 +87,8 @@ fun DashboardScreen(
 
     val currentScreen = remember { mutableStateOf(DrawerAppScreen.Home) }
     val coroutineScope = rememberCoroutineScope()
-    // val scaffoldState = rememberScaffoldState()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val ctx = LocalContext.current
-    val activity = LocalContext.current as Activity
 
 
     ModalNavigationDrawer(
@@ -218,7 +216,7 @@ fun DrawerContentComponent(currentScreen: MutableState<DrawerAppScreen>, closeDr
                 .height(50.dp)
                 .background(LogoutRed)
                 .clickable {
-                    //viewModel.onLogoutFromDashboard()
+                    viewModel.onLogoutFromDashboard()
                 }) {
 
                 Text(

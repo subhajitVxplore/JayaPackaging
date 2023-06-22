@@ -7,6 +7,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.jaya.app.core.domain.repositories.LoginRepository
+import com.jaya.app.core.domain.repositories.OtpRepository
 import com.jaya.app.core.domain.repositories.SplashRepository
 import com.jaya.app.core.helpers.AppStore
 import com.jaya.app.core.helpers.Info
@@ -14,6 +15,7 @@ import com.jaya.app.packaging.application.JayaPackagingApp
 import com.jaya.app.packaging.helpers_impl.AppInfo
 import com.jaya.app.packaging.helpers_impl.AppStoreImpl
 import com.jaya.app.packaging.repositoryImpls.LoginRepositoryImpl
+import com.jaya.app.packaging.repositoryImpls.OtpRepositoryImpl
 import com.jaya.app.packaging.repositoryImpls.SplashRepositoryImpl
 import com.jaya.app.packaging.utility.Constants
 import com.jaya.app.packaging.utility.Metar
@@ -98,6 +100,9 @@ interface AppModule {
 
     @Binds
     fun bindLoginRepository(impl: LoginRepositoryImpl): LoginRepository
+
+    @Binds
+    fun bindOtpRepository(impl: OtpRepositoryImpl): OtpRepository
 
 
 }//AppModule
