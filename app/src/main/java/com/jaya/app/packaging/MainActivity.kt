@@ -13,6 +13,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.core.content.ContextCompat
 import androidx.navigation.compose.rememberNavController
 import com.jaya.app.packaging.navigation.MainNavGraph
 import com.jaya.app.packaging.presentation.extensions.changeStatusBarColor
@@ -29,10 +30,9 @@ class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        changeStatusBarColor(0xFFFF0000)
 
         setContent {
-            JayaPackagingTheme {
+            JayaPackagingTheme(baseViewModel) {
                 Scaffold(
                     modifier = Modifier
                         .fillMaxSize()

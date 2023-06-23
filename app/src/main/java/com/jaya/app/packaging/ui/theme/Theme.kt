@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
+import com.jaya.app.packaging.presentation.viewModels.BaseViewModel
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
@@ -41,6 +42,7 @@ private val LightColorScheme = lightColorScheme(
 fun JayaPackagingTheme(
    // darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
+    baseViewModel: BaseViewModel,
     darkTheme: Boolean = false,
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
@@ -58,7 +60,8 @@ fun JayaPackagingTheme(
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
+            window.statusBarColor = (baseViewModel.statusBarColor.value).toArgb()
+            //window.statusBarColor = colorScheme.primary.toArgb()
             WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
         }
     }

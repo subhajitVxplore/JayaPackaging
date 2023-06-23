@@ -1,11 +1,13 @@
 package com.jaya.app.packaging.presentation.ui.screen
 
 import android.app.TimePickerDialog
+import android.os.CountDownTimer
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,11 +24,13 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
@@ -37,6 +41,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -52,6 +57,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.jaya.app.packaging.R
@@ -60,6 +66,8 @@ import com.jaya.app.packaging.presentation.ui.custom_view.ProductsDropdown
 import com.jaya.app.packaging.presentation.viewModels.AddProductViewModel
 import com.jaya.app.packaging.presentation.viewModels.BaseViewModel
 import com.jaya.app.packaging.ui.theme.AppBarYellow
+import com.jaya.app.packaging.ui.theme.LogoutRed
+import com.jaya.app.packaging.ui.theme.SplashGreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -128,6 +136,8 @@ fun AddProductScreen(
                         .width(screenWidth * 0.15f)
                         .align(Alignment.CenterVertically)
                         .clickable(
+                            indication = null,
+                            interactionSource = remember { MutableInteractionSource() },
                             onClick = {
                                 CoroutineScope(Dispatchers.Default).launch {
                                     viewModel.popScreen()
@@ -202,11 +212,11 @@ fun AddProductScreen(
 
 
                 val context = LocalContext.current
-                val lst=listOf("Butter D-Lite", "Jaya Marie", "Jaya Kaju", "Jaya Cream")
+
                 ProductsDropdown(
                     viewModel,
                     false,
-                    lst,
+                    viewModel.productTypes.collectAsState().value,
                     onSelect = {
                         //  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                         //viewModel.selectedPincode.value = it
@@ -324,7 +334,7 @@ fun AddProductScreen(
                     Text(
                         text = "Video Clip",
                         color = Color.Black,
-                        fontSize = 18.sp,
+                        fontSize = 20.sp,
                         modifier = Modifier
                             .weight(1f)
                             .align(Alignment.CenterVertically)
@@ -443,7 +453,7 @@ fun AddProductScreen(
                         }//parentrow
 
                     }
-                  //    }//if (index > 0)
+                    //    }//if (index > 0)
 
 
                 }//for
@@ -459,28 +469,29 @@ fun AddProductScreen(
             val context = LocalContext.current
             Button(
                 onClick = {
-//
-//                    if (viewModel.productName.value.isNullOrEmpty()) {
-//                        Toast.makeText(context, "Product name can not be empty", Toast.LENGTH_SHORT)
-//                            .show()
-//                    } else if (viewModel.packingName.value.isNullOrEmpty()) {
-//                        Toast.makeText(context, "Packing name can not be empty", Toast.LENGTH_SHORT)
-//                            .show()
-//                    } else if (viewModel.batchNumber.value.isNullOrEmpty()) {
-//                        Toast.makeText(context, "Batch Number can not be empty", Toast.LENGTH_SHORT)
-//                            .show()
-//                    } else if (viewModel.selectedProduct.value == "Choose Product") {
-//                        Toast.makeText(context, "Please choose a product", Toast.LENGTH_SHORT)
-//                            .show()
-//                    } else if (viewModel.startTimeSelected.value == "Start Time") {
-//                        Toast.makeText(context, "Please select start time", Toast.LENGTH_SHORT)
-//                            .show()
-//                    } else if (viewModel.endTimeSelected.value == "End Time") {
-//                        Toast.makeText(context, "Please select end time", Toast.LENGTH_SHORT).show()
-//                    }
-                    //
-                    //viewModel.loader.value=true
-                    // viewModel.onAddProductToDashboard()
+
+                    if (viewModel.productName.value.isNullOrEmpty()) {
+                        Toast.makeText(context, "Product name can not be empty", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (viewModel.packingName.value.isNullOrEmpty()) {
+                        Toast.makeText(context, "Packing name can not be empty", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (viewModel.batchNumber.value.isNullOrEmpty()) {
+                        Toast.makeText(context, "Batch Number can not be empty", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (viewModel.selectedProduct.value == "Choose Product") {
+                        Toast.makeText(context, "Please choose a product", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (viewModel.startTimeSelected.value == "Start Time") {
+                        Toast.makeText(context, "Please select start time", Toast.LENGTH_SHORT)
+                            .show()
+                    } else if (viewModel.endTimeSelected.value == "End Time") {
+                        Toast.makeText(context, "Please select end time", Toast.LENGTH_SHORT).show()
+                    } else {
+                        viewModel.onSaveProductDialog()
+                    }
+
+//----------------------------------------------------------------------------------------------------------------
 
 //                    if (baseViewModel.videoUri != null) {
 //                        val file = File(baseViewModel.videoUri?.path)
@@ -491,7 +502,7 @@ fun AddProductScreen(
 
 
                 },
-                //enabled = true,
+                enabled = viewModel.loadingButton.value,
                 shape = RoundedCornerShape(5.dp),
                 modifier = Modifier
                     .padding(horizontal = 10.dp, vertical = 18.dp)
@@ -499,21 +510,15 @@ fun AddProductScreen(
                     .height(53.dp),
                 colors = ButtonDefaults.buttonColors(colorResource(R.color.addBtnDeepGreenColor))
             ) {
-//                    if (!viewModel.loader.value){
-//                        Text(
-//                            text = "Continue",
-//                            color = Color.White,
-//                            fontSize = 20.sp,
-//                        )
-//                    }else{
-//                        CircularProgressIndicator(color = Color.White)
-//                    }
-                Text(
-                    text = "Add",
-                    color = Color.White,
-                    fontSize = 20.sp,
-                )
-
+                if (!viewModel.loadingg.value) {
+                    Text(
+                        text = "Save",
+                        color = Color.White,
+                        fontSize = 20.sp,
+                    )
+                } else {
+                    CircularProgressIndicator(color = Color.White)
+                }
             }
         }
 
@@ -525,5 +530,78 @@ fun AddProductScreen(
 
     }//surface
 
+    viewModel.saveDetailsDialog.value?.apply {
+        if (currentState()) {
+            AlertDialog(
+                containerColor = AppBarYellow,
+                shape = RoundedCornerShape(10.dp),
+                onDismissRequest = {
+                    onDismiss?.invoke(null)
+                },
+                title = {
+                    currentData?.title?.let {
+                        Text(text = it)
+                    }
+                },
+                text = {
+                    currentData?.message?.let {
+                        Text(text = it) //version message from Api
+                    }
+                },
+                dismissButton = {
+                    //  if (!(currentData?.data as AppVersion).isSkipable) {
+                    currentData?.negative?.let {
+                        Button(
+                            onClick = {
+                                onDismiss?.invoke(null)
+                            },
+                            colors = ButtonDefaults.buttonColors(LogoutRed),
+                            shape = RoundedCornerShape(7.dp),
+                            modifier = Modifier.padding(end = 10.dp)
 
-}
+                        ) {
+                            Text(text = it)
+                        }
+                    }
+                    //  }
+
+                },
+                confirmButton = {
+                    val context = LocalContext.current
+                    currentData?.positive?.let {
+                        Button(
+                            onClick = {
+                                viewModel.loadingg.value = true
+                                viewModel.addProduct()
+                                val timer = object : CountDownTimer(5000, 1000) {
+                                    override fun onTick(millisUntilFinished: Long) {
+                                        // Toast.makeText(context, "${viewModel.timerX.value}", Toast.LENGTH_SHORT).show()
+                                    }
+
+                                    override fun onFinish() {
+                                        Toast.makeText(
+                                            context,
+                                            "${viewModel.backendMessage.value}",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                }
+                                timer.start()
+                                onDismiss?.invoke(null)
+                            },
+                            colors = ButtonDefaults.buttonColors(SplashGreen),
+                            shape = RoundedCornerShape(7.dp),
+                        ) {
+                            Text(text = it)
+                        }
+                    }
+                },
+                properties = DialogProperties(
+                    dismissOnClickOutside = false
+                )
+
+            )
+        }
+    }
+
+}//AddProductScreen

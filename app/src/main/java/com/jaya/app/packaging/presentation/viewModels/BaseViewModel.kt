@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.example.core.utils.AppNavigator
 import com.jaya.app.packaging.presentation.ui.custom_view.VideoUploadingModel
+import com.jaya.app.packaging.ui.theme.SplashGreen
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -18,6 +19,7 @@ class BaseViewModel @Inject constructor(
     var videoShootTime= mutableStateListOf<String>()
     var storedLoginEmail= mutableStateOf("")
     var versionCode= mutableStateOf(0)
+    var statusBarColor= mutableStateOf(SplashGreen)
         // var videoShootTime= listOf(emptyList<String>())
 
 

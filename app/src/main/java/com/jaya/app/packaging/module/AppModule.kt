@@ -6,6 +6,8 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
 import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.jaya.app.core.domain.repositories.AddProductRepository
+import com.jaya.app.core.domain.repositories.DashboardRepository
 import com.jaya.app.core.domain.repositories.LoginRepository
 import com.jaya.app.core.domain.repositories.OtpRepository
 import com.jaya.app.core.domain.repositories.SplashRepository
@@ -14,6 +16,8 @@ import com.jaya.app.core.helpers.Info
 import com.jaya.app.packaging.application.JayaPackagingApp
 import com.jaya.app.packaging.helpers_impl.AppInfo
 import com.jaya.app.packaging.helpers_impl.AppStoreImpl
+import com.jaya.app.packaging.repositoryImpls.AddProductRepositoryImpl
+import com.jaya.app.packaging.repositoryImpls.DashboardRepositoryImpl
 import com.jaya.app.packaging.repositoryImpls.LoginRepositoryImpl
 import com.jaya.app.packaging.repositoryImpls.OtpRepositoryImpl
 import com.jaya.app.packaging.repositoryImpls.SplashRepositoryImpl
@@ -82,9 +86,7 @@ interface AppModule {
 
         @Singleton
         @Provides
-        fun provideDataStorePreferences(@ApplicationContext appContext: Context): DataStore<Preferences> =
-            appContext.dataStore
-
+        fun provideDataStorePreferences(@ApplicationContext appContext: Context): DataStore<Preferences> = appContext.dataStore
 
     }
 //====================================================================================================================================
@@ -103,6 +105,12 @@ interface AppModule {
 
     @Binds
     fun bindOtpRepository(impl: OtpRepositoryImpl): OtpRepository
+
+    @Binds
+    fun bindDashboardRepository(impl: DashboardRepositoryImpl): DashboardRepository
+
+    @Binds
+    fun bindAddProductRepository(impl: AddProductRepositoryImpl): AddProductRepository
 
 
 }//AppModule

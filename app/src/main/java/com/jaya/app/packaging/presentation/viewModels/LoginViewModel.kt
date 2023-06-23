@@ -94,10 +94,7 @@ class LoginViewModel @Inject constructor(
                                         inclusive = true
                                     )
                                 }
-
                             }
-
-
                         }
 
                         else -> {}

@@ -14,5 +14,6 @@ enum class UiData {
     RationaleDialog,
     AllPermissionNotGranted,
     PermissionDeniedForever,
+    StateApiLoading,
     LOADER,
 }

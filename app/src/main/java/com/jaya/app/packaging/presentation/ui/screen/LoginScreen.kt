@@ -165,7 +165,7 @@ val context= LocalContext.current
                         Text(
                             text = "Get OTP Verification",
                             color = Color.White,
-                            fontSize = 20.sp,
+                            fontSize = 18.sp,
                         )
                     }else{
                         CircularProgressIndicator(color = Color.White)

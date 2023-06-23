@@ -263,11 +263,7 @@ fun OtpScreen(
                     color = Color.Gray
                 )
             }
-
-
         }
-
-
     }
 
     LaunchedEffect(true) { viewModel.isEmailReadOnly.value }

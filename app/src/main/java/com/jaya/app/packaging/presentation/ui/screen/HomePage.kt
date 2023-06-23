@@ -3,6 +3,8 @@
 package com.jaya.app.packaging.presentation.ui.screen
 
 import android.widget.Toast
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -18,6 +20,7 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -38,12 +41,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jaya.app.packaging.R
+import com.jaya.app.packaging.presentation.extensions.bottomToUp
+import com.jaya.app.packaging.presentation.extensions.screenHeight
+import com.jaya.app.packaging.presentation.extensions.screenWidth
+import com.jaya.app.packaging.presentation.extensions.upToBottom
 import com.jaya.app.packaging.presentation.viewModels.DashboardViewModel
 import com.jaya.app.packaging.ui.theme.AppBarYellow
 import com.jaya.app.packaging.ui.theme.SplashGreen
 import io.ktor.util.reflect.*
 
-@OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class)
+@OptIn(
+    ExperimentalComposeUiApi::class, ExperimentalMaterial3Api::class,
+    ExperimentalAnimationApi::class
+)
 @Composable
 fun HomePage(
     openDrawer: () -> Unit,
@@ -61,7 +71,7 @@ fun HomePage(
 //                        Toast
 //                            .makeText(context, "addProduct", Toast.LENGTH_SHORT)
 //                            .show()
-                              },
+                    },
                     modifier = Modifier.size(55.dp),
 
                     //backgroundColor = WhiteGray,
@@ -111,7 +121,7 @@ fun HomePage(
                                 .padding(top = 15.dp, end = 20.dp)
                         ) {
                             Text(
-                                text = "Plant: 1",
+                                text = "Plant: ${viewModel.packagingPlant.value}",
                                 modifier = Modifier
                                     .wrapContentSize()
                                     //.align(Alignment.CenterVertically)
@@ -129,7 +139,7 @@ fun HomePage(
                                     .width(1.dp)
                             )
                             Text(
-                                text = "Shift: A",
+                                text = "Shift: ${viewModel.packagingShift.value}",
                                 modifier = Modifier
                                     .wrapContentSize()
                                     //.align(Alignment.CenterVertically)
@@ -157,158 +167,196 @@ fun HomePage(
                     color = Color.Gray,
                     //textAlign =
                 )
-
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .verticalScroll(rememberScrollState())
+                AnimatedContent(
+                    targetState = viewModel.dataLoading.value,
+                    transitionSpec = {
+                        if (targetState && !initialState) {
+                            upToBottom()
+                        } else {
+                            bottomToUp()
+                        }
+                    }
                 ) {
+                    if (!it) {
 
-                    val biscuitList =
-                        listOf<String>("Butter D-Lite", "Jaya Marie", "Jaya Kaju", "Jaya Cream")
-                    for ((index, biscuits) in biscuitList.withIndex()) {
-
-                        Card(
+                        Column(
                             modifier = Modifier
-                                .animateContentSize(
-                                    animationSpec = tween(
-                                        durationMillis = 400,
-                                        easing = LinearOutSlowInEasing
-                                    )
-                                )
-                                .padding(start = 15.dp, end = 15.dp, top = 10.dp, bottom = 15.dp)
-                                .clickable {
-                                    Toast
-                                        .makeText(context, "hello$index", Toast.LENGTH_SHORT)
-                                        .show()
-                                },
-                            shape = RoundedCornerShape(8.dp),
-                            border = BorderStroke(1.dp, Color.LightGray),
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState())
+                        ) {
 
-                            ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(Color.White)
-                                    .wrapContentSize()
-                            ) {
+                            for ((index, packaging) in viewModel.packagingList.collectAsState().value.withIndex()) {
 
-
-                                Row(
+                                Card(
                                     modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(15.dp)
-                                ) {
-                                    Column(modifier = Modifier.weight(1f)) {
-                                        Text(
-                                            text = "$biscuits",
-                                            modifier = Modifier
-                                                .wrapContentSize(),
-                                            fontSize = 18.sp,
-                                            color = Color.DarkGray,
-                                            //textAlign =
+                                        .animateContentSize(
+                                            animationSpec = tween(
+                                                durationMillis = 400,
+                                                easing = LinearOutSlowInEasing
+                                            )
                                         )
-                                        Row() {
-                                            Text(
-                                                text = "Batch Number: ",
-                                                modifier = Modifier
-                                                    .wrapContentSize(),
-                                                fontSize = 12.sp,
-                                                color = Color.DarkGray,
-                                                //textAlign =
-                                            )
-                                            Text(
-                                                text = "15",
-                                                modifier = Modifier
-                                                    .wrapContentSize(),
-                                                fontSize = 12.sp,
-                                                color = Color.DarkGray,
-                                                fontWeight = FontWeight.Bold
-                                                //textAlign =
-                                            )
+                                        .padding(
+                                            start = 15.dp,
+                                            end = 15.dp,
+                                            top = 10.dp,
+                                            bottom = 15.dp
+                                        )
+                                        .clickable {
+                                            Toast
+                                                .makeText(
+                                                    context,
+                                                    "hello$index",
+                                                    Toast.LENGTH_SHORT
+                                                )
+                                                .show()
+                                        },
+                                    shape = RoundedCornerShape(8.dp),
+                                    border = BorderStroke(1.dp, Color.LightGray),
 
-                                        }
-
-                                        Row() {
-                                            Text(
-                                                text = "Time : ",
-                                                modifier = Modifier
-                                                    .wrapContentSize(),
-                                                fontSize = 9.sp,
-                                                color = Color.DarkGray,
-                                                //textAlign =
-                                            )
-                                            Text(
-                                                text = "10:00 AM - 11:00 AM",
-                                                modifier = Modifier
-                                                    .wrapContentSize(),
-                                                fontSize = 9.sp,
-                                                color = Color.DarkGray,
-                                                fontWeight = FontWeight.Bold
-                                                //textAlign =
-                                            )
-
-                                        }
+                                    ) {
 
 
-                                    }
-
-
-                                    Image(
-                                        painter = painterResource(id = R.drawable.jaya_biscuits),
-                                        contentDescription = "biscuitImage",
+                                    Column(
                                         modifier = Modifier
-                                            .height(65.dp)
-                                            .width(65.dp)
-                                            .align(Alignment.CenterVertically)
-                                            .padding(8.dp)
-                                        //.padding(70.dp, 0.dp, 0.dp, 0.dp)
-                                    )
+                                            .fillMaxWidth()
+                                            .background(Color.White)
+                                            .wrapContentSize()
+                                    ) {
 
-                                }//row
 
-                                Row(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .height(40.dp)
-                                        .background(AppBarYellow)
-                                ) {
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .padding(15.dp)
+                                        ) {
+                                            Column(modifier = Modifier.weight(1f)) {
+                                                Text(
+                                                    text = "${packaging.product_name}",
+                                                    modifier = Modifier
+                                                        .wrapContentSize(),
+                                                    fontSize = 18.sp,
+                                                    color = Color.DarkGray,
+                                                    //textAlign =
+                                                )
+                                                Row() {
+                                                    Text(
+                                                        text = "Batch Number: ",
+                                                        modifier = Modifier
+                                                            .wrapContentSize(),
+                                                        fontSize = 12.sp,
+                                                        color = Color.DarkGray,
+                                                        //textAlign =
+                                                    )
+                                                    Text(
+                                                        text = "${packaging.batch_no}",
+                                                        modifier = Modifier
+                                                            .wrapContentSize(),
+                                                        fontSize = 12.sp,
+                                                        color = Color.DarkGray,
+                                                        fontWeight = FontWeight.Bold
+                                                        //textAlign =
+                                                    )
 
-                                    Text(
-                                        text = "View Details",
-                                        color = Color.DarkGray,
-                                        fontSize = 17.sp,
-                                        modifier = Modifier
-                                            .align(Alignment.CenterVertically)
-                                            .weight(1f)
-                                            .padding(start = 15.dp)
-                                    )
+                                                }
 
-                                    // Image(painter = painterResource(id = androidx.compose.foundation.layout.R.drawable.ic_baseline_keyboard_backspace_24),
-                                    Image(painter = painterResource(id = R.drawable.forward_arrow),
-                                        contentDescription = "forward Arrow button",
-                                        modifier = Modifier
-                                            .width(55.dp)
-                                            .clickable {
+                                                Row() {
+                                                    Text(
+                                                        text = "Time : ",
+                                                        modifier = Modifier
+                                                            .wrapContentSize(),
+                                                        fontSize = 9.sp,
+                                                        color = Color.DarkGray,
+                                                        //textAlign =
+                                                    )
+                                                    Text(
+                                                        text = "${packaging.time_stamp}",
+                                                        modifier = Modifier
+                                                            .wrapContentSize(),
+                                                        fontSize = 9.sp,
+                                                        color = Color.DarkGray,
+                                                        fontWeight = FontWeight.Bold
+                                                        //textAlign =
+                                                    )
+
+                                                }
+
 
                                             }
-                                            .align(Alignment.CenterVertically)
-                                            .padding(horizontal = 15.dp),
-                                        colorFilter = ColorFilter.tint(Color.Black)
-                                    )
+
+
+                                            Image(
+                                                painter = painterResource(id = R.drawable.jaya_biscuits),
+                                                contentDescription = "biscuitImage",
+                                                modifier = Modifier
+                                                    .height(65.dp)
+                                                    .width(65.dp)
+                                                    .align(Alignment.CenterVertically)
+                                                    .padding(8.dp)
+                                                //.padding(70.dp, 0.dp, 0.dp, 0.dp)
+                                            )
+
+                                        }//row
+
+                                        Row(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(40.dp)
+                                                .background(AppBarYellow)
+                                        ) {
+
+                                            Text(
+                                                text = "View Details",
+                                                color = Color.DarkGray,
+                                                fontSize = 17.sp,
+                                                modifier = Modifier
+                                                    .align(Alignment.CenterVertically)
+                                                    .weight(1f)
+                                                    .padding(start = 15.dp)
+                                            )
+
+                                            // Image(painter = painterResource(id = androidx.compose.foundation.layout.R.drawable.ic_baseline_keyboard_backspace_24),
+                                            Image(painter = painterResource(id = R.drawable.forward_arrow),
+                                                contentDescription = "forward Arrow button",
+                                                modifier = Modifier
+                                                    .width(55.dp)
+                                                    .align(Alignment.CenterVertically)
+                                                    .padding(horizontal = 15.dp),
+                                                colorFilter = ColorFilter.tint(Color.Black)
+                                            )
+                                        }
+
+
+                                    }//column
+
                                 }
 
+                            }//for loop
 
-                            }//column
+                        }//column(scrollable)
+                    } else {
+                        Box(
+                            modifier = Modifier.fillMaxSize(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator(
+                                modifier = Modifier
+                                    .size(
+                                        width = screenWidth * 0.15f,
+                                        height = screenHeight * 0.15f
+                                    )
+                                    .padding(bottom = screenHeight * 0.05f),
+                                color = SplashGreen,
+                                strokeWidth = 5.dp,
+                            )
                         }
+                    }
 
-                    }//for loop
-                }//column(scrollable)
+
+                }
+
             }
-
         }
-    }
 
+    }
 }
 

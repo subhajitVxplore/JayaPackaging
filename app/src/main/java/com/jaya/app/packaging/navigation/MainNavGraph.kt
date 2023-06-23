@@ -53,7 +53,7 @@ fun MainNavGraph(
             OtpScreen(baseViewModel)
         }
         composable(destination = Destination.Dashboard) {
-            DashboardScreen(navHostController)
+            DashboardScreen(baseViewModel)
         }
         composable(destination = Destination.AddProduct) {
             AddProductScreen(baseViewModel)

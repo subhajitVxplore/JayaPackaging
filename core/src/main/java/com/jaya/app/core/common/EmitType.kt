@@ -8,6 +8,11 @@ enum class EmitType {
     Navigate,
     NetworkError,
     Loading,
+    USER_DATA,
+    PACKAGING_SHIFT,
+    PACKAGING_PLANT,
+    PACKAGING_LIST,
+    PRODUCT_TYPES,
 
 
 }

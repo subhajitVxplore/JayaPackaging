@@ -5,31 +5,28 @@ import com.jaya.app.core.common.Destination
 import com.jaya.app.core.common.EmitType
 import com.jaya.app.core.common.Resource
 import com.jaya.app.core.common.handleFailedResponse
+import com.jaya.app.core.domain.repositories.AddProductRepository
 import com.jaya.app.core.domain.repositories.DashboardRepository
 import com.jaya.app.core.helpers.AppStore
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
-class DashboardUseCases @Inject constructor(
+class AddProductUseCases @Inject constructor(
     private val appStore: AppStore,
-    private val dashboardRepository: DashboardRepository
+    private val addProductRepository: AddProductRepository
 ) {
 
-    fun logOutFromDashboard() = flow {
-        appStore.logout()
-        emit(Data(type = EmitType.Navigate, Destination.Login))
-    }
 
-    fun getUserDetails() = flow {
+    fun getProductTypes() = flow {
         emit(Data(EmitType.Loading, true))
-        when (val response = dashboardRepository.getUserDetails()) {//appStore.userId()
+        when (val response = addProductRepository.getProductTypes()) {//appStore.userId()
             //when (val response =
             is Resource.Success -> {
                 emit(Data(EmitType.Loading, false))
                 response.data?.apply {
                     when (status) {
                         true -> {
-                            emit(Data(type = EmitType.USER_DATA, value = user_data))
+                            emit(Data(type = EmitType.PRODUCT_TYPES, value = product_type_list))
                         }
                         else -> {
                             emit(Data(type = EmitType.BackendError, value = message))
@@ -50,18 +47,19 @@ class DashboardUseCases @Inject constructor(
         }
     }
 
-    fun getPackagingList() = flow {
+    fun addProduct() = flow {
         emit(Data(EmitType.Loading, true))
-        when (val response = dashboardRepository.getPackagingList()) {//appStore.userId()
+        when (val response = addProductRepository.addProduct()) {//appStore.userId()
             //when (val response =
             is Resource.Success -> {
                 emit(Data(EmitType.Loading, false))
                 response.data?.apply {
                     when (status) {
                         true -> {
-                            emit(Data(type = EmitType.PACKAGING_SHIFT, value = shift))
-                            emit(Data(type = EmitType.PACKAGING_PLANT, value = plant))
-                            emit(Data(type = EmitType.PACKAGING_LIST, value = packaging_list))
+                            if (isAdded){
+                                emit(Data(type = EmitType.Navigate, value = Destination.Dashboard))
+                                emit(Data(type = EmitType.BackendSuccess, value = message))
+                            }
                         }
                         else -> {
                             emit(Data(type = EmitType.BackendError, value = message))

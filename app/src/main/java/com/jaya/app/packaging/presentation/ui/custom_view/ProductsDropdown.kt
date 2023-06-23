@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jaya.app.core.domain.models.ProductType
 import com.jaya.app.packaging.presentation.extensions.bottomToUp
 import com.jaya.app.packaging.presentation.extensions.screenHeight
 import com.jaya.app.packaging.presentation.extensions.screenWidth
@@ -35,8 +36,7 @@ import com.jaya.app.packaging.presentation.viewModels.BaseViewModel
 fun ProductsDropdown(
     viewModel: AddProductViewModel,
     loading: Boolean,
-    //dataList: List<ExpenseTypes>,
-    dataList: List<String>,
+    dataList: List<ProductType>,
     onSelect: (String) -> Unit
 ) {//need to inherit "DropDownItem" to model classes
 
@@ -111,7 +111,7 @@ fun ProductsDropdown(
                         DropdownMenuItem(
                             text = {
                                 Column {
-                                    Text(text = item)
+                                    Text(text = item.product_type)
                                     Divider(
                                         color = Color.LightGray,
                                         thickness = 0.8.dp,
@@ -120,7 +120,7 @@ fun ProductsDropdown(
                                 }
                                    },
                             onClick = {
-                            mSelectedText = item
+                            mSelectedText = item.product_type
                             mExpanded = false
                             onSelect(mSelectedText)
                         })

@@ -1,7 +1,11 @@
 package com.jaya.app.packaging.presentation.ui.screen
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
+import androidx.activity.OnBackPressedDispatcher
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
@@ -20,14 +24,19 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Notifications
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,11 +52,14 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
@@ -55,6 +67,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
@@ -65,34 +78,42 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.jaya.app.packaging.R
+import com.jaya.app.packaging.presentation.extensions.BackPressHandler
 import com.jaya.app.packaging.presentation.ui.custom_view.OtpTextField
+import com.jaya.app.packaging.presentation.viewModels.BaseViewModel
 import com.jaya.app.packaging.presentation.viewModels.DashboardViewModel
 import com.jaya.app.packaging.presentation.viewModels.LoginViewModel
 import com.jaya.app.packaging.presentation.viewModels.OtpViewModel
 import com.jaya.app.packaging.ui.theme.AppBarYellow
 import com.jaya.app.packaging.ui.theme.LighrYellow
 import com.jaya.app.packaging.ui.theme.LogoutRed
+import com.jaya.app.packaging.ui.theme.SplashGreen
 import kotlinx.coroutines.launch
+import kotlin.system.exitProcess
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardScreen(
-    navController: NavController,
+    baseViewModel: BaseViewModel,
     viewModel: DashboardViewModel = hiltViewModel()
 ) {
-
+//    baseViewModel.statusBarColor.value= AppBarYellow
+//    LaunchedEffect(true){baseViewModel.statusBarColor.value}
     val currentScreen = remember { mutableStateOf(DrawerAppScreen.Home) }
     val coroutineScope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val ctx = LocalContext.current
 
+    BackPressHandler(onBackPressed = {viewModel.onBackDialog()})
+
 
     ModalNavigationDrawer(
-        drawerState=drawerState,
+        drawerState = drawerState,
         modifier = Modifier.fillMaxSize(),
         drawerContent = {
 
@@ -106,10 +127,12 @@ fun DashboardScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .height(60.dp)
-                .background(AppBarYellow)) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp)
+                    .background(AppBarYellow)
+            ) {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -131,12 +154,10 @@ fun DashboardScreen(
                         modifier = Modifier
                             .align(Alignment.Center)
                             .padding(8.dp)
-                        //.padding(70.dp, 0.dp, 0.dp, 0.dp)
                     )
 
                     IconButton(
                         onClick = {
-                            // viewModel.onBackDialog()
                             Toast.makeText(ctx, "Notifications", Toast.LENGTH_SHORT).show()
                         },
                         modifier = Modifier
@@ -156,7 +177,64 @@ fun DashboardScreen(
         }
     }
 //-------------------------------------------------------------------------//
+    val activity= LocalContext.current as Activity
+    viewModel.dashboardBack.value?.apply {
+        if (currentState()) {
+            AlertDialog(
+                containerColor = AppBarYellow,
+                shape = RoundedCornerShape(10.dp),
+                onDismissRequest = {
+                    onDismiss?.invoke(null)
+                },
+                title = {
+                        currentData?.title?.let {
+                        Text(text = it)
+                    }
+                },
+                text = {
+                    currentData?.message?.let {
+                        Text(text = it) //version message from Api
+                    }
+                },
+                dismissButton = {
+                    //  if (!(currentData?.data as AppVersion).isSkipable) {
+                    currentData?.negative?.let {
+                        Button(
+                            onClick = {
+                                onDismiss?.invoke(null)
+                            },
+                            colors = ButtonDefaults.buttonColors(LogoutRed),
+                            shape = RoundedCornerShape(7.dp),
+                            modifier = Modifier.padding(end = 10.dp)
 
+                        ) {
+                            Text(text = it)
+                        }
+                    }
+                    //  }
+
+                },
+                confirmButton = {
+                    currentData?.positive?.let {
+                        Button(
+                            onClick = {
+                                onConfirm?.invoke(activity.finishAffinity())
+                               // exitProcess(0)
+                                      },
+                            colors = ButtonDefaults.buttonColors(SplashGreen),
+                            shape = RoundedCornerShape(7.dp),
+                        ) {
+                            Text(text = it)
+                        }
+                    }
+                },
+                properties = DialogProperties(
+                    dismissOnClickOutside = false
+                )
+
+            )
+        }
+    }
 
 
 }//DashboardScreen
@@ -181,14 +259,77 @@ fun BodyContentComponent(
 }
 
 @Composable
-fun DrawerContentComponent(currentScreen: MutableState<DrawerAppScreen>, closeDrawer: () -> Unit, viewModel: DashboardViewModel) {
+fun DrawerContentComponent(
+    currentScreen: MutableState<DrawerAppScreen>,
+    closeDrawer: () -> Unit,
+    viewModel: DashboardViewModel
+) {
 
-    Column(modifier = Modifier
-        .fillMaxHeight()
-        .width(270.dp)
-        .background(LighrYellow)) {
+    Column(
+        modifier = Modifier
+            .fillMaxHeight()
+            .width(270.dp)
+            .background(Color.White)
+    ) {
 
-        Spacer(modifier = Modifier.padding(top = 80.dp))
+        Card(
+            colors = CardDefaults.cardColors(containerColor = colorResource(id = R.color.addBtnDeepGreenColor)),
+            modifier = Modifier.padding(start = 8.dp, end = 8.dp, top = 7.dp, bottom = 15.dp),
+            shape = RoundedCornerShape(8.dp),
+            border = BorderStroke(1.dp, SplashGreen),
+        ) {
+            Column(
+                modifier = Modifier
+                    .wrapContentHeight()
+                    //.height(100.dp)
+                    .fillMaxWidth()
+            ) {
+
+                Text(
+                    text = "${viewModel.userName.value}",
+                    color = Color.White, // Header Color
+                    fontSize = 20.sp,
+                    textAlign = TextAlign.Start,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(top = 20.dp)
+                )
+                Text(
+                    text = "${viewModel.userId.value}",
+                    color = Color.White, // Header Color
+                    fontSize = 15.sp,
+                    textAlign = TextAlign.Start,
+                    fontWeight = FontWeight.Normal,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        //.padding(top = 8.dp)
+                )
+                Text(
+                    text = "${viewModel.emailId.value}",
+                    color = Color.White, // Header Color
+                    fontSize = 15.sp,
+                    textAlign = TextAlign.Start,
+                    fontWeight = FontWeight.Normal,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                       // .padding(top = 8.dp)
+                )
+                Text(
+                    text = "${viewModel.designation.value}",
+                    color = Color.White,
+                    fontSize = 15.sp,
+                    textAlign = TextAlign.Start,
+                    fontWeight = FontWeight.Normal,
+                    modifier = Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .padding(bottom = 10.dp)
+                )
+
+            }
+        }
+
+        //  Spacer(modifier = Modifier.padding(top = 80.dp))
 
         for (index in DrawerAppScreen.values().indices) {
             val screen = getScreenBasedOnIndex(index)
@@ -199,9 +340,9 @@ fun DrawerContentComponent(currentScreen: MutableState<DrawerAppScreen>, closeDr
                 Surface(
                     modifier = Modifier.fillMaxWidth(),
                     color = if (currentScreen.value == screen) {
-                        Color.Cyan
+                        AppBarYellow
                     } else {
-                        Color.Blue
+                        Color.LightGray
                     }
                 ) {
                     Text(text = screen.name, modifier = Modifier.padding(16.dp))
@@ -210,7 +351,7 @@ fun DrawerContentComponent(currentScreen: MutableState<DrawerAppScreen>, closeDr
         }
 
 
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd){
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .height(50.dp)
@@ -225,10 +366,12 @@ fun DrawerContentComponent(currentScreen: MutableState<DrawerAppScreen>, closeDr
                     fontSize = 17.sp,
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
-                        .padding(start = 20.dp).weight(1f)
+                        .padding(start = 20.dp)
+                        .weight(1f)
                 )
 
-                Image(painter = painterResource(id = R.drawable.baseline_logout_24),
+                Image(
+                    painter = painterResource(id = R.drawable.baseline_logout_24),
                     contentDescription = "LogOut img",
                     modifier = Modifier
                         .align(Alignment.CenterVertically)
@@ -239,3 +382,5 @@ fun DrawerContentComponent(currentScreen: MutableState<DrawerAppScreen>, closeDr
         }
     }
 }
+
+
