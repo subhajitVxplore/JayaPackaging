@@ -9,6 +9,7 @@ import com.jaya.app.core.domain.models.GetOtpModel
 import com.jaya.app.core.domain.models.ProductTypesModel
 import com.jaya.app.core.domain.models.RecentPackagingModel
 import com.jaya.app.core.domain.models.UserDetailsModel
+import okhttp3.MultipartBody
 
 
 interface AddProductRepository {
@@ -16,5 +17,15 @@ interface AddProductRepository {
     suspend fun getProductTypes(): Resource<ProductTypesModel>
 
     suspend fun addProduct(): Resource<AddProductModel>
+    suspend fun submitPackingDetails(
+        user_id: String,
+        product_name: String,
+        packing_name: String,
+        batch_number: String,
+        product_type: String,
+        start_time: String,
+        end_time: String,
+        video_clip_list:List<MultipartBody.Part>
+    ): Resource<AddProductModel>
 
 }

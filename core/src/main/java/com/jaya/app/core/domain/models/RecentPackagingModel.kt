@@ -11,5 +11,6 @@ data class RecentPackagingModel(
 data class Packaging(
     val batch_no: String,
     val product_name: String,
-    val time_stamp: String
+    val time_stamp: String,
+    val video_link: String
 )

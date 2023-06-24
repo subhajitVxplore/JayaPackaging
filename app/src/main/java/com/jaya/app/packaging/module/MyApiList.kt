@@ -8,6 +8,7 @@ import com.jaya.app.core.domain.models.ProductTypesModel
 import com.jaya.app.core.domain.models.RecentPackagingModel
 import com.jaya.app.core.domain.models.UserDetailsModel
 import com.jaya.app.core.domain.models.VerifyOtpModel
+import okhttp3.MultipartBody
 import retrofit2.http.*
 
 interface MyApiList {
@@ -35,6 +36,20 @@ interface MyApiList {
 
     @GET("87e9ad8f2bd0dc6bf02e")
     suspend fun addProduct(): AddProductModel
+
+    @Multipart
+    @POST("add_packing_data/{user_id}")
+    suspend fun submitPackingDetails(
+        @Path("user_id") user_id: String,
+        @Field("product_name") product_name: String,
+        @Field("packing_name") packing_name: String,
+        @Field("batch_number") batch_number: String,
+        @Field("product_type") product_type: String,
+        @Field("start_time") start_time: String,
+        @Field("end_time") end_time: String,
+        @Part video_clip_list:List<MultipartBody.Part>
+       // @Part("video_clip_list") videoFiles:List<MultipartBody.Part>
+    ): AddProductModel
 
 
 }

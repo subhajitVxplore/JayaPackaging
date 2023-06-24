@@ -66,7 +66,11 @@ import com.jaya.app.packaging.ui.theme.AppBarYellow
 import com.jaya.app.packaging.ui.theme.SplashGreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import java.util.Calendar
+import java.util.concurrent.TimeUnit
 
 @RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalPermissionsApi::class)
@@ -172,8 +176,10 @@ fun VideoCaptureScreen(
 
                                 val hour = calendarInstance.get(Calendar.HOUR)
                                 val minute = calendarInstance.get(Calendar.MINUTE)
+                                val seconds = calendarInstance.get(Calendar.SECOND)
                                 val ampm = if(calendarInstance.get(Calendar.AM_PM)==0) "AM " else "PM "
-                                baseViewModel.videoShootTime.add("$hour:$minute$ampm")
+                                baseViewModel.videoShootTime.add("$hour:$minute:$seconds$ampm")
+                                //val seconds = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())) /1000 %60
                                 recordingStarted.value = true
                                 val mediaDir = context.externalCacheDirs.firstOrNull()?.let {
                                     File(
@@ -194,6 +200,11 @@ fun VideoCaptureScreen(
                                         val uri = event.outputResults.outputUri
                                         if (uri != Uri.EMPTY) {
                                             baseViewModel.videoUriList.add(uri)
+
+                                            val file = File(uri.path.toString())
+                                            val videoFile =RequestBody.create("*/*".toMediaTypeOrNull(), file)
+                                            baseViewModel.videoMultipartList.add(MultipartBody.Part.createFormData("packaging_file",file.name,videoFile))
+
                                             viewModel.onVideoCaptureToAddProduct()
                                         }
                                     }

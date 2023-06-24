@@ -28,6 +28,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.update
+import okhttp3.MultipartBody
 import javax.inject.Inject
 
 @HiltViewModel
@@ -128,6 +129,66 @@ class AddProductViewModel @Inject constructor(
     fun addProduct() {
         addProductUseCases.addProduct()
             .flowOn(Dispatchers.IO)
+            .onEach {
+                when (it.type) {
+
+                    EmitType.Navigate -> {
+                        it.value?.apply {
+
+                            castValueToRequiredTypes<Destination.NoArgumentsDestination>()?.let { destination ->
+                                appNavigator.tryNavigateTo(
+                                    destination(),
+                                    popUpToRoute = Destination.AddProduct(),
+                                    isSingleTop = true,
+                                    inclusive = true
+                                )
+                            }
+                        }
+                    }
+                    EmitType.Loading -> {
+                        it.value?.castValueToRequiredTypes<Boolean>()?.let {
+                            loadingButton.value = it
+                        }
+                    }
+                    EmitType.BackendSuccess -> {
+                        it.value?.apply {
+                            castValueToRequiredTypes<String>()?.let {
+                                backendMessage.value=it
+                            }
+                        }
+                    }
+                    EmitType.NetworkError -> {
+                        it.value?.apply {
+                            castValueToRequiredTypes<String>()?.let {
+                                backendMessage.value=it
+                            }
+                        }
+                    }
+
+                    else -> {}
+                }
+            }.launchIn(viewModelScope)
+    }
+
+    fun submitPackingDetails(
+        product_name: String,
+        packing_name: String,
+        batch_number: String,
+        product_type: String,
+        start_time: String,
+        end_time: String,
+        video_clip_list: List<MultipartBody.Part>
+    ) {
+        addProductUseCases.submitPackingDetails(
+            product_name,
+            packing_name,
+            batch_number,
+            product_type,
+            start_time,
+            end_time,
+            video_clip_list
+        )
+        .flowOn(Dispatchers.IO)
             .onEach {
                 when (it.type) {
 
