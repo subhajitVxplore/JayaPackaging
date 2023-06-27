@@ -1,4 +1,4 @@
-package com.jaya.app.packaging.presentation.extensions
+package com.jaya.app.packaging.extensions
 
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.OnBackPressedDispatcher

@@ -11,8 +11,8 @@ import com.jaya.app.core.common.Destination
 import com.jaya.app.core.common.EmitType
 import com.jaya.app.core.domain.useCases.OtpUseCases
 import com.jaya.app.core.helpers.AppStore
+import com.jaya.app.packaging.extensions.castValueToRequiredTypes
 import com.jaya.app.packaging.helpers_impl.SavableMutableState
-import com.jaya.app.packaging.presentation.extensions.castValueToRequiredTypes
 import com.jaya.app.packaging.utility.UiData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers

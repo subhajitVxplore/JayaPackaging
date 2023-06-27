@@ -11,8 +11,8 @@ import com.jaya.app.core.domain.models.AppVersion
 import com.jaya.app.core.domain.useCases.SplashUseCases
 import com.jaya.app.core.helpers.AppStore
 import com.jaya.app.packaging.extensions.MyDialog
+import com.jaya.app.packaging.extensions.castValueToRequiredTypes
 import com.jaya.app.packaging.helpers_impl.SavableMutableState
-import com.jaya.app.packaging.presentation.extensions.castValueToRequiredTypes
 import com.jaya.app.packaging.utility.UiData
 import com.vxplore.core.common.DialogData
 import dagger.hilt.android.lifecycle.HiltViewModel

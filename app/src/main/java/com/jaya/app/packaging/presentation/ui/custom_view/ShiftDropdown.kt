@@ -33,10 +33,12 @@ import com.jaya.app.packaging.presentation.viewModels.BaseViewModel
 
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
-fun ProductsDropdown(
-    viewModel: AddProductViewModel,
+fun ShiftDropdown(
+    borderColor: Color,
+    textColor: Color,
+   // viewModel: AddProductViewModel,
     loading: Boolean,
-    dataList: List<ProductType>,
+    dataList: List<String>,
     onSelect: (String) -> Unit
 ) {//need to inherit "DropDownItem" to model classes
 
@@ -45,7 +47,8 @@ fun ProductsDropdown(
 
     //  mSelectedText=baseViewModel.prefilledExpenseType
     if (mSelectedText.isEmpty()) {
-        mSelectedText = viewModel.selectedProduct.value
+        mSelectedText = "Shift: ?"
+       // mSelectedText = viewModel.selectedProduct.value
     }
 
     val icon = if (mExpanded)
@@ -65,9 +68,9 @@ fun ProductsDropdown(
     ) {
         if (!it) {
 
-            Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 5.dp)) {
+            Column() {
                 Surface(
-                    border = BorderStroke(1.dp, Color.Gray),
+                    border = BorderStroke(1.dp,borderColor),
                     shape = RoundedCornerShape(4.dp),
                     //backgroundColor = Color.Yellow
                 ) {
@@ -85,7 +88,7 @@ fun ProductsDropdown(
                             Text(
                                 text = mSelectedText,
                                 //label = label,
-                                color = Color.DarkGray,
+                                color = textColor,
                                 fontSize = 17.sp,
                                 modifier = Modifier.align(Alignment.CenterVertically)
                             )
@@ -111,7 +114,7 @@ fun ProductsDropdown(
                         DropdownMenuItem(
                             text = {
                                 Column {
-                                    Text(text = item.product_type)
+                                    Text(text = item)
                                     Divider(
                                         color = Color.LightGray,
                                         thickness = 0.8.dp,
@@ -120,7 +123,7 @@ fun ProductsDropdown(
                                 }
                                    },
                             onClick = {
-                            mSelectedText = item.product_type
+                            mSelectedText = item
                             mExpanded = false
                             onSelect(mSelectedText)
                         })

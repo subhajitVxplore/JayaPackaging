@@ -5,9 +5,7 @@ import com.jaya.app.packaging.BuildConfig
 import javax.inject.Inject
 
 
-class AppInfo @Inject constructor(
-
-) : Info {
+class AppInfo @Inject constructor() : Info {
 
     override fun getCurrentVersion(): Int {
 

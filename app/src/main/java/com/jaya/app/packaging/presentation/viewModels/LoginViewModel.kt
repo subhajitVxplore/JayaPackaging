@@ -9,23 +9,16 @@ import androidx.lifecycle.viewModelScope
 import com.example.core.utils.AppNavigator
 import com.jaya.app.core.common.Destination
 import com.jaya.app.core.common.EmitType
-import com.jaya.app.core.domain.models.AppVersion
 import com.jaya.app.core.domain.useCases.LoginUseCases
 import com.jaya.app.core.helpers.AppStore
-import com.jaya.app.packaging.extensions.MyDialog
+import com.jaya.app.packaging.extensions.castValueToRequiredTypes
 import com.jaya.app.packaging.helpers_impl.SavableMutableState
-import com.jaya.app.packaging.presentation.extensions.castValueToRequiredTypes
 import com.jaya.app.packaging.utility.UiData
-import com.vxplore.core.common.DialogData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel

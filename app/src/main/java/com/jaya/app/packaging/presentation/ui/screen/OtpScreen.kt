@@ -117,7 +117,8 @@ fun OtpScreen(
                         focusedBorderColor = viewModel.color.value,
                         unfocusedBorderColor = Color.Gray
                     ),
-                    readOnly = viewModel.isEmailReadOnly.value,
+                    //readOnly = viewModel.isEmailReadOnly.value,
+                    enabled = !viewModel.isEmailReadOnly.value,
                     trailingIcon = {
                         Icon(
                             Icons.Filled.Edit,
@@ -168,7 +169,7 @@ fun OtpScreen(
                             focusRequester.requestFocus()
                             Toast.makeText(
                                 context,
-                                "Please enter a valid email",
+                                "Please enter a valid email address",
                                 Toast.LENGTH_SHORT
                             ).show()
                         } else if (viewModel.otpNumber.value.length < 4) {
@@ -219,17 +220,25 @@ fun OtpScreen(
                     //text = "Resend OTP.",
                     modifier = Modifier
                         .clickable {
-                            viewModel.resendOtp()
-                            val timer = object : CountDownTimer(15000, 1000) {
-                                override fun onTick(millisUntilFinished: Long) {
-                                    viewModel.resendButtonTxt.value ="00:0${(millisUntilFinished / 1000)}"
+                            if (!baseViewModel.storedLoginEmail.value.isValidEmail()) {
+                                viewModel.color.value = Color.Red
+                                focusRequester.requestFocus()
+                                Toast.makeText(context,"Please enter a valid email address",Toast.LENGTH_SHORT).show()
+
+                            } else{
+                                viewModel.resendOtp()
+                                val timer = object : CountDownTimer(15000, 1000) {
+                                    override fun onTick(millisUntilFinished: Long) {
+                                        viewModel.resendButtonTxt.value ="00:0${(millisUntilFinished / 1000)}"
+                                    }
+                                    override fun onFinish() {
+                                        viewModel.resendButtonTxt.value = "Resend OTP."
+                                        viewModel.loadingButton.value=true
+                                    }
                                 }
-                                override fun onFinish() {
-                                    viewModel.resendButtonTxt.value = "Resend OTP."
-                                    viewModel.loadingButton.value=true
-                                }
+                                timer.start()
                             }
-                            timer.start()
+
 
                             val innerTimer = object : CountDownTimer(5000, 1000) {
                                 override fun onTick(millisUntilFinished: Long) {

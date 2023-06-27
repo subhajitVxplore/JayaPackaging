@@ -13,10 +13,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.core.content.ContextCompat
 import androidx.navigation.compose.rememberNavController
 import com.jaya.app.packaging.navigation.MainNavGraph
-import com.jaya.app.packaging.presentation.extensions.changeStatusBarColor
 import com.jaya.app.packaging.presentation.viewModels.BaseViewModel
 import com.jaya.app.packaging.ui.theme.JayaPackagingTheme
 import dagger.hilt.android.AndroidEntryPoint

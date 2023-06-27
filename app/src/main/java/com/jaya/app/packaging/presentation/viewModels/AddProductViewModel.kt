@@ -1,7 +1,5 @@
 package com.jaya.app.packaging.presentation.viewModels;
 
-import android.net.Uri
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -9,15 +7,13 @@ import androidx.lifecycle.viewModelScope
 import com.example.core.utils.AppNavigator
 import com.jaya.app.core.common.Destination
 import com.jaya.app.core.common.EmitType
-import com.jaya.app.core.domain.models.Packaging
 import com.jaya.app.core.domain.models.ProductType
 import com.jaya.app.core.domain.useCases.AddProductUseCases
 import com.jaya.app.core.helpers.AppStore
 import com.jaya.app.packaging.extensions.MyDialog
+import com.jaya.app.packaging.extensions.castListToRequiredTypes
+import com.jaya.app.packaging.extensions.castValueToRequiredTypes
 import com.jaya.app.packaging.helpers_impl.SavableMutableState
-import com.jaya.app.packaging.presentation.extensions.castListToRequiredTypes
-import com.jaya.app.packaging.presentation.extensions.castValueToRequiredTypes
-import com.jaya.app.packaging.presentation.ui.custom_view.VideoUploadingModel
 import com.jaya.app.packaging.utility.UiData
 import com.vxplore.core.common.DialogData
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -51,7 +47,7 @@ class AddProductViewModel @Inject constructor(
     var startTimeSelected = mutableStateOf("Start Time")
     var endTimeSelected = mutableStateOf("End Time")
 
-    var backendMessage= mutableStateOf("")
+    var backendMessage = mutableStateOf("")
 
     var loadingButton = mutableStateOf(true)
     var loadingg = mutableStateOf(false)
@@ -67,13 +63,14 @@ class AddProductViewModel @Inject constructor(
         saveDetailsDialog.value = MyDialog(
             data = DialogData(
                 title = "Jaya Packaging App",
-                message = "Are you sure you want save Details?",
+                message = "Are you sure you want save the details?",
                 positive = "Yes",
                 negative = "No",
             )
         )
         handleDialogEvents()
     }
+
     private fun handleDialogEvents() {
         saveDetailsDialog.value?.onConfirm = {
         }
@@ -145,22 +142,25 @@ class AddProductViewModel @Inject constructor(
                             }
                         }
                     }
+
                     EmitType.Loading -> {
                         it.value?.castValueToRequiredTypes<Boolean>()?.let {
                             loadingButton.value = it
                         }
                     }
+
                     EmitType.BackendSuccess -> {
                         it.value?.apply {
                             castValueToRequiredTypes<String>()?.let {
-                                backendMessage.value=it
+                                backendMessage.value = it
                             }
                         }
                     }
+
                     EmitType.NetworkError -> {
                         it.value?.apply {
                             castValueToRequiredTypes<String>()?.let {
-                                backendMessage.value=it
+                                backendMessage.value = it
                             }
                         }
                     }
@@ -188,7 +188,7 @@ class AddProductViewModel @Inject constructor(
             end_time,
             video_clip_list
         )
-        .flowOn(Dispatchers.IO)
+            .flowOn(Dispatchers.IO)
             .onEach {
                 when (it.type) {
 
@@ -205,22 +205,25 @@ class AddProductViewModel @Inject constructor(
                             }
                         }
                     }
+
                     EmitType.Loading -> {
                         it.value?.castValueToRequiredTypes<Boolean>()?.let {
                             loadingButton.value = it
                         }
                     }
+
                     EmitType.BackendSuccess -> {
                         it.value?.apply {
                             castValueToRequiredTypes<String>()?.let {
-                                backendMessage.value=it
+                                backendMessage.value = it
                             }
                         }
                     }
+
                     EmitType.NetworkError -> {
                         it.value?.apply {
                             castValueToRequiredTypes<String>()?.let {
-                                backendMessage.value=it
+                                backendMessage.value = it
                             }
                         }
                     }

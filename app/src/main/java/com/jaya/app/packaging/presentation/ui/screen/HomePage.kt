@@ -2,7 +2,6 @@
 
 package com.jaya.app.packaging.presentation.ui.screen
 
-import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.animateContentSize
@@ -34,17 +33,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jaya.app.packaging.R
-import com.jaya.app.packaging.presentation.extensions.bottomToUp
-import com.jaya.app.packaging.presentation.extensions.screenHeight
-import com.jaya.app.packaging.presentation.extensions.screenWidth
-import com.jaya.app.packaging.presentation.extensions.upToBottom
+import com.jaya.app.packaging.extensions.bottomToUp
+import com.jaya.app.packaging.extensions.screenHeight
+import com.jaya.app.packaging.extensions.screenWidth
+import com.jaya.app.packaging.extensions.upToBottom
+import com.jaya.app.packaging.presentation.ui.custom_view.PlantDropdown
+import com.jaya.app.packaging.presentation.ui.custom_view.ShiftDropdown
 import com.jaya.app.packaging.presentation.viewModels.DashboardViewModel
 import com.jaya.app.packaging.ui.theme.AppBarYellow
 import com.jaya.app.packaging.ui.theme.SplashGreen
@@ -90,7 +89,7 @@ fun HomePage(
         ) { padding ->
 
             Column(
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize().padding(padding)
             ) {
                 Row(
                     modifier = Modifier
@@ -103,7 +102,7 @@ fun HomePage(
                         modifier = Modifier
                             .wrapContentSize()
                             .align(Alignment.CenterVertically)
-                            .padding(start = 20.dp),
+                            .padding(start = 10.dp),
                         fontSize = 18.sp,
                         color = Color.Gray,
                         //textAlign =
@@ -113,41 +112,65 @@ fun HomePage(
                             .fillMaxWidth()
                             .fillMaxHeight()
                             .align(Alignment.CenterVertically),
-                        contentAlignment = Alignment.TopEnd
+                        contentAlignment = Alignment.Center
                     ) {
-                        Row(
+                        Row(verticalAlignment = Alignment.CenterVertically,
                             modifier = Modifier
                                 .wrapContentSize()
-                                .padding(top = 15.dp, end = 20.dp)
+                                .padding(end = 15.dp, top = 7.dp, bottom = 7.dp)
                         ) {
-                            Text(
-                                text = "Plant: ${viewModel.packagingPlant.value}",
-                                modifier = Modifier
-                                    .wrapContentSize()
-                                    //.align(Alignment.CenterVertically)
-                                    .padding(end = 7.dp),
-                                fontSize = 16.sp,
-                                color = Color.Red,
-
-                                //textAlign =
-                            )
-                            Divider(
-                                color = Color.LightGray,
-                                modifier = Modifier
-                                    .padding(bottom = 10.dp)
-                                    .fillMaxHeight()  //fill the max height
-                                    .width(1.dp)
-                            )
-                            Text(
-                                text = "Shift: ${viewModel.packagingShift.value}",
-                                modifier = Modifier
-                                    .wrapContentSize()
-                                    //.align(Alignment.CenterVertically)
-                                    .padding(start = 7.dp),
-                                fontSize = 16.sp,
-                                color = SplashGreen,
-                                //textAlign =
-                            )
+                            Row(modifier = Modifier.weight(1f).padding(start = 5.dp),verticalAlignment = Alignment.CenterVertically,) {
+                                PlantDropdown(
+                                    Color.LightGray,
+                                    Color.Red,
+                                  //  viewModel,
+                                    false,
+                                    listOf("Plant: A", "Plant: B", "Plant: C", "Plant: D"),
+                                    onSelect = {
+                                        //  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                                        //viewModel.selectedPincode.value = it
+                                    })
+                            }
+//                            Text(
+//                                text = "Plant: ${viewModel.packagingPlant.value}",
+//                                modifier = Modifier
+//                                    .wrapContentSize()
+//                                    //.align(Alignment.CenterVertically)
+//                                    .padding(end = 7.dp),
+//                                fontSize = 16.sp,
+//                                color = Color.Red,
+//
+//                                //textAlign =
+//                            )
+//                            Divider(
+//                                color = Color.LightGray,
+//                                modifier = Modifier
+//                                    .padding(bottom = 10.dp)
+//                                    .fillMaxHeight()  //fill the max height
+//                                    .width(1.dp)
+//                            )
+//                            Text(
+//                                text = "Shift: ${viewModel.packagingShift.value}",
+//                                modifier = Modifier
+//                                    .wrapContentSize()
+//                                    //.align(Alignment.CenterVertically)
+//                                    .padding(start = 7.dp),
+//                                fontSize = 16.sp,
+//                                color = SplashGreen,
+//                                //textAlign =
+//                            )
+                            Row(modifier = Modifier.weight(1f).padding(start = 7.dp),verticalAlignment = Alignment.CenterVertically,) {
+                                ShiftDropdown(
+                                    // viewModel,
+                                    Color.LightGray,
+                                    SplashGreen,
+                                    false,
+                                    listOf("Shift: 1", "Shift: 2", "Shift: 3", "Shift: 4"),
+                                    onSelect = {
+                                        //  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                                        //viewModel.selectedPincode.value = it
+                                    })
+                            }
                         }
 
                     }
@@ -202,13 +225,8 @@ fun HomePage(
                                             bottom = 15.dp
                                         )
                                         .clickable {
-                                            Toast
-                                                .makeText(
-                                                    context,
-                                                    "hello$index",
-                                                    Toast.LENGTH_SHORT
-                                                )
-                                                .show()
+                                            //Toast.makeText(context,"hello$index",Toast.LENGTH_SHORT).show()
+
                                         },
                                     shape = RoundedCornerShape(8.dp),
                                     border = BorderStroke(1.dp, Color.LightGray),

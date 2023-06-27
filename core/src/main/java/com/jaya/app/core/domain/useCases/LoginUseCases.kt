@@ -28,7 +28,7 @@ class LoginUseCases @Inject constructor(
                     when (status) {
                         true -> {
                             if (isUser) {
-                                emit(Data(type = EmitType.BackendSuccess, value ="$message \n  otp=$otp"))
+                                emit(Data(type = EmitType.BackendSuccess, value ="$message \n  OTP=$otp"))
                                 emit(Data(type = EmitType.Navigate, value = Destination.Otp))
                             } else {
                                 emit(Data(type = EmitType.BackendError, value =message))

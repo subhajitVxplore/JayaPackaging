@@ -2,7 +2,6 @@ package com.jaya.app.packaging.presentation.ui.screen
 
 import android.app.TimePickerDialog
 import android.os.CountDownTimer
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -24,8 +23,6 @@ import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -55,8 +52,10 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jaya.app.packaging.R
-import com.jaya.app.packaging.presentation.extensions.screenWidth
+import com.jaya.app.packaging.extensions.screenWidth
+import com.jaya.app.packaging.presentation.ui.custom_view.PlantDropdown
 import com.jaya.app.packaging.presentation.ui.custom_view.ProductsDropdown
+import com.jaya.app.packaging.presentation.ui.custom_view.ShiftDropdown
 import com.jaya.app.packaging.presentation.viewModels.AddProductViewModel
 import com.jaya.app.packaging.presentation.viewModels.BaseViewModel
 import com.jaya.app.packaging.ui.theme.AppBarYellow
@@ -65,12 +64,6 @@ import com.jaya.app.packaging.ui.theme.SplashGreen
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import okhttp3.MediaType
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import org.json.JSONObject
-import java.io.File
 import java.util.Calendar
 
 
@@ -89,26 +82,32 @@ fun AddProductScreen(
 //=====================================================================================
         val startContext = LocalContext.current
         val startCalendar = Calendar.getInstance()
-        val startHour = startCalendar[Calendar.HOUR_OF_DAY]
+        // val startHour = startCalendar[Calendar.HOUR_OF_DAY]
+        val startHour = startCalendar[Calendar.HOUR]
         val startMinute = startCalendar[Calendar.MINUTE]
+        val startAmPm = if (startCalendar.get(Calendar.AM_PM) == 0) "AM " else "PM "
         val startTimePickerDialog = TimePickerDialog(
             startContext,
             { _, startHour: Int, startMinute: Int ->
-                viewModel.startTimeSelected.value = "$startHour:$startMinute"
+                viewModel.startTimeSelected.value = "$startHour:$startMinute$startAmPm"
             }, startHour, startMinute, false
         )
 //====================================================================================
 
         val endContext = LocalContext.current
         val endCalendar = Calendar.getInstance()
-        val endHour = endCalendar[Calendar.HOUR_OF_DAY]
+        // val endHour = endCalendar[Calendar.HOUR_OF_DAY]
+        val endHour = endCalendar[Calendar.HOUR]
         val endMinute = endCalendar[Calendar.MINUTE]
+        val endAmPm = if (endCalendar.get(Calendar.AM_PM) == 0) "AM " else "PM "
         val endTimePickerDialog = TimePickerDialog(
             endContext,
             { _, endHour: Int, endMinute: Int ->
                 // if ((startHour>=endHour)&&(startMinute>endMinute)) {
-                if ((endHour >= startHour) && (endMinute > startMinute)) {
-                    viewModel.endTimeSelected.value = "$endHour:$endMinute"
+                if ((endHour == startHour) and (endMinute > startMinute)) {
+                    viewModel.endTimeSelected.value = "$endHour:$endMinute$endAmPm"
+                } else if ((endHour > startHour)) {
+                    viewModel.endTimeSelected.value = "$endHour:$endMinute$endAmPm"
                 } else {
                     Toast.makeText(context, "Invalid End Time", Toast.LENGTH_SHORT).show()
                 }
@@ -120,6 +119,7 @@ fun AddProductScreen(
         Column(
             modifier = Modifier.fillMaxSize()
         ) {
+
 
             Row(
                 modifier = Modifier
@@ -163,7 +163,42 @@ fun AddProductScreen(
             ) {
 
                 Spacer(modifier = Modifier.height(10.dp))
+                Row(
+                    modifier = Modifier
+                        .padding(horizontal = 20.dp, vertical = 5.dp)
+                        .wrapContentSize()
+                ) {
 
+                    Row(modifier = Modifier.weight(1f)) {
+                        PlantDropdown(
+                            Color.Gray,
+                            Color.DarkGray,
+                           // viewModel,
+                            false,
+                            listOf("Plant: A", "Plant: B", "Plant: C", "Plant: D"),
+                            onSelect = {
+                                //  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                                //viewModel.selectedPincode.value = it
+                            })
+                    }
+
+                    Spacer(modifier = Modifier.width(width = 10.dp))
+
+                    Row(modifier = Modifier.weight(1f)) {
+                        ShiftDropdown(
+                            Color.Gray,
+                            Color.DarkGray,
+                           // viewModel,
+                            false,
+                            listOf("Shift: 1", "Shift: 2", "Shift: 3", "Shift: 4"),
+                            onSelect = {
+                                //  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                                //viewModel.selectedPincode.value = it
+                            })
+                    }
+
+
+                }//parentrow
                 OutlinedTextField(
                     value = viewModel.productName.value,
                     onValueChange = { viewModel.productName.value = it },
@@ -347,16 +382,23 @@ fun AddProductScreen(
                             viewModel.onUploadVideoToVideoCapture()
                         },
                         colors = ButtonDefaults.buttonColors(colorResource(R.color.addBtnGreenColor)),
-                        modifier = Modifier.wrapContentSize().padding( end = 10.dp),
+                        modifier = Modifier
+                            .wrapContentSize()
+                            .padding(end = 10.dp),
                         //enabled = true,
                         shape = RoundedCornerShape(5.dp),
                     ) {
                         Text(
                             text = "Add",
                             color = Color.White,
-                            modifier = Modifier.padding(start = 10.dp,end = 5.dp)
+                            modifier = Modifier.padding(start = 10.dp, end = 5.dp)
                         )
-                        Icon(painterResource(id = R.drawable.video_cam_add_btn), tint = Color.White, contentDescription = "",modifier = Modifier.padding( end = 8.dp))
+                        Icon(
+                            painterResource(id = R.drawable.video_cam_add_btn),
+                            tint = Color.White,
+                            contentDescription = "",
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
                         //Icon(Icons.Filled.Add, "add")
                     }
 
@@ -439,7 +481,7 @@ fun AddProductScreen(
                                     Image(
                                         painter = painterResource(R.drawable.outline_file_upload_24),
                                         contentDescription = "time button",
-                                         colorFilter = ColorFilter.tint(Color.Gray),
+                                        colorFilter = ColorFilter.tint(Color.Gray),
                                         modifier = Modifier
                                             .height(30.dp)
                                             .align(Alignment.CenterVertically)
@@ -590,15 +632,15 @@ fun AddProductScreen(
 
                                 viewModel.addProduct()
 
-/*                                viewModel.submitPackingDetails(
-                                    viewModel.productName.value,
-                                    viewModel.packingName.value,
-                                    viewModel.batchNumber.value,
-                                    viewModel.selectedProduct.value,
-                                    viewModel.startTimeSelected.value,
-                                    viewModel.endTimeSelected.value,
-                                    baseViewModel.videoMultipartList.toList()
-                                )*/
+                                /*                                viewModel.submitPackingDetails(
+                                                                    viewModel.productName.value,
+                                                                    viewModel.packingName.value,
+                                                                    viewModel.batchNumber.value,
+                                                                    viewModel.selectedProduct.value,
+                                                                    viewModel.startTimeSelected.value,
+                                                                    viewModel.endTimeSelected.value,
+                                                                    baseViewModel.videoMultipartList.toList()
+                                                                )*/
 
                                 val timer = object : CountDownTimer(5000, 1000) {
                                     override fun onTick(millisUntilFinished: Long) {

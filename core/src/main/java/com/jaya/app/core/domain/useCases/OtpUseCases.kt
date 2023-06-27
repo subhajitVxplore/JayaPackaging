@@ -68,7 +68,7 @@ class OtpUseCases @Inject constructor(
                     when (status) {
                         true -> {
                             if (isUser) {
-                                emit(Data(type = EmitType.BackendSuccess, value ="otp=$otp"))
+                                emit(Data(type = EmitType.BackendSuccess, value ="OTP=$otp"))
                             } else {
                                 emit(Data(type = EmitType.BackendError, value =message))
                             }
