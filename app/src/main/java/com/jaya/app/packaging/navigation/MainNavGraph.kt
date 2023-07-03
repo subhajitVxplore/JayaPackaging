@@ -11,6 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import com.example.core.utils.NavigationIntent
 import com.jaya.app.core.common.Destination
+import com.jaya.app.packaging.presentation.ui.screen.AddPackingDetailsScreen
 import com.jaya.app.packaging.presentation.ui.screen.AddProductScreen
 import com.jaya.app.packaging.presentation.ui.screen.DashboardScreen
 import com.jaya.app.packaging.presentation.ui.screen.LoginScreen
@@ -58,6 +59,11 @@ fun MainNavGraph(
         composable(destination = Destination.AddProduct) {
             AddProductScreen(baseViewModel)
         }
+         composable(destination = Destination.AddPackingDetails) {
+             AddPackingDetailsScreen(baseViewModel)
+        }
+
+
         composable(destination = Destination.CaptureVideo) {
             VideoCaptureScreen(baseViewModel)
         }

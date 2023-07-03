@@ -92,7 +92,7 @@ fun AddProductScreen(
                 viewModel.startTimeSelected.value = "$startHour:$startMinute$startAmPm"
             }, startHour, startMinute, false
         )
-//====================================================================================
+//-------------------------------------------------------------------------------------
 
         val endContext = LocalContext.current
         val endCalendar = Calendar.getInstance()
@@ -113,7 +113,7 @@ fun AddProductScreen(
                 }
             }, endHour, endMinute, false
         )
-//===================================================================================
+//=====================================================================================
 
 
         Column(
@@ -170,16 +170,16 @@ fun AddProductScreen(
                 ) {
 
                     Row(modifier = Modifier.weight(1f)) {
-                        PlantDropdown(
-                            Color.Gray,
-                            Color.DarkGray,
-                           // viewModel,
-                            false,
-                            listOf("Plant: A", "Plant: B", "Plant: C", "Plant: D"),
-                            onSelect = {
-                                //  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                                //viewModel.selectedPincode.value = it
-                            })
+//                        PlantDropdown(
+//                            Color.Gray,
+//                            Color.DarkGray,
+//                           // viewModel,
+//                            false,
+//                            listOf("Plant: A", "Plant: B", "Plant: C", "Plant: D"),
+//                            onSelect = {
+//                                //  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+//                                //viewModel.selectedPincode.value = it
+//                            })
                     }
 
                     Spacer(modifier = Modifier.width(width = 10.dp))

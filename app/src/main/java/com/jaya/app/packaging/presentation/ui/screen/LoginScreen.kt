@@ -15,10 +15,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
@@ -34,6 +39,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -88,26 +95,38 @@ fun LoginScreen(
                     color = Color.DarkGray
                 )
 
-//----------------------------------------------------------------------------------------------------------------
+                //----------------------------------------------------------------------------------------------------------------
                 fun String.isValidEmail(): Boolean {
-                    return !TextUtils.isEmpty(this) && android.util.Patterns.EMAIL_ADDRESS.matcher(this)
+                    return !TextUtils.isEmpty(this) && android.util.Patterns.EMAIL_ADDRESS.matcher(
+                        this
+                    )
                         .matches()
                 }
 //----------------------------------------------------------------------------------------------------------------
 
                 OutlinedTextField(
                     value = viewModel.emailText.value,
-                   // onValueChange = { viewModel.emailText.value = it },
+                    // onValueChange = { viewModel.emailText.value = it },
                     onValueChange = {
                         viewModel.emailText.value = it
-                        viewModel.color.value= Color.Gray
+                        viewModel.emailFieldcolor.value = Color.Gray
                         if (viewModel.emailText.value.isValidEmail())
-                            viewModel.color.value= SplashGreen
-                                    },
+                            viewModel.emailFieldcolor.value = SplashGreen
+                    },
                     //label = { Text("your mobile number") },
-                    placeholder = { Text("Enter your email Id") },
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.outline_email_icon),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .height(32.dp)
+                                .width(32.dp),
+                            tint = Color.LightGray
+                        )
+                    },
+                    placeholder = { Text("Enter your email Id", color = Color.Gray) },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
-                        focusedBorderColor = viewModel.color.value,
+                        focusedBorderColor = viewModel.emailFieldcolor.value,
                         unfocusedBorderColor = Color.Gray
                     ),
                     modifier = Modifier
@@ -120,31 +139,103 @@ fun LoginScreen(
                         keyboardType = KeyboardType.Email
                     ),
                 )
+                OutlinedTextField(
+                    value = viewModel.passwordText.value,
+                    // onValueChange = { viewModel.passwordText.value = it },
+                    onValueChange = {
+                        if (it.length<20) viewModel.passwordText.value = it
+                        viewModel.passwordFieldcolor.value = Color.Gray
+                        if (!viewModel.passwordText.value.isNullOrEmpty())
+                            viewModel.passwordFieldcolor.value = SplashGreen
+                    },
+                    //label = { Text("your mobile number") },
+                    leadingIcon = {
+                        Icon(
+                            painter = painterResource(id = R.drawable.password_lock_icon),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .height(32.dp)
+                                .width(32.dp),
+                            tint = Color.LightGray
+                        )
+                    },
+                    placeholder = { Text("Enter Password", color = Color.Gray) },
+                    colors = TextFieldDefaults.outlinedTextFieldColors(
+                        focusedBorderColor = viewModel.passwordFieldcolor.value,
+                        unfocusedBorderColor = Color.Gray
+                    ),
+                    modifier = Modifier
+                        .focusRequester(focusRequester)
+                        .fillMaxWidth()
+                        .padding(horizontal = 10.dp, vertical = 5.dp),
+                    singleLine = true,
+                    visualTransformation = if (viewModel.showHidepasswordText.value) VisualTransformation.None else PasswordVisualTransformation(),
+                    keyboardOptions = KeyboardOptions(
+                        imeAction = ImeAction.Done,
+                        keyboardType = KeyboardType.Password
+                    ),
+                    trailingIcon = {
+                        if (!viewModel.passwordText.value.isNullOrEmpty())
+                        if (viewModel.showHidepasswordText.value) {
+                            IconButton(onClick = { viewModel.showHidepasswordText.value = false }) {
+                                Icon(
+                                    imageVector = Icons.Filled.Visibility,
+                                    contentDescription = "hide_password"
+                                )
+                            }
+                        } else {
+                            IconButton(
+                                onClick = { viewModel.showHidepasswordText.value = true }) {
+                                Icon(
+                                    imageVector = Icons.Filled.VisibilityOff,
+                                    contentDescription = "show_password"
+                                )
+                            }
+                        }
+                    }
+                )
+
 //LaunchedEffect(true ){viewModel.emailText.value}
 
-val context= LocalContext.current
-
+                val context = LocalContext.current
 
                 Button(
                     onClick = {
-                     //   Toast.makeText(context, "continue", Toast.LENGTH_SHORT).show()
+                        //   Toast.makeText(context, "continue", Toast.LENGTH_SHORT).show()
                         //viewModel.loader.value=true
 
-                        if (!viewModel.emailText.value.isValidEmail()){
-                            viewModel.color.value= Color.Red
+                        if (!viewModel.emailText.value.isValidEmail()) {
+                            viewModel.emailFieldcolor.value = Color.Red
                             focusRequester.requestFocus()
-                            Toast.makeText(context, "Please enter a valid email", Toast.LENGTH_SHORT).show()
-                        }else{
-                            viewModel.loadingg.value=true
-                            baseViewModel.storedLoginEmail.value=viewModel.emailText.value
-                            viewModel.getOtp()
+                            Toast.makeText(
+                                context,
+                                "Please enter a valid email !!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }else if (viewModel.passwordText.value.isNullOrEmpty()){
+                            viewModel.passwordFieldcolor.value = Color.Red
+                            focusRequester.requestFocus()
+                            Toast.makeText(
+                                context,
+                                "Please enter valid password !!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }else {
+                            viewModel.loadingg.value = true
+                            baseViewModel.storedLoginEmail.value = viewModel.emailText.value
+                            //viewModel.getOtp()
+                            viewModel.login()
 
                             val timer = object : CountDownTimer(5000, 1000) {
                                 override fun onTick(millisUntilFinished: Long) {
                                     // Toast.makeText(context, "${viewModel.timerX.value}", Toast.LENGTH_SHORT).show()
                                 }
                                 override fun onFinish() {
-                                    Toast.makeText(context, "${viewModel.successMessage.value}", Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        context,
+                                        "${viewModel.successMessage.value}",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             }
                             timer.start()
@@ -161,23 +252,21 @@ val context= LocalContext.current
                         .height(53.dp),
                     colors = ButtonDefaults.buttonColors(Color.Black)
                 ) {
-                    if (!viewModel.loadingg.value){
+                    if (!viewModel.loadingg.value) {
                         Text(
                             text = "Get OTP Verification",
                             color = Color.White,
                             fontSize = 18.sp,
                         )
-                    }else{
+                    } else {
                         CircularProgressIndicator(color = Color.White)
                     }
-
-
                 }
-
             }
-            Box(modifier = Modifier.fillMaxSize(),
+            Box(
+                modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.BottomStart
-            ){
+            ) {
                 Text(
                     text = "All Rights Reserved by Jaya Industries Pvt Ltd",
                     fontSize = 13.sp,
@@ -191,12 +280,11 @@ val context= LocalContext.current
 
 
     }
- //------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------
 
 }//LoginScreen
 
 //=====================================================================================
-
 
 
 fun isNumeric(toCheck: String): Boolean {

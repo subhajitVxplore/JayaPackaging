@@ -1,6 +1,7 @@
 package com.jaya.app.packaging.presentation.viewModels
 
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -34,7 +35,7 @@ class DashboardViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    val dataLoading = SavableMutableState(UiData.StateApiLoading,savedStateHandle,false)
+    val dataLoading = SavableMutableState(UiData.StateApiLoading, savedStateHandle, false)
     var userName = mutableStateOf("")
     var userId = mutableStateOf("")
     var emailId = mutableStateOf("")
@@ -44,9 +45,28 @@ class DashboardViewModel @Inject constructor(
     private val _packagingList = MutableStateFlow(emptyList<Packaging>())
     val packagingList = _packagingList.asStateFlow()
     val dashboardBack = mutableStateOf<MyDialog?>(null)
+
+
+    var selectedShiftBtnStatus = mutableStateOf(false)
+    var selectedShiftBtnName = mutableStateOf("false")
+
+    var isShiftAselected = mutableStateOf(false)
+    var shiftABtnBackColor = mutableStateOf(Color.White)
+    var shiftATxtColor = mutableStateOf(Color.DarkGray)
+
+    var isShiftBselected = mutableStateOf(false)
+    var shiftBBtnBackColor = mutableStateOf(Color.White)
+    var shiftBTxtColor = mutableStateOf(Color.DarkGray)
+
+    var isShiftCselected = mutableStateOf(false)
+    var shiftCBtnBackColor = mutableStateOf(Color.White)
+    var shiftCTxtColor = mutableStateOf(Color.DarkGray)
+
+
     init {
         getUserDetails()
         getPackagingList()
+        //isShiftAselected.value=true
     }
 
     fun onBackDialog() {
@@ -60,6 +80,7 @@ class DashboardViewModel @Inject constructor(
         )
         handleDialogEvents()
     }
+
     private fun handleDialogEvents() {
         dashboardBack.value?.onConfirm = {
 
@@ -131,16 +152,19 @@ class DashboardViewModel @Inject constructor(
                             packagingShift.value = it
                         }
                     }
+
                     EmitType.PACKAGING_SHIFT -> {
                         it.value?.castValueToRequiredTypes<String>()?.let {
                             packagingPlant.value = it
                         }
                     }
+
                     EmitType.PACKAGING_LIST -> {
-                        it.value?.castListToRequiredTypes<Packaging>()?.let { packaging->
+                        it.value?.castListToRequiredTypes<Packaging>()?.let { packaging ->
                             _packagingList.update { packaging }
                         }
                     }
+
                     EmitType.NetworkError -> {
                         it.value?.apply {
                             castValueToRequiredTypes<String>()?.let {
@@ -148,6 +172,7 @@ class DashboardViewModel @Inject constructor(
                             }
                         }
                     }
+
                     EmitType.Loading -> {
                         it.value?.apply {
                             castValueToRequiredTypes<Boolean>()?.let {
@@ -165,6 +190,15 @@ class DashboardViewModel @Inject constructor(
         appNavigator.tryNavigateTo(
             route = Destination.AddProduct(),
             // popUpToRoute = Destination.Dashboard(),
+            isSingleTop = true,
+            inclusive = true
+        )
+    }
+
+    fun onHomePageToAddPackingDetails() {
+        appNavigator.tryNavigateTo(
+            route = Destination.AddPackingDetails(),
+            popUpToRoute = Destination.Dashboard(),
             isSingleTop = true,
             inclusive = true
         )

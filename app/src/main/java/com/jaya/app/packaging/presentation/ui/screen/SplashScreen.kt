@@ -57,7 +57,7 @@ fun SplashScreen(
 ) {
     Column(
         modifier = Modifier
-            .background(SplashGreen)
+            .background(AppBarYellow)
             .fillMaxWidth()
             .fillMaxHeight()
             .padding(16.dp),

@@ -18,12 +18,15 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -35,6 +38,7 @@ import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.jaya.app.packaging.R
@@ -72,7 +76,6 @@ fun HomePage(
 //                            .show()
                     },
                     modifier = Modifier.size(55.dp),
-
                     //backgroundColor = WhiteGray,
                     contentColor = Color.White,
                     containerColor = SplashGreen,
@@ -93,103 +96,154 @@ fun HomePage(
             ) {
                 Row(
                     modifier = Modifier
+                        .padding(horizontal = 15.dp, vertical = 10.dp)
                         .fillMaxWidth()
-                        .height(50.dp)
+                        .wrapContentHeight()
                 ) {
 
-                    Text(
-                        text = "Today Status",
-                        modifier = Modifier
-                            .wrapContentSize()
-                            .align(Alignment.CenterVertically)
-                            .padding(start = 10.dp),
-                        fontSize = 18.sp,
-                        color = Color.Gray,
-                        //textAlign =
-                    )
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .fillMaxHeight()
-                            .align(Alignment.CenterVertically),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .wrapContentSize()
-                                .padding(end = 15.dp, top = 7.dp, bottom = 7.dp)
-                        ) {
-                            Row(modifier = Modifier.weight(1f).padding(start = 5.dp),verticalAlignment = Alignment.CenterVertically,) {
-                                PlantDropdown(
-                                    Color.LightGray,
-                                    Color.Red,
-                                  //  viewModel,
-                                    false,
-                                    listOf("Plant: A", "Plant: B", "Plant: C", "Plant: D"),
-                                    onSelect = {
-                                        //  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                                        //viewModel.selectedPincode.value = it
-                                    })
-                            }
-//                            Text(
-//                                text = "Plant: ${viewModel.packagingPlant.value}",
-//                                modifier = Modifier
-//                                    .wrapContentSize()
-//                                    //.align(Alignment.CenterVertically)
-//                                    .padding(end = 7.dp),
-//                                fontSize = 16.sp,
-//                                color = Color.Red,
-//
-//                                //textAlign =
-//                            )
-//                            Divider(
-//                                color = Color.LightGray,
-//                                modifier = Modifier
-//                                    .padding(bottom = 10.dp)
-//                                    .fillMaxHeight()  //fill the max height
-//                                    .width(1.dp)
-//                            )
-//                            Text(
-//                                text = "Shift: ${viewModel.packagingShift.value}",
-//                                modifier = Modifier
-//                                    .wrapContentSize()
-//                                    //.align(Alignment.CenterVertically)
-//                                    .padding(start = 7.dp),
-//                                fontSize = 16.sp,
-//                                color = SplashGreen,
-//                                //textAlign =
-//                            )
-                            Row(modifier = Modifier.weight(1f).padding(start = 7.dp),verticalAlignment = Alignment.CenterVertically,) {
-                                ShiftDropdown(
-                                    // viewModel,
-                                    Color.LightGray,
-                                    SplashGreen,
-                                    false,
-                                    listOf("Shift: 1", "Shift: 2", "Shift: 3", "Shift: 4"),
-                                    onSelect = {
-                                        //  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                                        //viewModel.selectedPincode.value = it
-                                    })
-                            }
-                        }
+                    OutlinedButton(
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(5.dp),
+                        onClick = {
+                            viewModel.isShiftAselected.value = true
+                            viewModel.shiftABtnBackColor.value= SplashGreen
+                            viewModel.shiftATxtColor.value= Color.White
 
+                            viewModel.isShiftBselected.value = false
+                            viewModel.shiftBBtnBackColor.value= Color.White
+                            viewModel.shiftBTxtColor.value= Color.DarkGray
+
+                            viewModel.isShiftCselected.value = false
+                            viewModel.shiftCBtnBackColor.value= Color.White
+                            viewModel.shiftCTxtColor.value= Color.DarkGray
+                        },
+                        colors = ButtonDefaults.buttonColors(viewModel.shiftABtnBackColor.value),
+                        border = BorderStroke(0.5.dp, Color.LightGray),
+                        elevation = ButtonDefaults.buttonElevation(20.dp)
+
+                    ) {
+                        Text(
+                            text = "Shift A",
+                            color = viewModel.shiftATxtColor.value,
+                            fontSize = 15.sp
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(5.dp))
+
+                    OutlinedButton(
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(5.dp),
+                        onClick = {
+                            viewModel.isShiftBselected.value = true
+                            viewModel.shiftBBtnBackColor.value= SplashGreen
+                            viewModel.shiftBTxtColor.value= Color.White
+
+                            viewModel.isShiftAselected.value = false
+                            viewModel.shiftABtnBackColor.value= Color.White
+                            viewModel.shiftATxtColor.value= Color.DarkGray
+
+                            viewModel.isShiftCselected.value = false
+                            viewModel.shiftCBtnBackColor.value= Color.White
+                            viewModel.shiftCTxtColor.value= Color.DarkGray
+                        },
+                        colors = ButtonDefaults.buttonColors(viewModel.shiftBBtnBackColor.value),
+                        border = BorderStroke(0.5.dp, Color.LightGray),
+                        elevation = ButtonDefaults.buttonElevation(20.dp)
+
+                    ) {
+                        Text(
+                            text = "Shift B",
+                            color = viewModel.shiftBTxtColor.value,
+                            fontSize = 15.sp
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(5.dp))
+
+                    OutlinedButton(
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(5.dp),
+                        onClick = {
+                            viewModel.isShiftCselected.value = true
+                            viewModel.shiftCBtnBackColor.value= SplashGreen
+                            viewModel.shiftCTxtColor.value= Color.White
+
+                            viewModel.isShiftBselected.value = false
+                            viewModel.shiftBBtnBackColor.value= Color.White
+                            viewModel.shiftBTxtColor.value= Color.DarkGray
+
+                            viewModel.isShiftAselected.value = false
+                            viewModel.shiftABtnBackColor.value= Color.White
+                            viewModel.shiftATxtColor.value= Color.DarkGray
+                        },
+                        colors = ButtonDefaults.buttonColors(viewModel.shiftCBtnBackColor.value),
+                        border = BorderStroke(0.5.dp, Color.LightGray),
+                        elevation = ButtonDefaults.buttonElevation(20.dp)
+
+                    ) {
+                        Text(
+                            text = "Shift C",
+                            color = viewModel.shiftCTxtColor.value,
+                            fontSize = 15.sp
+                        )
                     }
 
 
                 }
 
-                Divider(color = Color.LightGray, thickness = 0.8.dp)
+                Card(
+                    border = BorderStroke(1.dp, Color.LightGray),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 20.dp),
+                    shape = RoundedCornerShape(5.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    modifier = Modifier.padding(horizontal = 15.dp)
+                        .align(Alignment.CenterHorizontally)
+                        .fillMaxWidth()
+                        .height(60.dp),
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxSize(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .background(AppBarYellow)
+                                .weight(1f)
+                                .fillMaxHeight(),
+                        ) {
+                            Text(
+                                text = "Plant",
+                                color = Color.DarkGray,
+                                fontSize = 17.sp,
+                                modifier = Modifier
+                                    .align(Alignment.CenterVertically)
+                                    .padding(20.dp),
+                                textAlign = TextAlign.Center,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                        Row(
+                            modifier = Modifier
 
-                Text(
-                    text = "Recent Packaging",
-                    modifier = Modifier
-                        .wrapContentSize()
-                        // .align(Alignment.CenterVertically)
-                        .padding(start = 17.dp, top = 20.dp),
-                    fontSize = 17.sp,
-                    color = Color.Gray,
-                    //textAlign =
-                )
+                                .weight(1f)
+                                .fillMaxHeight(),
+                        ) {
+                            PlantDropdown(
+                                //viewModel,
+                                false,
+                                listOf("Plant1", "Plant2", "Plant3", "Plant4"),
+                                onSelect = {
+                                    //baseViewModel.getStartedSelectedPlant.value=it
+                                    // Toast.makeText(context, "${baseViewModel.getStartedSelectedPlant.value}", Toast.LENGTH_SHORT).show()
+                                    //viewModel.selectedPincode.value = it
+                                })
+                        }
+                    }//row
+                }//card
+
+
                 AnimatedContent(
                     targetState = viewModel.dataLoading.value,
                     transitionSpec = {
@@ -203,7 +257,7 @@ fun HomePage(
                     if (!it) {
 
                         Column(
-                            modifier = Modifier
+                            modifier = Modifier.padding(top = 15.dp)
                                 .fillMaxSize()
                                 .verticalScroll(rememberScrollState())
                         ) {
@@ -226,123 +280,90 @@ fun HomePage(
                                         )
                                         .clickable {
                                             //Toast.makeText(context,"hello$index",Toast.LENGTH_SHORT).show()
-
+                                            viewModel.onHomePageToAddPackingDetails()
                                         },
                                     shape = RoundedCornerShape(8.dp),
                                     border = BorderStroke(1.dp, Color.LightGray),
-
+                                    elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
                                     ) {
-
-
                                     Column(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .background(Color.White)
-                                            .wrapContentSize()
+                                            .height(200.dp)
                                     ) {
 
 
-                                        Row(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .padding(15.dp)
-                                        ) {
                                             Column(modifier = Modifier.weight(1f)) {
-                                                Text(
-                                                    text = "${packaging.product_name}",
-                                                    modifier = Modifier
-                                                        .wrapContentSize(),
-                                                    fontSize = 18.sp,
-                                                    color = Color.DarkGray,
-                                                    //textAlign =
-                                                )
-                                                Row() {
+
+                                                Row(modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 20.dp)
+                                                    .fillMaxWidth()
+                                                    .wrapContentHeight()
+                                                    ) {
                                                     Text(
-                                                        text = "Batch Number: ",
-                                                        modifier = Modifier
-                                                            .wrapContentSize(),
-                                                        fontSize = 12.sp,
-                                                        color = Color.DarkGray,
-                                                        //textAlign =
-                                                    )
-                                                    Text(
-                                                        text = "${packaging.batch_no}",
-                                                        modifier = Modifier
-                                                            .wrapContentSize(),
-                                                        fontSize = 12.sp,
+                                                        text = "Plant 1 - Shift A",
+                                                        modifier = Modifier.weight(1f),
+                                                         //   .wrapContentSize(),
+                                                        fontSize = 18.sp,
                                                         color = Color.DarkGray,
                                                         fontWeight = FontWeight.Bold
-                                                        //textAlign =
+                                                    )
+                                                    Text(
+                                                        text = "02/07/2023",
+                                                        modifier = Modifier
+                                                            .wrapContentSize(),
+                                                        fontSize = 16.sp,
+                                                        color = Color.DarkGray
                                                     )
 
                                                 }
 
-                                                Row() {
+                                                Row(modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp)) {
                                                     Text(
-                                                        text = "Time : ",
+                                                        text = "Mixing Supervisor : ",
                                                         modifier = Modifier
                                                             .wrapContentSize(),
-                                                        fontSize = 9.sp,
+                                                        fontSize = 16.sp,
                                                         color = Color.DarkGray,
                                                         //textAlign =
                                                     )
                                                     Text(
-                                                        text = "${packaging.time_stamp}",
-                                                        modifier = Modifier
-                                                            .wrapContentSize(),
-                                                        fontSize = 9.sp,
+                                                        text = "Suman Sarkar",
+                                                        modifier = Modifier.wrapContentSize(),
+                                                        fontSize = 16.sp,
                                                         color = Color.DarkGray,
                                                         fontWeight = FontWeight.Bold
                                                         //textAlign =
                                                     )
-
+                                                }
+                                                Row(modifier = Modifier.fillMaxWidth().height(50.dp).background(Color.DarkGray)) {
+                                                    Text(
+                                                        text = "Dream Marie",
+                                                        fontSize = 16.sp,
+                                                        color = Color.White,
+                                                        modifier = Modifier.align(Alignment.CenterVertically).padding(start = 20.dp)
+                                                    )
                                                 }
 
-
+                                                Row(modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp)) {
+                                                    Text(
+                                                        text = "Mixing Supervisor : ",
+                                                        modifier = Modifier
+                                                            .wrapContentSize(),
+                                                        fontSize = 16.sp,
+                                                        color = Color.DarkGray,
+                                                        //textAlign =
+                                                    )
+                                                    Text(
+                                                        text = "-",
+                                                        modifier = Modifier.wrapContentSize(),
+                                                        fontSize = 16.sp,
+                                                        color = Color.DarkGray,
+                                                        fontWeight = FontWeight.Bold
+                                                        //textAlign =
+                                                    )
+                                                }
                                             }
-
-
-                                            Image(
-                                                painter = painterResource(id = R.drawable.jaya_biscuits),
-                                                contentDescription = "biscuitImage",
-                                                modifier = Modifier
-                                                    .height(65.dp)
-                                                    .width(65.dp)
-                                                    .align(Alignment.CenterVertically)
-                                                    .padding(8.dp)
-                                                //.padding(70.dp, 0.dp, 0.dp, 0.dp)
-                                            )
-
-                                        }//row
-
-                                        Row(
-                                            modifier = Modifier
-                                                .fillMaxWidth()
-                                                .height(40.dp)
-                                                .background(AppBarYellow)
-                                        ) {
-
-                                            Text(
-                                                text = "View Details",
-                                                color = Color.DarkGray,
-                                                fontSize = 17.sp,
-                                                modifier = Modifier
-                                                    .align(Alignment.CenterVertically)
-                                                    .weight(1f)
-                                                    .padding(start = 15.dp)
-                                            )
-
-                                            // Image(painter = painterResource(id = androidx.compose.foundation.layout.R.drawable.ic_baseline_keyboard_backspace_24),
-                                            Image(painter = painterResource(id = R.drawable.forward_arrow),
-                                                contentDescription = "forward Arrow button",
-                                                modifier = Modifier
-                                                    .width(55.dp)
-                                                    .align(Alignment.CenterVertically)
-                                                    .padding(horizontal = 15.dp),
-                                                colorFilter = ColorFilter.tint(Color.Black)
-                                            )
-                                        }
-
 
                                     }//column
 
@@ -377,4 +398,5 @@ fun HomePage(
 
     }
 }
+
 

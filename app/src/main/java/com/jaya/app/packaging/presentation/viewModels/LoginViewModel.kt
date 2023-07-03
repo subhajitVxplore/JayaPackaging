@@ -10,6 +10,7 @@ import com.example.core.utils.AppNavigator
 import com.jaya.app.core.common.Destination
 import com.jaya.app.core.common.EmitType
 import com.jaya.app.core.domain.useCases.LoginUseCases
+import com.jaya.app.core.domain.useCases.OtpUseCases
 import com.jaya.app.core.helpers.AppStore
 import com.jaya.app.packaging.extensions.castValueToRequiredTypes
 import com.jaya.app.packaging.helpers_impl.SavableMutableState
@@ -25,15 +26,19 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val appNavigator: AppNavigator,
     private val loginUseCases: LoginUseCases,
+    private val otpUseCases: OtpUseCases,
     private val pref: AppStore,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     val loader = SavableMutableState(UiData.LOADER, savedStateHandle, false)
     var emailText = mutableStateOf("")
+    var passwordText = mutableStateOf("")
+    var showHidepasswordText = mutableStateOf(false)
     var errorMessage = mutableStateOf("")
     var successMessage = mutableStateOf("")
-    var color = mutableStateOf(Color.Gray)
+    var emailFieldcolor = mutableStateOf(Color.Gray)
+    var passwordFieldcolor = mutableStateOf(Color.Gray)
     var loadingButton = mutableStateOf(true)
     var loadingg = mutableStateOf(false)
 
@@ -46,6 +51,49 @@ class LoginViewModel @Inject constructor(
     }
 
 
+    fun login() {
+        // viewModelScope.launch {
+        otpUseCases.verifyOtp()
+            .flowOn(Dispatchers.IO)
+            .onEach {
+                when (it.type) {
+
+                    EmitType.BackendSuccess -> {
+                        it.value?.castValueToRequiredTypes<String>()?.let {
+                            successMessage.value = it
+                        }
+                    }
+                    EmitType.BackendError -> {
+                        it.value?.apply {
+                            castValueToRequiredTypes<String>()?.let {
+                                errorMessage.value = it
+                            }
+                        }
+                    }
+                    EmitType.Loading -> {
+                        it.value?.castValueToRequiredTypes<Boolean>()?.let {
+                            loadingButton.value = it
+                        }
+                    }
+                    EmitType.Navigate -> {
+                        it.value?.apply {
+
+                            castValueToRequiredTypes<Destination.NoArgumentsDestination>()?.let { destination ->
+                                appNavigator.tryNavigateTo(
+                                    destination(),
+                                    popUpToRoute = Destination.Otp(),
+                                    isSingleTop = true,
+                                    inclusive = true
+                                )
+                            }
+                        }
+                    }
+
+                    else -> {}
+                }
+            }.launchIn(viewModelScope)
+        // }
+    }
     fun getOtp() {
        // viewModelScope.launch {
             loginUseCases.getOtp()
