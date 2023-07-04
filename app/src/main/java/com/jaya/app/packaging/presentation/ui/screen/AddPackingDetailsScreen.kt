@@ -329,28 +329,12 @@ fun AddPackingDetailsScreen(
                     Button(
                         contentPadding = PaddingValues(0.dp),
                         onClick = {
-                            // viewModel.workersNameList.add("")
-                              //    viewModel.packingLabourList.add("Sujit Saha")
                             viewModel.showWorkersNameDialog.value = true
-                           // viewModel.showWorkersNameDialog.value = true
-                            //  if (baseViewModel.mixingPackingTitle.value=="Mixing") baseViewModel.mixingWorkersList.add("") else baseViewModel.packingWorkersList.add("")
-
-//                            focusRequester.freeFocus()
-//                            focusManager.moveFocus(FocusDirection.Down)
-//                            focusRequester.requestFocus()
                         },
                         colors = ButtonDefaults.buttonColors(SplashGreen),
                         modifier = Modifier.height(55.dp).width(55.dp).align(Alignment.CenterVertically),
-                            //.wrapContentSize(),
-                        //.padding(end = 10.dp),
-                        //enabled = true,
                         shape = RoundedCornerShape(5.dp),
                     ) {
-//                        Text(
-//                            text = "Add",
-//                            color = Color.White,
-//                            modifier = Modifier.padding(start = 10.dp, end = 5.dp)
-//                        )
                         Icon(
                             Icons.Default.Add,
                             tint = Color.White,
@@ -431,7 +415,7 @@ fun AddPackingDetailsScreen(
             ) {
                 if (!viewModel.loadingg.value) {
                     Text(
-                        text = "Submit",
+                        text = "Confirm Now",
                         color = Color.White,
                         fontSize = 20.sp,
                     )

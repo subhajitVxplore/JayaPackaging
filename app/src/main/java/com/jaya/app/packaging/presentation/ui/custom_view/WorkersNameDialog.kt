@@ -75,7 +75,7 @@ fun WorkersNameDialog(
                             style = TextStyle(
                                 fontSize = 15.sp,
                                 fontFamily = FontFamily.Default,
-                               // fontWeight = FontWeight.Bold
+                                // fontWeight = FontWeight.Bold
                             )
                         )
                         Icon(
@@ -120,15 +120,19 @@ fun WorkersNameDialog(
                             keyboardType = KeyboardType.Text
                         ),
                     )
-val context= LocalContext.current
+                    val context = LocalContext.current
                     Button(
                         onClick = {
-                            if (viewModel.workersNameTxt.value.isNullOrEmpty()){
-                                Toast.makeText(context, "Please Enter Worker's Name", Toast.LENGTH_SHORT).show()
-                            }else{
-                               viewModel.packingLabourList.add(viewModel.workersNameTxt.value)
+                            if (viewModel.workersNameTxt.value.isNullOrEmpty()) {
+                                Toast.makeText(
+                                    context,
+                                    "Please Enter Worker's Name",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                viewModel.packingLabourList.add(viewModel.workersNameTxt.value)
                                 setShowDialog(false)
-                                viewModel.workersNameTxt.value=""
+                                viewModel.workersNameTxt.value = ""
                             }
 
                         },
@@ -138,7 +142,7 @@ val context= LocalContext.current
                             .wrapContentWidth()
                             .padding(top = 10.dp, bottom = 10.dp)
                             .height(45.dp),
-                        colors = ButtonDefaults.buttonColors( SplashGreen)
+                        colors = ButtonDefaults.buttonColors(SplashGreen)
                     ) {
                         Text(
                             text = "Save",

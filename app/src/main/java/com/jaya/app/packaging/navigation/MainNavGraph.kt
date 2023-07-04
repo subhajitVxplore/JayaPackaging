@@ -16,6 +16,8 @@ import com.jaya.app.packaging.presentation.ui.screen.AddProductScreen
 import com.jaya.app.packaging.presentation.ui.screen.DashboardScreen
 import com.jaya.app.packaging.presentation.ui.screen.LoginScreen
 import com.jaya.app.packaging.presentation.ui.screen.OtpScreen
+import com.jaya.app.packaging.presentation.ui.screen.ProductionReportScreen
+import com.jaya.app.packaging.presentation.ui.screen.RepportSubmitSuccessScreen
 import com.jaya.app.packaging.presentation.ui.screen.SplashScreen
 import com.jaya.app.packaging.presentation.ui.screen.VideoCaptureScreen
 import com.jaya.app.packaging.presentation.viewModels.BaseViewModel
@@ -62,7 +64,12 @@ fun MainNavGraph(
          composable(destination = Destination.AddPackingDetails) {
              AddPackingDetailsScreen(baseViewModel)
         }
-
+        composable(destination = Destination.ProductionReport) {
+            ProductionReportScreen(baseViewModel)
+        }
+         composable(destination = Destination.ReportSubmitSuccess) {
+             RepportSubmitSuccessScreen(baseViewModel)
+        }
 
         composable(destination = Destination.CaptureVideo) {
             VideoCaptureScreen(baseViewModel)

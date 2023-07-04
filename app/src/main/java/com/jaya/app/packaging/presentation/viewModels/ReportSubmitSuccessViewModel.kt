@@ -1,9 +1,6 @@
 package com.jaya.app.packaging.presentation.viewModels;
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,7 +28,7 @@ import okhttp3.MultipartBody
 import javax.inject.Inject
 
 @HiltViewModel
-class AddPackingDetailsViewModel @Inject constructor(
+class ReportSubmitSuccessViewModel @Inject constructor(
     private val appNavigator: AppNavigator,
     private val addProductUseCases: AddProductUseCases,
     private val pref: AppStore,
@@ -40,22 +37,9 @@ class AddPackingDetailsViewModel @Inject constructor(
 
     val loader = SavableMutableState(UiData.LOADER, savedStateHandle, false)
     var productName = mutableStateOf("")
-    var packingSupervisorName = mutableStateOf("")
+    var packingName = mutableStateOf("")
     var batchNumber = mutableStateOf("")
     var selectedProduct = mutableStateOf("Choose Product")
-    var selectedPackingMistri = mutableStateOf("Packing Mistri")
-    var selectedPackingOperator = mutableStateOf("Packing Operator")
-    var selectedPackersNumber = mutableStateOf("Packers Number")
-
-    var packingLabourList= mutableStateListOf<String>()
-
-    var showWorkersNameDialog = mutableStateOf(false)
-    var workersNameTxt = mutableStateOf("")
-
-    //var isSuggestionVisible by mutableStateOf(false)
-    var isSuggestionVisible = mutableStateOf(false)
-    var currentSuggestion = mutableStateOf("")
-    var selectedSuggestion = mutableStateOf("")
 
     private val _productTypes = MutableStateFlow(emptyList<ProductType>())
     val productTypes = _productTypes.asStateFlow()
@@ -74,10 +58,6 @@ class AddPackingDetailsViewModel @Inject constructor(
         getProductTypes()
     }
 
-
-    fun openSuggestions() {
-        isSuggestionVisible.value = !isSuggestionVisible.value
-    }
 
     fun onSaveProductDialog() {
         saveDetailsDialog.value = MyDialog(
@@ -108,11 +88,10 @@ class AddPackingDetailsViewModel @Inject constructor(
             inclusive = true
         )
     }
-
-    fun onBack() {
+fun onReportSubmitSuccessToDashboard() {
         appNavigator.tryNavigateTo(
             route = Destination.Dashboard(),
-            popUpToRoute = Destination.AddPackingDetails(),
+              popUpToRoute = Destination.ReportSubmitSuccess(),
             isSingleTop = true,
             inclusive = true
         )

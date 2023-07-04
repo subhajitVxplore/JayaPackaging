@@ -217,7 +217,9 @@ fun BodyContentComponent(
     viewModel: DashboardViewModel,
 ) {
     when (currentScreen) {
-        DrawerAppScreen.Home -> HomePage(openDrawer, viewModel)
+
+        DrawerAppScreen.Home ->if(viewModel.isHomePageShow.value) HomePage(openDrawer, viewModel) else ShiftPlantSelectionPage(openDrawer, viewModel)
+        // DrawerAppScreen.Home -> ShiftPlantSelectionPage(openDrawer, viewModel)
     }
 }
 

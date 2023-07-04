@@ -61,12 +61,39 @@ class DashboardViewModel @Inject constructor(
     var isShiftCselected = mutableStateOf(false)
     var shiftCBtnBackColor = mutableStateOf(Color.White)
     var shiftCTxtColor = mutableStateOf(Color.DarkGray)
+    var uploadProofBtnTxt= mutableStateOf("   Upload Proof")
+    var addProductionInfoBtnTxt= mutableStateOf("   Add Production Info")
+
+    var loadingButton = mutableStateOf(true)
+    var loadingg = mutableStateOf(false)
+
+    var isHomePageShow= mutableStateOf(true)
 
 
     init {
         getUserDetails()
         getPackagingList()
         //isShiftAselected.value=true
+    }
+
+
+
+    fun onHomePageToAddProductInfo() {
+        appNavigator.tryNavigateTo(
+            route = Destination.ProductionReport(),
+            // popUpToRoute = Destination.Dashboard(),
+            isSingleTop = true,
+            inclusive = true
+        )
+    }
+
+    fun onHomePageToReportSubmitSuccess() {
+        appNavigator.tryNavigateTo(
+            route = Destination.ReportSubmitSuccess(),
+            popUpToRoute = Destination.Dashboard(),
+            isSingleTop = true,
+            inclusive = true
+        )
     }
 
     fun onBackDialog() {
