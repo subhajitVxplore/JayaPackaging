@@ -29,6 +29,14 @@ var timerX= mutableStateOf("")
             inclusive = true
         )
     }
+fun onVideoCaptureToDashboard() {
+        appNavigator.tryNavigateTo(
+            route = Destination.Dashboard(),
+            popUpToRoute = Destination.CaptureVideo(),
+            isSingleTop = true,
+            inclusive = true
+        )
+    }
 
 
 

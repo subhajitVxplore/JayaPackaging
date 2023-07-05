@@ -1,5 +1,6 @@
 package com.jaya.app.packaging
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -18,6 +19,9 @@ import com.jaya.app.packaging.navigation.MainNavGraph
 import com.jaya.app.packaging.presentation.viewModels.BaseViewModel
 import com.jaya.app.packaging.ui.theme.JayaPackagingTheme
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
 
 @Suppress("DEPRECATION")
 @AndroidEntryPoint
@@ -48,6 +52,20 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-}
+}//MainActivity
+
+//==================================================================================================
+
+fun Context.createImageFile(): File {
+    // Create an image file name
+    val timeStamp = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+    val imageFileName = "JPEG_" + timeStamp + "_"
+    val image = File.createTempFile(
+        imageFileName, /* prefix */
+        ".jpg", /* suffix */
+        externalCacheDir      /* directory */
+    )
+    return image
+}//Context.createImageFile()
 
 

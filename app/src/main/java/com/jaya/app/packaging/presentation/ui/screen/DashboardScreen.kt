@@ -135,7 +135,8 @@ fun DashboardScreen(
             BodyContentComponent(
                 currentScreen = currentScreen.value,
                 openDrawer = { coroutineScope.launch { drawerState.open() } },
-                viewModel = hiltViewModel()
+                viewModel = hiltViewModel(),
+                baseViewModel
             )
         }
     }
@@ -215,10 +216,11 @@ fun BodyContentComponent(
     currentScreen: DrawerAppScreen,
     openDrawer: () -> Unit,
     viewModel: DashboardViewModel,
+    baseViewModel: BaseViewModel
 ) {
     when (currentScreen) {
 
-        DrawerAppScreen.Home ->if(viewModel.isHomePageShow.value) HomePage(openDrawer, viewModel) else ShiftPlantSelectionPage(openDrawer, viewModel)
+        DrawerAppScreen.Home ->if(viewModel.isHomePageShow.value) HomePage(openDrawer, viewModel,baseViewModel) else ShiftPlantSelectionPage(openDrawer, viewModel)
         // DrawerAppScreen.Home -> ShiftPlantSelectionPage(openDrawer, viewModel)
     }
 }

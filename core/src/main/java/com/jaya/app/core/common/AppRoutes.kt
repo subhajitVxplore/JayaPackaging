@@ -10,4 +10,5 @@ object AppRoutes {
     const val CAPTURE_VIDEO = "capture_video"
     const val PRODUCTION_REPORT = "production_report"
     const val REPORT_SUBMIT_SUCCESS = "report_submit_success"
+    const val FINAL_REPORT = "final_report"
 }

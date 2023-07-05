@@ -244,7 +244,6 @@ fun AddProductScreen(
                     singleLine = true
                 )
 
-
                 val context = LocalContext.current
 
                 ProductsDropdown(

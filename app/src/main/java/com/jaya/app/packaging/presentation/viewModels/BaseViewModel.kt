@@ -18,6 +18,7 @@ class BaseViewModel @Inject constructor(
 
     var videoUriList= mutableStateListOf<Uri>()
     var videoMultipartList= mutableStateListOf<MultipartBody.Part>()
+    var imageMultipartList= mutableStateListOf<MultipartBody.Part>()
     var videoShootTime= mutableStateListOf<String>()
     var storedLoginEmail= mutableStateOf("")
     var versionCode= mutableStateOf(0)

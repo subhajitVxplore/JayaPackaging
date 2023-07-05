@@ -37,6 +37,46 @@ class AddProductUseCases @Inject constructor(
                 }
             }
 
+
+            is Resource.Error -> {
+                handleFailedResponse(
+                    response = response,
+                    message = response.message,
+                    emitType = EmitType.NetworkError
+                )
+            }
+
+            else -> {
+
+            }
+        }
+    }
+
+
+
+    fun getProductTypesTest(query: String) = flow {
+        emit(Data(EmitType.Loading, true))
+        when (val response = addProductRepository.getProductTypes()) {//appStore.userId()
+            //when (val response =
+            is Resource.Success -> {
+                emit(Data(EmitType.Loading, false))
+                response.data?.apply {
+                    when (status) {
+                        true -> {
+                            product_type_list.forEach {
+                                if (it.product_type.startsWith(query)){
+                                    emit(Data(type = EmitType.PRODUCT_TYPES, value = product_type_list))
+                                }
+                            }
+                        }
+
+                        else -> {
+                            emit(Data(type = EmitType.BackendError, value = message))
+                        }
+                    }
+                }
+            }
+
             is Resource.Error -> {
                 handleFailedResponse(
                     response = response,

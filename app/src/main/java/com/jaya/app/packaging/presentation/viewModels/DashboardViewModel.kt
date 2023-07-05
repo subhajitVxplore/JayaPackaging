@@ -61,13 +61,17 @@ class DashboardViewModel @Inject constructor(
     var isShiftCselected = mutableStateOf(false)
     var shiftCBtnBackColor = mutableStateOf(Color.White)
     var shiftCTxtColor = mutableStateOf(Color.DarkGray)
-    var uploadProofBtnTxt= mutableStateOf("   Upload Proof")
-    var addProductionInfoBtnTxt= mutableStateOf("   Add Production Info")
+    var uploadProofBtnTxt = mutableStateOf("   Upload Proof")
+    var addProductionInfoBtnTxt = mutableStateOf("   Add Production Info")
 
     var loadingButton = mutableStateOf(true)
     var loadingg = mutableStateOf(false)
 
-    var isHomePageShow= mutableStateOf(true)
+    var isHomePageShow = mutableStateOf(true)
+
+    var showVideoImageDialog = mutableStateOf(false)
+
+    var cameraImageFlag = mutableStateOf(false)
 
 
     init {
@@ -77,6 +81,23 @@ class DashboardViewModel @Inject constructor(
     }
 
 
+    fun onImageCaptureToDashboard() {
+        appNavigator.tryNavigateTo(
+            route = Destination.Dashboard(),
+            //popUpToRoute = Destination.CaptureVideo(),
+            isSingleTop = true,
+            inclusive = true
+        )
+    }
+
+    fun onUploadVideoToVideoCapture() {
+        appNavigator.tryNavigateTo(
+            route = Destination.CaptureVideo(),
+            //  popUpToRoute = Destination.AddProduct(),
+            isSingleTop = true,
+            inclusive = true
+        )
+    }
 
     fun onHomePageToAddProductInfo() {
         appNavigator.tryNavigateTo(
@@ -226,6 +247,15 @@ class DashboardViewModel @Inject constructor(
         appNavigator.tryNavigateTo(
             route = Destination.AddPackingDetails(),
             popUpToRoute = Destination.Dashboard(),
+            isSingleTop = true,
+            inclusive = true
+        )
+    }
+
+    fun onHomePageToFinalReport() {
+        appNavigator.tryNavigateTo(
+            route = Destination.FinalReport(),
+           //popUpToRoute = Destination.Dashboard(),
             isSingleTop = true,
             inclusive = true
         )

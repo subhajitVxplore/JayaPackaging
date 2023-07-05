@@ -1,19 +1,16 @@
 package com.jaya.app.packaging.presentation.ui.screen
 
-import android.app.TimePickerDialog
 import android.os.CountDownTimer
 import android.widget.Toast
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,12 +22,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -46,44 +38,30 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.DialogProperties
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.jaya.app.packaging.R
 import com.jaya.app.packaging.extensions.screenWidth
+import com.jaya.app.packaging.presentation.ui.custom_view.LabourSearchDropdown
 import com.jaya.app.packaging.presentation.ui.custom_view.PackersNumberDropdown
 import com.jaya.app.packaging.presentation.ui.custom_view.PackingMistriDropdown
 import com.jaya.app.packaging.presentation.ui.custom_view.PackingOperatorDropdown
-import com.jaya.app.packaging.presentation.ui.custom_view.PlantDropdown
-import com.jaya.app.packaging.presentation.ui.custom_view.ProductsDropdown
-import com.jaya.app.packaging.presentation.ui.custom_view.ShiftDropdown
-import com.jaya.app.packaging.presentation.ui.custom_view.WorkersNameDialog
 import com.jaya.app.packaging.presentation.viewModels.AddPackingDetailsViewModel
-import com.jaya.app.packaging.presentation.viewModels.AddProductViewModel
 import com.jaya.app.packaging.presentation.viewModels.BaseViewModel
 import com.jaya.app.packaging.ui.theme.AppBarYellow
 import com.jaya.app.packaging.ui.theme.LogoutRed
 import com.jaya.app.packaging.ui.theme.SplashGreen
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import java.util.Calendar
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -98,18 +76,6 @@ fun AddPackingDetailsScreen(
 
 
         val context = LocalContext.current
-
-        if (viewModel.showWorkersNameDialog.value)
-            WorkersNameDialog(
-                value = "", setShowDialog = {
-                    viewModel.showWorkersNameDialog.value = it
-                },
-                onButtonClick = {
-                    //  viewModel.checkIfDeviceFound()
-                },
-                viewModel,
-                baseViewModel
-            )
 
         Column(
             modifier = Modifier.fillMaxSize()
@@ -294,57 +260,14 @@ fun AddPackingDetailsScreen(
                         //viewModel.selectedPincode.value = it
                     })
 
-
-
-                Row(
-                    modifier = Modifier
-                        .padding(top = 15.dp, start = 15.dp,end=15.dp)
-                        .fillMaxWidth()
-                ) {
-                    OutlinedTextField(
-                        value = viewModel.packingSupervisorName.value,
-                        onValueChange = { viewModel.packingSupervisorName.value = it },
-                        //label = { Text("your mobile number") },
-                        placeholder = { Text("Search Packing Labour", color = Color.Gray) },
-                        colors = TextFieldDefaults.outlinedTextFieldColors(
-                            focusedBorderColor = Color.Gray,
-                            unfocusedBorderColor = Color.Gray
-                        ),
-                        modifier = Modifier.weight(1f)
-                            .fillMaxWidth()
-                            .padding(end = 5.dp),
-                        singleLine = true,
-                        leadingIcon = {
-                            Icon(
-                                imageVector = Icons.Filled.Search,
-                                contentDescription = "",
-                                modifier = Modifier
-                                    .height(32.dp)
-                                    .width(32.dp),
-                                tint = Color.LightGray
-                            )
-                        },
-                    )
-
-                    Button(
-                        contentPadding = PaddingValues(0.dp),
-                        onClick = {
-                            viewModel.showWorkersNameDialog.value = true
-                        },
-                        colors = ButtonDefaults.buttonColors(SplashGreen),
-                        modifier = Modifier.height(55.dp).width(55.dp).align(Alignment.CenterVertically),
-                        shape = RoundedCornerShape(5.dp),
-                    ) {
-                        Icon(
-                            Icons.Default.Add,
-                            tint = Color.White,
-                            contentDescription = "",
-                           // modifier = Modifier.padding(end = 8.dp)
-                        )
-                        //Icon(Icons.Filled.Add, "add")
-                    }
-
-                }//row
+                LabourSearchDropdown(
+                    viewModel,
+                    false,
+                    listOf("hello","Subhajit","Sunil","Samaresh"),
+                    onSelect = {
+                        //  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+                        //viewModel.selectedPincode.value = it
+                    })
 
                 for ((index, workersName) in viewModel.packingLabourList.withIndex() ) {
 

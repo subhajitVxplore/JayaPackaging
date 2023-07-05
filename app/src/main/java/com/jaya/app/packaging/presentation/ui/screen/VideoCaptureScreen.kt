@@ -162,7 +162,7 @@ fun VideoCaptureScreen(
                                 val minute = calendarInstance.get(Calendar.MINUTE)
                                 val seconds = calendarInstance.get(Calendar.SECOND)
                                 val ampm = if(calendarInstance.get(Calendar.AM_PM)==0) "AM " else "PM "
-                                baseViewModel.videoShootTime.add("$hour:$minute:$seconds$ampm")
+                                //baseViewModel.videoShootTime.add("$hour:$minute:$seconds$ampm")
                                 //val seconds = TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis())) /1000 %60
                                 recordingStarted.value = true
                                 val mediaDir = context.externalCacheDirs.firstOrNull()?.let {
@@ -183,13 +183,12 @@ fun VideoCaptureScreen(
                                     if (event is VideoRecordEvent.Finalize) {
                                         val uri = event.outputResults.outputUri
                                         if (uri != Uri.EMPTY) {
-                                            baseViewModel.videoUriList.add(uri)
-
+                                           // baseViewModel.videoUriList.add(uri)
                                             val file = File(uri.path.toString())
                                             val videoFile =RequestBody.create("*/*".toMediaTypeOrNull(), file)
                                             baseViewModel.videoMultipartList.add(MultipartBody.Part.createFormData("packaging_file",file.name,videoFile))
 
-                                            viewModel.onVideoCaptureToAddProduct()
+                                            viewModel.onVideoCaptureToDashboard()
                                         }
                                     }
                                 }

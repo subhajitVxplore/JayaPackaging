@@ -9,6 +9,7 @@ import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,9 +33,12 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -45,6 +49,8 @@ import com.jaya.app.packaging.extensions.bottomToUp
 import com.jaya.app.packaging.extensions.screenHeight
 import com.jaya.app.packaging.extensions.screenWidth
 import com.jaya.app.packaging.extensions.upToBottom
+import com.jaya.app.packaging.presentation.ui.custom_view.VideoImageDialog
+import com.jaya.app.packaging.presentation.viewModels.BaseViewModel
 import com.jaya.app.packaging.presentation.viewModels.DashboardViewModel
 import com.jaya.app.packaging.ui.theme.SplashGreen
 import io.ktor.util.reflect.*
@@ -56,9 +62,24 @@ import io.ktor.util.reflect.*
 @Composable
 fun HomePage(
     openDrawer: () -> Unit,
-    viewModel: DashboardViewModel
+    viewModel: DashboardViewModel,
+    baseViewModel: BaseViewModel
 ) {
     val context = LocalContext.current
+    val focusRequester = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
+
+    if (viewModel.showVideoImageDialog.value)
+        VideoImageDialog(
+            value = "", setShowDialog = {
+                viewModel.showVideoImageDialog.value = it
+            },
+            onButtonClick = {
+                //  viewModel.checkIfDeviceFound()
+            },
+            viewModel,
+            baseViewModel
+        )
 
     Column(modifier = Modifier.fillMaxSize()) {
         Scaffold(
@@ -108,7 +129,6 @@ fun HomePage(
                                 .fillMaxSize()
                                 .verticalScroll(rememberScrollState())
                         ) {
-
                             for ((index, packaging) in viewModel.packagingList.collectAsState().value.withIndex()) {
                                 Card(
                                     modifier = Modifier
@@ -123,11 +143,11 @@ fun HomePage(
                                             end = 15.dp,
                                             top = 10.dp,
                                             bottom = 15.dp
-                                        ),
-//                                        .clickable {
-//                                            //Toast.makeText(context,"hello$index",Toast.LENGTH_SHORT).show()
-//                                            viewModel.onHomePageToAddPackingDetails()
-//                                        },
+                                        )
+                                        .clickable {
+                                            //Toast.makeText(context,"hello$index",Toast.LENGTH_SHORT).show()
+                                            viewModel.onHomePageToFinalReport()
+                                        },
                                     shape = RoundedCornerShape(8.dp),
                                     border = BorderStroke(1.dp, Color.LightGray),
                                     elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
@@ -229,43 +249,44 @@ fun HomePage(
                                                 )
                                             }
 
-
-                                            OutlinedTextField(readOnly = true,
-                                                value = viewModel.uploadProofBtnTxt.value,
-                                                onValueChange = {
-                                                    viewModel.uploadProofBtnTxt.value = it
-                                                },
-                                                modifier = Modifier
-                                                    .onFocusChanged {
-                                                        if (it.isFocused) {
-                                                            // viewModel.onHomePageToBreakDownReport()
-                                                        } else {
-                                                            // not focused
-                                                        }
-                                                    }
-                                                    .fillMaxWidth()
-                                                    .padding(horizontal = 15.dp),
-                                                textStyle = TextStyle.Default.copy(
-                                                    fontSize = 17.sp,
-                                                    fontWeight = FontWeight.Bold
-                                                ),
-                                                colors = TextFieldDefaults.outlinedTextFieldColors(
-                                                    containerColor = Color.LightGray,
-                                                    textColor = Color.DarkGray,
-                                                    unfocusedBorderColor = Color.Gray,
-                                                    focusedBorderColor = Color.Gray
-                                                ),
-                                                leadingIcon = {
-                                                    Icon(
-                                                        painter = painterResource(id = R.drawable.upload_cloud_svg),
-                                                        contentDescription = "",
-                                                        modifier = Modifier.padding(start = 10.dp)
-                                                        // tint = Color.LightGray
-                                                    )
-                                                })
+//                                            OutlinedTextField(readOnly = true,
+//                                                value = viewModel.uploadProofBtnTxt.value,
+//                                                onValueChange = {
+//                                                    viewModel.uploadProofBtnTxt.value = it
+//                                                },
+//                                                modifier = Modifier.focusRequester(focusRequester)
+//                                                    .onFocusChanged {
+//                                                        if (it.isFocused) {
+//                                                            // viewModel.onHomePageToBreakDownReport()
+//                                                            viewModel.showVideoImageDialog.value=true
+//                                                            focusManager.clearFocus()
+//                                                        } else {
+//                                                            // not focused
+//                                                        }
+//                                                    }
+//                                                    .fillMaxWidth()
+//                                                    .padding(horizontal = 15.dp),
+//                                                textStyle = TextStyle.Default.copy(
+//                                                    fontSize = 17.sp,
+//                                                    fontWeight = FontWeight.Bold
+//                                                ),
+//                                                colors = TextFieldDefaults.outlinedTextFieldColors(
+//                                                    containerColor = Color.LightGray,
+//                                                    textColor = Color.DarkGray,
+//                                                    unfocusedBorderColor = Color.Gray,
+//                                                    focusedBorderColor = Color.Gray
+//                                                ),
+//                                                leadingIcon = {
+//                                                    Icon(
+//                                                        painter = painterResource(id = R.drawable.upload_cloud_svg),
+//                                                        contentDescription = "",
+//                                                        modifier = Modifier.padding(start = 10.dp)
+//                                                        // tint = Color.LightGray
+//                                                    )
+//                                                })
 
                                             Text(
-                                                text = "2 Video Uploaded",
+                                                text = "${baseViewModel.videoMultipartList.size} Video Uploaded",
                                                 modifier = Modifier
                                                     .wrapContentSize()
                                                     .padding(start = 20.dp, top = 10.dp),
@@ -275,7 +296,7 @@ fun HomePage(
                                                 //textAlign =
                                             )
                                             Text(
-                                                text = "1 Image Uploaded",
+                                                text = "${baseViewModel.imageMultipartList.size} Image Uploaded",
                                                 modifier = Modifier
                                                     .wrapContentSize()
                                                     .padding(start = 20.dp, top = 10.dp),

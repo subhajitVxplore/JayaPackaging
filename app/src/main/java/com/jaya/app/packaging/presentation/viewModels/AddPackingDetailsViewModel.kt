@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -47,7 +48,7 @@ class AddPackingDetailsViewModel @Inject constructor(
     var selectedPackingOperator = mutableStateOf("Packing Operator")
     var selectedPackersNumber = mutableStateOf("Packers Number")
 
-    var packingLabourList= mutableStateListOf<String>()
+    var packingLabourList = mutableStateListOf<String>()
 
     var showWorkersNameDialog = mutableStateOf(false)
     var workersNameTxt = mutableStateOf("")
@@ -57,8 +58,13 @@ class AddPackingDetailsViewModel @Inject constructor(
     var currentSuggestion = mutableStateOf("")
     var selectedSuggestion = mutableStateOf("")
 
-    private val _productTypes = MutableStateFlow(emptyList<ProductType>())
+    //    private val _productTypes = MutableStateFlow(emptyList<ProductType>())
+//    val productTypes = _productTypes.asStateFlow()
+    private val _productTypes = MutableStateFlow<List<ProductType>?>(null)
     val productTypes = _productTypes.asStateFlow()
+
+//    private val _vendors = MutableStateFlow<List<Vendor>?>(null)
+//    val vendors = _vendors.asStateFlow()
 
     var startTimeSelected = mutableStateOf("Start Time")
     var endTimeSelected = mutableStateOf("End Time")
@@ -69,9 +75,13 @@ class AddPackingDetailsViewModel @Inject constructor(
     var loadingg = mutableStateOf(false)
     val saveDetailsDialog = mutableStateOf<MyDialog?>(null)
 
+    var packingLabourSearchQuery = mutableStateOf("")
+//    var packingLabourSearchQuery by mutableStateOf(TextFieldValue())
+//        private set
+
 
     init {
-        getProductTypes()
+       // getProductTypes()
     }
 
 
@@ -100,6 +110,15 @@ class AddPackingDetailsViewModel @Inject constructor(
     }
 
 
+    fun onAddPackingDetailsToDashboard() {
+        appNavigator.tryNavigateTo(
+            route = Destination.Dashboard(),
+            popUpToRoute = Destination.AddPackingDetails(),
+            isSingleTop = true,
+            inclusive = true
+        )
+    }
+
     fun onUploadVideoToVideoCapture() {
         appNavigator.tryNavigateTo(
             route = Destination.CaptureVideo(),
@@ -126,31 +145,33 @@ class AddPackingDetailsViewModel @Inject constructor(
     }
 
 
-    private fun getProductTypes() {
-        addProductUseCases.getProductTypes()
-            .flowOn(Dispatchers.IO)
-            .onEach {
-                when (it.type) {
-
-                    EmitType.PRODUCT_TYPES -> {
-                        it.value?.castListToRequiredTypes<ProductType>()?.let { products ->
-                            _productTypes.update { products }
-                        }
-                    }
-
-                    EmitType.NetworkError -> {
-                        it.value?.apply {
-                            castValueToRequiredTypes<String>()?.let {
-
-                            }
-                        }
-                    }
-
-
-                    else -> {}
-                }
-            }.launchIn(viewModelScope)
-    }
+//   fun getProductTypes(query: TextFieldValue) {
+//
+//       packingLabourSearchQuery = query
+//        addProductUseCases.getProductTypesTest(query.text)
+//            .flowOn(Dispatchers.IO)
+//            .onEach {
+//                when (it.type) {
+//
+//                    EmitType.PRODUCT_TYPES -> {
+//                        it.value?.castListToRequiredTypes<ProductType>()?.let { products ->
+//                            _productTypes.update { products }
+//                        }
+//                    }
+//
+//                    EmitType.NetworkError -> {
+//                        it.value?.apply {
+//                            castValueToRequiredTypes<String>()?.let {
+//
+//                            }
+//                        }
+//                    }
+//
+//
+//                    else -> {}
+//                }
+//            }.launchIn(viewModelScope)
+//    }
 
     fun addProduct() {
         addProductUseCases.addProduct()
