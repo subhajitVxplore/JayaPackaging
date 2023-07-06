@@ -305,60 +305,7 @@ fun HomePage(
                                                 fontWeight = FontWeight.Bold
                                                 //textAlign =
                                             )
-                                            Button(
-                                                onClick = {
-                                                    //   Toast.makeText(context, "continue", Toast.LENGTH_SHORT).show()
-                                                    viewModel.onHomePageToAddProductInfo()
-                                                },
-                                                enabled = viewModel.loadingButton.value,
-                                                shape = RoundedCornerShape(5.dp),
-                                                modifier = Modifier
-                                                    .padding(
-                                                        start = 15.dp,
-                                                        end = 15.dp,
-                                                        top = 15.dp
-                                                    )
-                                                    .fillMaxWidth()
-                                                    .height(53.dp),
-                                                colors = ButtonDefaults.buttonColors(Color.Gray)
-                                            ) {
-                                                if (!viewModel.loadingg.value) {
-                                                    Text(
-                                                        text = "Add Production Info",
-                                                        color = Color.White,
-                                                        fontSize = 18.sp,
-                                                    )
-                                                } else {
-                                                    CircularProgressIndicator(color = Color.White)
-                                                }
-                                            }
-                                            Button(
-                                                onClick = {
-                                                    //   Toast.makeText(context, "continue", Toast.LENGTH_SHORT).show()
-                                                          viewModel.onHomePageToReportSubmitSuccess()
-                                                },
-                                                enabled = viewModel.loadingButton.value,
-                                                shape = RoundedCornerShape(5.dp),
-                                                modifier = Modifier
-                                                    .padding(
-                                                        start = 15.dp,
-                                                        end = 15.dp,
-                                                        top = 15.dp
-                                                    )
-                                                    .fillMaxWidth()
-                                                    .height(53.dp),
-                                                colors = ButtonDefaults.buttonColors(Color.DarkGray)
-                                            ) {
-                                                if (!viewModel.loadingg.value) {
-                                                    Text(
-                                                        text = "Submit Report",
-                                                        color = Color.White,
-                                                        fontSize = 18.sp,
-                                                    )
-                                                } else {
-                                                    CircularProgressIndicator(color = Color.White)
-                                                }
-                                            }
+
 
                                         }
 

@@ -21,6 +21,7 @@ sealed class Destination(protected val route: String, vararg arguments: Any) {
     object Dashboard : NoArgumentsDestination(AppRoutes.DASHBOARD)
     object AddProduct : NoArgumentsDestination(AppRoutes.ADD_PRODUCT)
     object CaptureVideo : NoArgumentsDestination(AppRoutes.CAPTURE_VIDEO)
+    object ImageCapture : NoArgumentsDestination(AppRoutes.CAPTURE_IMAGE)
     object AddPackingDetails : NoArgumentsDestination(AppRoutes.ADD_PACKING_DETAILS)
     object ProductionReport : NoArgumentsDestination(AppRoutes.PRODUCTION_REPORT)
     object ReportSubmitSuccess : NoArgumentsDestination(AppRoutes.REPORT_SUBMIT_SUCCESS)

@@ -3,6 +3,7 @@ package com.jaya.app.packaging
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -63,8 +64,10 @@ fun Context.createImageFile(): File {
     val image = File.createTempFile(
         imageFileName, /* prefix */
         ".jpg", /* suffix */
-        externalCacheDir      /* directory */
+        externalCacheDir /* directory */
     )
+  //  Toast.makeText(applicationContext, "+++++", Toast.LENGTH_SHORT).show()
+
     return image
 }//Context.createImageFile()
 

@@ -13,7 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class VideoCaptureViewModel @Inject constructor(
+class ImageCaptureViewModel @Inject constructor(
     private val appNavigator: AppNavigator,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -21,6 +21,14 @@ class VideoCaptureViewModel @Inject constructor(
     var timerX = mutableStateOf("")
 
 
+    fun onImageCaptureToFinalReport() {
+        appNavigator.tryNavigateTo(
+            route = Destination.FinalReport(),
+            popUpToRoute = Destination.ImageCapture(),
+            isSingleTop = true,
+            inclusive = true
+        )
+    }
     fun onVideoCaptureToAddProduct() {
         appNavigator.tryNavigateTo(
             route = Destination.AddProduct(),

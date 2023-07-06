@@ -28,7 +28,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -37,13 +36,11 @@ import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import coil.annotation.ExperimentalCoilApi
-import coil.compose.rememberImagePainter
 import com.jaya.app.packaging.BuildConfig
 import com.jaya.app.packaging.R
 import com.jaya.app.packaging.createImageFile
 import com.jaya.app.packaging.presentation.viewModels.BaseViewModel
-import com.jaya.app.packaging.presentation.viewModels.DashboardViewModel
-import com.jaya.app.packaging.ui.theme.SplashGreen
+import com.jaya.app.packaging.presentation.viewModels.FinalReportViewModel
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -52,7 +49,7 @@ import java.util.Objects
 
 @OptIn(ExperimentalCoilApi::class)
 @Composable
-fun CaptureImage(viewModel: DashboardViewModel,baseViewModel: BaseViewModel) {
+fun CaptureImage(viewModel: FinalReportViewModel, baseViewModel: BaseViewModel) {
 
     val context = LocalContext.current
     val file = context.createImageFile()
@@ -81,16 +78,35 @@ fun CaptureImage(viewModel: DashboardViewModel,baseViewModel: BaseViewModel) {
         }
     }
 
-    var uploadImageTxt by remember("Capture Image") {mutableStateOf("Capture Image")}
-    var imageCardBorderColor by remember(Color.Gray) {mutableStateOf(Color.Gray)}
+    var uploadImageTxt by remember("Image") { mutableStateOf("Image") }
+    var imageCardBorderColor by remember(Color.Gray) { mutableStateOf(Color.Gray) }
 
-    Column(modifier = Modifier.padding(top = 20.dp)) {
+
+
+    if (capturedImageUri.path?.isNotEmpty() == true) {
+        //  if (capturedImageUri != Uri.EMPTY) {
+      //  baseViewModel.addImageMultipartToList(capturedImageUri.path.toString())
+                    val file = File(capturedImageUri.path.toString())
+                    val imageFile = RequestBody.create("*/*".toMediaTypeOrNull(), file)
+                    baseViewModel.imageMultipartList.add(
+                        MultipartBody.Part.createFormData(
+                            "packaging_img_file",
+                            file.name,
+                            imageFile
+                        )
+                    )
+    } else {
+        //Toast.makeText(context, "Image is not captured", Toast.LENGTH_SHORT).show()
+    }
+
+    Column() {
         Card(
-            border = BorderStroke(2.dp, imageCardBorderColor),
+            border = BorderStroke(2.dp, Color.DarkGray),
             elevation = CardDefaults.cardElevation(defaultElevation = 20.dp),
             shape = RoundedCornerShape(5.dp),
             colors = CardDefaults.cardColors(containerColor = Color.LightGray),
             modifier = Modifier
+                .padding(start = 20.dp)
                 .clickable {
                     val permissionCheckResult =
                         ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
@@ -103,45 +119,27 @@ fun CaptureImage(viewModel: DashboardViewModel,baseViewModel: BaseViewModel) {
                     //viewModel.showVideoImageDialog.value=false
                 }
                 .align(Alignment.CenterHorizontally)
-                .width(90.dp)
-                .height(90.dp),
+                .width(80.dp)
+                .height(80.dp),
         ) {
-            Box(modifier = Modifier.fillMaxSize(),
+            Box(
+                modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
-            ){
-
-                if (capturedImageUri.path?.isNotEmpty() == true) {
-                //  if (capturedImageUri != Uri.EMPTY) {
-                    Image(
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop,
-                        painter = rememberImagePainter(capturedImageUri),
-                        contentDescription = null
-                    )
-                    imageCardBorderColor= SplashGreen
-                    uploadImageTxt="Image Captured"
-
-                    val file = File(capturedImageUri.path.toString())
-                    val imageFile = RequestBody.create("*/*".toMediaTypeOrNull(), file)
-                    baseViewModel.imageMultipartList.add(MultipartBody.Part.createFormData("packaging_img_file",file.name,imageFile))
-                    viewModel.showVideoImageDialog.value=false
-
-                }else{
-                    Image(
-                        painterResource(id = R.drawable.baseline_photo_camera),
-                        contentDescription = "",
-                        modifier = Modifier.height(60.dp).width(60.dp),
-                        colorFilter = ColorFilter.tint(Color.White),
-                        alignment = Alignment.Center
-                    )
-                }
-
+            ) {
+                Image(
+                    painterResource(id = R.drawable.baseline_photo_camera),
+                    modifier = Modifier.fillMaxSize().padding(10.dp),
+                    contentScale = ContentScale.Crop,
+                    // painter = rememberImagePainter(capturedImageUri),
+                    contentDescription = null
+                )
+                uploadImageTxt = "Image"
             }
 
         }
         Text(
-            text = uploadImageTxt,
-            modifier = Modifier.padding(top = 15.dp),
+            text = "Image",
+            modifier = Modifier.padding(top = 5.dp, start = 40.dp),
             color = Color.DarkGray,
             style = LocalTextStyle.current.copy(fontSize = 15.sp)
         )
@@ -149,3 +147,5 @@ fun CaptureImage(viewModel: DashboardViewModel,baseViewModel: BaseViewModel) {
 
 
 }//AppContent()
+
+

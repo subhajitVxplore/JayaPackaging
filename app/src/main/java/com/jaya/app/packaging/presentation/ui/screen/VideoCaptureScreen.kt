@@ -65,7 +65,7 @@ fun VideoCaptureScreen(
 ) {
 
     BackPressHandler(onBackPressed = {
-        viewModel.onVideoCaptureToAddProduct()
+        viewModel.onVideoCaptureToFinalReport()
         //  Toast.makeText(context, "context", Toast.LENGTH_SHORT).show()
     })
 
@@ -88,7 +88,7 @@ fun VideoCaptureScreen(
                     .align(Alignment.CenterVertically)
                     .clickable(
                         onClick = {
-                            viewModel.onVideoCaptureToAddProduct()
+                            viewModel.onVideoCaptureToFinalReport()
                         },
                         role = Role.Image
                     )
@@ -157,7 +157,6 @@ fun VideoCaptureScreen(
                             videoCapture.value?.let { videoCapture ->
 
                                 val calendarInstance = Calendar.getInstance()
-
                                 val hour = calendarInstance.get(Calendar.HOUR)
                                 val minute = calendarInstance.get(Calendar.MINUTE)
                                 val seconds = calendarInstance.get(Calendar.SECOND)
@@ -188,7 +187,7 @@ fun VideoCaptureScreen(
                                             val videoFile =RequestBody.create("*/*".toMediaTypeOrNull(), file)
                                             baseViewModel.videoMultipartList.add(MultipartBody.Part.createFormData("packaging_file",file.name,videoFile))
 
-                                            viewModel.onVideoCaptureToDashboard()
+                                            viewModel.onVideoCaptureToFinalReport()
                                         }
                                     }
                                 }
@@ -197,7 +196,6 @@ fun VideoCaptureScreen(
                             recordingStarted.value = false
                             recording?.stop()
                         }
-
 
                         val timer = object : CountDownTimer(10000, 1000) {
                             override fun onTick(millisUntilFinished: Long) {
@@ -210,7 +208,6 @@ fun VideoCaptureScreen(
                             }
                         }
                         timer.start()
-
 
                     },
                     modifier = Modifier
@@ -226,9 +223,7 @@ fun VideoCaptureScreen(
 
                 }//IconButton(play/pause)
 
-
             }//Box
-
 
         }//PermissionsRequired
     }//parentColumn

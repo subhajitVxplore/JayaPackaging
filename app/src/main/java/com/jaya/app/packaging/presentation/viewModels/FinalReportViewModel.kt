@@ -1,36 +1,47 @@
-package com.jaya.app.packaging.presentation.viewModels;
+package com.jaya.app.packaging.presentation.viewModels
 
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import com.example.core.utils.AppNavigator
 import com.jaya.app.core.common.Destination
-import com.jaya.app.core.helpers.AppStore
-import com.jaya.app.packaging.helpers_impl.SavableMutableState
-import com.jaya.app.packaging.utility.UiData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class VideoCaptureViewModel @Inject constructor(
+class FinalReportViewModel @Inject constructor(
+    // private val dashBoardUseCases: DashboardUseCases,
     private val appNavigator: AppNavigator,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    var timerX = mutableStateOf("")
+    var loadingButton = mutableStateOf(true)
+    var loadingg = mutableStateOf(false)
+
+    init {
+
+    }
 
 
-    fun onVideoCaptureToAddProduct() {
+    fun onHomePageToImageCapture() {
         appNavigator.tryNavigateTo(
-            route = Destination.AddProduct(),
-            popUpToRoute = Destination.CaptureVideo(),
+            route = Destination.ImageCapture(),
+            //popUpToRoute = Destination.Dashboard(),
             isSingleTop = true,
             inclusive = true
         )
     }
 
-    fun onVideoCaptureToFinalReport() {
+fun onHomePageToVideoCapture() {
+        appNavigator.tryNavigateTo(
+            route = Destination.CaptureVideo(),
+            //popUpToRoute = Destination.Dashboard(),
+            isSingleTop = true,
+            inclusive = true
+        )
+    }
+
+    fun onVideoCaptureToDashboard() {
         appNavigator.tryNavigateTo(
             route = Destination.FinalReport(),
             popUpToRoute = Destination.CaptureVideo(),
@@ -38,7 +49,6 @@ class VideoCaptureViewModel @Inject constructor(
             inclusive = true
         )
     }
-
 
 }
 

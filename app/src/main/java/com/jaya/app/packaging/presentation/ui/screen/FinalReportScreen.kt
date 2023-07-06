@@ -1,20 +1,12 @@
 package com.jaya.app.packaging.presentation.ui.screen
 
-import android.Manifest
-import android.net.Uri
 import android.os.Build
-import android.os.CountDownTimer
 import androidx.annotation.RequiresApi
-import androidx.camera.core.CameraSelector
-import androidx.camera.video.Recorder
-import androidx.camera.video.Recording
-import androidx.camera.video.VideoCapture
-import androidx.camera.video.VideoRecordEvent
-import androidx.camera.view.PreviewView
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -40,39 +32,32 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.PermissionsRequired
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.jaya.app.packaging.R
-import com.jaya.app.packaging.extensions.BackPressHandler
 import com.jaya.app.packaging.extensions.screenWidth
+import com.jaya.app.packaging.presentation.ui.custom_view.CaptureImage
+import com.jaya.app.packaging.presentation.ui.custom_view.ImageSection
+import com.jaya.app.packaging.presentation.ui.custom_view.ImageSource
 import com.jaya.app.packaging.presentation.viewModels.BaseViewModel
-import com.jaya.app.packaging.presentation.viewModels.VideoCaptureViewModel
+import com.jaya.app.packaging.presentation.viewModels.FinalReportViewModel
 import com.jaya.app.packaging.ui.theme.AppBarYellow
+import com.jaya.app.packaging.ui.theme.LogoutRed
 import com.jaya.app.packaging.ui.theme.SplashGreen
-import com.jaya.app.packaging.utility.createVideoCaptureUseCase
-import com.jaya.app.packaging.utility.startRecordingVideo
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody
-import java.io.File
-import java.util.Calendar
 
 @RequiresApi(Build.VERSION_CODES.P)
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun FinalReportScreen(
     baseViewModel: BaseViewModel,
-    viewModel: VideoCaptureViewModel = hiltViewModel(),
+    viewModel: FinalReportViewModel = hiltViewModel(),
 ) {
 
     Column(
@@ -121,7 +106,7 @@ fun FinalReportScreen(
                 .padding(
                     start = 15.dp,
                     end = 15.dp,
-                    top = 10.dp,
+                    top = 20.dp,
                     bottom = 15.dp
                 ),
 //                .clickable {
@@ -231,13 +216,267 @@ fun FinalReportScreen(
                     }
 
 
-
                 }
 
             }//column
+        }//card
+
+        Button(
+            onClick = {
+                //   Toast.makeText(context, "continue", Toast.LENGTH_SHORT).show()
+                viewModel.onHomePageToImageCapture()
+            },
+            enabled = viewModel.loadingButton.value,
+            shape = RoundedCornerShape(5.dp),
+            modifier = Modifier
+                .padding(
+                    start = 15.dp,
+                    end = 15.dp,
+                    top = 15.dp
+                )
+                .fillMaxWidth()
+                .height(53.dp),
+            colors = ButtonDefaults.buttonColors(Color.Gray)
+        ) {
+            if (!viewModel.loadingg.value) {
+                Text(
+                    text = "Add Production Info",
+                    color = Color.White,
+                    fontSize = 18.sp,
+                )
+            } else {
+                CircularProgressIndicator(color = Color.White)
+            }
+        }
+//----------------------------------------------------------------------------------------
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp),
+            //horizontalArrangement = Arrangement.SpaceBetween,
+            // verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Column(modifier = Modifier.padding(top = 20.dp)) {
+               // CaptureImage(viewModel = viewModel, baseViewModel = baseViewModel)//ImageSource`.Camera)
+                Card(
+                    border = BorderStroke(2.dp, Color.DarkGray),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 20.dp),
+                    shape = RoundedCornerShape(5.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.LightGray),
+                    modifier = Modifier
+                        .padding(end = 20.dp)
+                        .clickable {
+                            ImageSource.Camera
+                        }
+                        // .align(Alignment.End)
+                        .width(80.dp)
+                        .height(80.dp),
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painterResource(id = R.drawable.baseline_photo_camera),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .height(60.dp)
+                                .width(60.dp),
+                            colorFilter = ColorFilter.tint(Color.White),
+                            alignment = Alignment.Center
+                        )
+
+                    }
+                }
+                Text(
+                    text = "Image",
+                    modifier = Modifier
+                        .padding(top = 5.dp, end = 40.dp),
+                    // .align(Alignment.End),
+                    color = Color.DarkGray,
+                    style = LocalTextStyle.current.copy(fontSize = 15.sp)
+                )
+
+                for ((index, videoClips) in baseViewModel.imageMultipartList.withIndex()) {
+//                    Column(
+//                        modifier = Modifier.fillMaxHeight()
+//                            .wrapContentWidth().align(Alignment.End)
+//                            .padding(bottom = 70.dp)
+//                            .verticalScroll(rememberScrollState())
+//                    ) {
+                    Row(
+                        modifier = Modifier
+                            .align(Alignment.End)
+                            .padding(top = 10.dp)
+                            .wrapContentSize()
+                    ) {
+                        Card(
+                            border = BorderStroke(1.dp, Color.LightGray),
+                            shape = RoundedCornerShape(5.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color.White),
+                            modifier = Modifier
+                                .wrapContentSize(),
+                        ) {
+                            Text(
+                                text = "Image_${index}",
+                                color = Color.DarkGray,
+                                fontSize = 15.sp,
+                                modifier = Modifier.padding(
+                                    start = 10.dp,
+                                    end = 5.dp,
+                                    top = 5.dp,
+                                    bottom = 5.dp
+                                )
+                            )
+                        }//card
+                        Image(
+                            painter = painterResource(R.drawable.delete_labour_svg),
+                            contentDescription = "close button",
+                            colorFilter = ColorFilter.tint(LogoutRed),
+                            modifier = Modifier
+                                .clickable { baseViewModel.videoMultipartList.removeAt(index) }
+                                .height(30.dp)
+                                .align(Alignment.CenterVertically)
+                                .padding(start = 5.dp)
+                        )
+                    }//row
+                }
+            }
+//--------------------------------------------------------------------------------------------------------------------
+            Column(
+                modifier = Modifier
+                    .padding(top = 20.dp)
+                    .weight(1f)
+            ) {
+                val context = LocalContext.current
+                var uploadVideoTxt by remember("Capture Video") { mutableStateOf("Capture Video") }
+                var imageCardBorderColor by remember(Color.Gray) { mutableStateOf(Color.Gray) }
+                Card(
+                    border = BorderStroke(2.dp, imageCardBorderColor),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 20.dp),
+                    shape = RoundedCornerShape(5.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color.LightGray),
+                    modifier = Modifier
+                        .padding(end = 20.dp)
+                        .clickable {
+                            viewModel.onHomePageToVideoCapture()
+                        }
+                        .align(Alignment.End)
+                        .width(80.dp)
+                        .height(80.dp),
+                ) {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Image(
+                            painterResource(id = R.drawable.baseline_videocam),
+                            contentDescription = "",
+                            modifier = Modifier
+                                .height(60.dp)
+                                .width(60.dp),
+                            colorFilter = ColorFilter.tint(Color.White),
+                            alignment = Alignment.Center
+                        )
+                        imageCardBorderColor = Color.DarkGray
+                        uploadVideoTxt = "Video"
+                    }
+                }
+                Text(
+                    text = uploadVideoTxt,
+                    modifier = Modifier
+                        .padding(top = 5.dp, end = 40.dp)
+                        .align(Alignment.End),
+                    color = Color.DarkGray,
+                    style = LocalTextStyle.current.copy(fontSize = 15.sp)
+                )
+
+                for ((index, videoClips) in baseViewModel.videoMultipartList.withIndex()) {
+//                    Column(
+//                        modifier = Modifier.fillMaxHeight()
+//                            .wrapContentWidth().align(Alignment.End)
+//                            .padding(bottom = 70.dp)
+//                            .verticalScroll(rememberScrollState())
+//                    ) {
+                    Row(
+                        modifier = Modifier
+                            .align(Alignment.End)
+                            .padding(top = 10.dp)
+                            .wrapContentSize()
+                    ) {
+                        Card(
+                            border = BorderStroke(1.dp, Color.LightGray),
+                            shape = RoundedCornerShape(5.dp),
+                            colors = CardDefaults.cardColors(containerColor = Color.White),
+                            modifier = Modifier
+                                .wrapContentSize(),
+                        ) {
+                            Text(
+                                text = "Video_${index}",
+                                color = Color.DarkGray,
+                                fontSize = 15.sp,
+                                modifier = Modifier.padding(
+                                    start = 10.dp,
+                                    end = 5.dp,
+                                    top = 5.dp,
+                                    bottom = 5.dp
+                                )
+                            )
+                        }//card
+                        Image(
+                            painter = painterResource(R.drawable.delete_labour_svg),
+                            contentDescription = "close button",
+                            colorFilter = ColorFilter.tint(LogoutRed),
+                            modifier = Modifier
+                                .clickable { baseViewModel.videoMultipartList.removeAt(index) }
+                                .height(30.dp)
+                                .align(Alignment.CenterVertically)
+                                .padding(start = 5.dp)
+                        )
+
+                    }//row
+                }
+            }//for
+
+            // }
         }
 
-
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
+            Button(
+                onClick = {
+                    //   Toast.makeText(context, "continue", Toast.LENGTH_SHORT).show()
+                    //viewModel.onHomePageToReportSubmitSuccess()
+                },
+                enabled = viewModel.loadingButton.value,
+                shape = RoundedCornerShape(5.dp),
+                modifier = Modifier
+                    .padding(
+                        start = 15.dp,
+                        end = 15.dp,
+                        top = 15.dp,
+                        bottom = 20.dp
+                    )
+                    .fillMaxWidth()
+                    .height(53.dp),
+                colors = ButtonDefaults.buttonColors(SplashGreen)
+            ) {
+                if (!viewModel.loadingg.value) {
+                    Text(
+                        text = "Submit Report",
+                        color = Color.White,
+                        fontSize = 18.sp,
+                    )
+                } else {
+                    CircularProgressIndicator(color = Color.White)
+                }
+            }
+        }
+//        ImageSection(
+//            onSelected = viewModel::onInvoiceSelected,
+//            imageSource = viewModel.selectedImageSource,
+//            clearSource = { viewModel.selectedImageSource.value = ImageSource.None }
+//        )
     }//parentColumn
 }//VideoCaptureScreen
 

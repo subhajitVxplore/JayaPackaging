@@ -116,7 +116,7 @@ fun VideoImageDialog(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
 
-                        CaptureImage(viewModel,baseViewModel)
+                      //  CaptureImage(viewModel,baseViewModel)
 
 
                         Column(modifier = Modifier.padding(top = 20.dp)) {

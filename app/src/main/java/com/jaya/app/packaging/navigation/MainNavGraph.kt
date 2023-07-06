@@ -18,6 +18,7 @@ import com.jaya.app.packaging.presentation.ui.screen.AddPackingDetailsScreen
 import com.jaya.app.packaging.presentation.ui.screen.AddProductScreen
 import com.jaya.app.packaging.presentation.ui.screen.DashboardScreen
 import com.jaya.app.packaging.presentation.ui.screen.FinalReportScreen
+import com.jaya.app.packaging.presentation.ui.screen.ImageCaptureScreen
 import com.jaya.app.packaging.presentation.ui.screen.LoginScreen
 import com.jaya.app.packaging.presentation.ui.screen.OtpScreen
 import com.jaya.app.packaging.presentation.ui.screen.ProductionReportScreen
@@ -39,7 +40,7 @@ fun MainNavGraph(
 
     AppNavHost(
         navController = navHostController,
-        startDestination = Destination.Dashboard,
+        startDestination = Destination.FinalReport,
         modifier = Modifier.padding(paddingValues),
         enterTransition = AppScreenTransitions.ScreenEnterTransition,
         popEnterTransition = AppScreenTransitions.ScreenPopEnterTransition,
@@ -79,6 +80,9 @@ fun MainNavGraph(
 
         composable(destination = Destination.CaptureVideo) {
             VideoCaptureScreen(baseViewModel)
+        }
+        composable(destination = Destination.ImageCapture) {
+            ImageCaptureScreen(baseViewModel)
         }
 
         composable(
