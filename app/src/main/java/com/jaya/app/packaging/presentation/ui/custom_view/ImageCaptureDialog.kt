@@ -127,30 +127,25 @@ fun ImageCaptureDialog(
                         )
                         Row(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 55.dp),
+                                .fillMaxWidth(),
+                                //.padding(start = 55.dp),
                             horizontalArrangement = Arrangement.spacedBy(30.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Image(
                                 painter = painterResource(id = R.drawable.ic_menu_gallery),
                                 contentDescription = "gallery",
-                                modifier = Modifier
-                                    .fillMaxWidth(0.40f)
-                                    .fillMaxSize(0.20f)
+                                modifier = Modifier.height(50.dp).width(50.dp).weight(1f)
                                     .clickable{
 //                                        galleryLauncher.launch("image/*")
                                         galleryLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-
                                     }
                             )
 
                             Image(
                                 painter = painterResource(id = R.drawable.ic_menu_camera),
                                 contentDescription = "camera",
-                                modifier = Modifier
-                                    .fillMaxWidth(0.40f)
-                                    .fillMaxSize(0.30f)
+                                modifier = Modifier.height(55.dp).width(55.dp).weight(1f)
                                     .clickable(onClick = launcher::launch)
                             )
                         }
@@ -160,10 +155,6 @@ fun ImageCaptureDialog(
                     Spacer(modifier = Modifier.height(10.dp))
 
                     val ctx = LocalContext.current
-
-
-                    //viewModel.dialogexpenseValue.value=""
-
 
                 }
             }

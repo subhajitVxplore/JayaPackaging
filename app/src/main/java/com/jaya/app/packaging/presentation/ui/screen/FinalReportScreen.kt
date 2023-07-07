@@ -342,7 +342,7 @@ fun FinalReportScreen(
                             contentDescription = "close button",
                             colorFilter = ColorFilter.tint(LogoutRed),
                             modifier = Modifier
-                                .clickable {viewModel.capturedImagesList.removeAt(index) }
+                                .clickable { viewModel.capturedImagesList.removeAt(index) }
                                 .height(30.dp)
                                 .align(Alignment.CenterVertically)
                                 .padding(start = 5.dp)
