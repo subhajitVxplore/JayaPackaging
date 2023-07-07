@@ -43,9 +43,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.jaya.app.packaging.R
 import com.jaya.app.packaging.extensions.screenWidth
-import com.jaya.app.packaging.presentation.ui.custom_view.CaptureImage
-import com.jaya.app.packaging.presentation.ui.custom_view.ImageSection
-import com.jaya.app.packaging.presentation.ui.custom_view.ImageSource
+import com.jaya.app.packaging.presentation.ui.custom_view.ImageCaptureDialog
 import com.jaya.app.packaging.presentation.viewModels.BaseViewModel
 import com.jaya.app.packaging.presentation.viewModels.FinalReportViewModel
 import com.jaya.app.packaging.ui.theme.AppBarYellow
@@ -59,6 +57,13 @@ fun FinalReportScreen(
     baseViewModel: BaseViewModel,
     viewModel: FinalReportViewModel = hiltViewModel(),
 ) {
+
+    if (viewModel.showImageDialog.value)
+        ImageCaptureDialog(
+            setShowDialog = { viewModel.showImageDialog.value = it },
+            onImageCaptured = viewModel::onImageCaptured,
+            onGalleryImageCapturd = viewModel::onGalleryImageCaptured
+        )
 
     Column(
         modifier = Modifier.fillMaxSize()
@@ -91,7 +96,6 @@ fun FinalReportScreen(
                 color = Color.DarkGray,
                 style = LocalTextStyle.current.copy(fontSize = 20.sp)
             )
-
         }
 //---------------------
 
@@ -258,7 +262,7 @@ fun FinalReportScreen(
         ) {
 
             Column(modifier = Modifier.padding(top = 20.dp)) {
-               // CaptureImage(viewModel = viewModel, baseViewModel = baseViewModel)//ImageSource`.Camera)
+                // CaptureImage(viewModel = viewModel, baseViewModel = baseViewModel)//ImageSource`.Camera)
                 Card(
                     border = BorderStroke(2.dp, Color.DarkGray),
                     elevation = CardDefaults.cardElevation(defaultElevation = 20.dp),
@@ -267,7 +271,8 @@ fun FinalReportScreen(
                     modifier = Modifier
                         .padding(end = 20.dp)
                         .clickable {
-                            ImageSource.Camera
+                            // ImageSource.Camera
+                            viewModel.showImageDialog.value = true
                         }
                         // .align(Alignment.End)
                         .width(80.dp)
@@ -298,7 +303,9 @@ fun FinalReportScreen(
                     style = LocalTextStyle.current.copy(fontSize = 15.sp)
                 )
 
-                for ((index, videoClips) in baseViewModel.imageMultipartList.withIndex()) {
+                var imageList=viewModel.capturedImages.collectAsState().value
+
+                for ((index, imageClips) in viewModel.capturedImagesList.withIndex()) {
 //                    Column(
 //                        modifier = Modifier.fillMaxHeight()
 //                            .wrapContentWidth().align(Alignment.End)
@@ -319,7 +326,7 @@ fun FinalReportScreen(
                                 .wrapContentSize(),
                         ) {
                             Text(
-                                text = "Image_${index}",
+                                text = "Image_${index+1}",
                                 color = Color.DarkGray,
                                 fontSize = 15.sp,
                                 modifier = Modifier.padding(
@@ -335,7 +342,7 @@ fun FinalReportScreen(
                             contentDescription = "close button",
                             colorFilter = ColorFilter.tint(LogoutRed),
                             modifier = Modifier
-                                .clickable { baseViewModel.videoMultipartList.removeAt(index) }
+                                .clickable {viewModel.capturedImagesList.removeAt(index) }
                                 .height(30.dp)
                                 .align(Alignment.CenterVertically)
                                 .padding(start = 5.dp)
@@ -413,7 +420,7 @@ fun FinalReportScreen(
                                 .wrapContentSize(),
                         ) {
                             Text(
-                                text = "Video_${index}",
+                                text = "Video_${index+1}",
                                 color = Color.DarkGray,
                                 fontSize = 15.sp,
                                 modifier = Modifier.padding(
@@ -479,4 +486,6 @@ fun FinalReportScreen(
 //        )
     }//parentColumn
 }//VideoCaptureScreen
+
+
 

@@ -116,7 +116,7 @@ fun LoginScreen(
                     //label = { Text("your mobile number") },
                     leadingIcon = {
                         Icon(
-                            painter = painterResource(id = R.drawable.outline_email_icon),
+                            painter = painterResource(id = R.drawable.ic_launcher_background),
                             contentDescription = "",
                             modifier = Modifier
                                 .height(32.dp)
