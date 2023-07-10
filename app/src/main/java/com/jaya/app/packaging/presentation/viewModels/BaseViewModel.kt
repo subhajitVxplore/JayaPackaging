@@ -28,12 +28,24 @@ class BaseViewModel @Inject constructor(
     var statusBarColor= mutableStateOf(SplashGreen)
         // var videoShootTime= listOf(emptyList<String>())
 
+    var plant= mutableStateOf("")
+    var shift= mutableStateOf("")
+    var date= mutableStateOf("")
+    var mixingSupervisor= mutableStateOf("")
+    var productType= mutableStateOf("")
+    var packingSupervisor= mutableStateOf("")
+
+
+
+
+
     suspend fun addImageMultipartToList(imageUri: String) {
         val file = File(imageUri)
         val imageFile = RequestBody.create("*/*".toMediaTypeOrNull(), file)
         imageMultipartList.add(MultipartBody.Part.createFormData("packaging_img_file",file.name,imageFile)
         )
     }
+
 
 
 }

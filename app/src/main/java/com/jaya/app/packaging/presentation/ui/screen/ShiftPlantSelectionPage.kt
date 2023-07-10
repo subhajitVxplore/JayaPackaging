@@ -48,6 +48,7 @@ import com.jaya.app.packaging.extensions.screenWidth
 import com.jaya.app.packaging.extensions.upToBottom
 import com.jaya.app.packaging.presentation.ui.custom_view.PlantDropdown
 import com.jaya.app.packaging.presentation.ui.custom_view.ShiftDropdown
+import com.jaya.app.packaging.presentation.viewModels.BaseViewModel
 import com.jaya.app.packaging.presentation.viewModels.DashboardViewModel
 import com.jaya.app.packaging.ui.theme.AppBarYellow
 import com.jaya.app.packaging.ui.theme.SplashGreen
@@ -60,7 +61,8 @@ import io.ktor.util.reflect.*
 @Composable
 fun ShiftPlantSelectionPage(
     openDrawer: () -> Unit,
-    viewModel: DashboardViewModel
+    viewModel: DashboardViewModel,
+    baseViewModel: BaseViewModel
 ) {
     val context = LocalContext.current
 
@@ -70,7 +72,9 @@ fun ShiftPlantSelectionPage(
         ) { padding ->
 
             Column(
-                modifier = Modifier.fillMaxSize().padding(padding)
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(padding)
             ) {
                 Row(
                     modifier = Modifier
@@ -84,6 +88,7 @@ fun ShiftPlantSelectionPage(
                         shape = RoundedCornerShape(5.dp),
                         onClick = {
                             viewModel.isShiftAselected.value = true
+                            viewModel.selectedShiftBtnName.value = "A"
                             viewModel.shiftABtnBackColor.value= SplashGreen
                             viewModel.shiftATxtColor.value= Color.White
 
@@ -114,6 +119,7 @@ fun ShiftPlantSelectionPage(
                         shape = RoundedCornerShape(5.dp),
                         onClick = {
                             viewModel.isShiftBselected.value = true
+                            viewModel.selectedShiftBtnName.value = "B"
                             viewModel.shiftBBtnBackColor.value= SplashGreen
                             viewModel.shiftBTxtColor.value= Color.White
 
@@ -144,6 +150,7 @@ fun ShiftPlantSelectionPage(
                         shape = RoundedCornerShape(5.dp),
                         onClick = {
                             viewModel.isShiftCselected.value = true
+                            viewModel.selectedShiftBtnName.value = "C"
                             viewModel.shiftCBtnBackColor.value= SplashGreen
                             viewModel.shiftCTxtColor.value= Color.White
 
@@ -175,7 +182,8 @@ fun ShiftPlantSelectionPage(
                     elevation = CardDefaults.cardElevation(defaultElevation = 20.dp),
                     shape = RoundedCornerShape(5.dp),
                     colors = CardDefaults.cardColors(containerColor = Color.White),
-                    modifier = Modifier.padding(horizontal = 15.dp)
+                    modifier = Modifier
+                        .padding(horizontal = 15.dp)
                         .align(Alignment.CenterHorizontally)
                         .fillMaxWidth()
                         .height(60.dp),
@@ -211,8 +219,10 @@ fun ShiftPlantSelectionPage(
                             PlantDropdown(
                                 //viewModel,
                                 false,
-                                listOf("Plant1", "Plant2", "Plant3", "Plant4"),
+                               // listOf("1","2","3","4"),
+                                viewModel.plantList.collectAsState().value,
                                 onSelect = {
+                                    viewModel.selectedPlantName.value=it
                                     //baseViewModel.getStartedSelectedPlant.value=it
                                     // Toast.makeText(context, "${baseViewModel.getStartedSelectedPlant.value}", Toast.LENGTH_SHORT).show()
                                     //viewModel.selectedPincode.value = it
@@ -234,59 +244,73 @@ fun ShiftPlantSelectionPage(
                 ) {
                     if (!it) {
                         Column(
-                            modifier = Modifier.padding(top = 15.dp)
+                            modifier = Modifier
+                                .padding(top = 15.dp)
                                 .fillMaxSize()
                                 .verticalScroll(rememberScrollState())
                         ) {
 
-                            for ((index, packaging) in viewModel.packagingList.collectAsState().value.withIndex()) {
+                            for ((index, packaging) in viewModel.availableShiftList.collectAsState().value.withIndex()) {
 
-                                Card(
-                                    modifier = Modifier
-                                        .animateContentSize(
-                                            animationSpec = tween(
-                                                durationMillis = 400,
-                                                easing = LinearOutSlowInEasing
-                                            )
-                                        )
-                                        .padding(
-                                            start = 15.dp,
-                                            end = 15.dp,
-                                            top = 10.dp,
-                                            bottom = 15.dp
-                                        )
-                                        .clickable {
-                                            //Toast.makeText(context,"hello$index",Toast.LENGTH_SHORT).show()
-                                            viewModel.onHomePageToAddPackingDetails()
-                                        },
-                                    shape = RoundedCornerShape(8.dp),
-                                    border = BorderStroke(1.dp, Color.LightGray),
-                                    elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
-                                    ) {
-                                    Column(
+                                if ((packaging.shift==viewModel.selectedShiftBtnName.value) and  (packaging.plant==viewModel.selectedPlantName.value)){
+                                    Card(
                                         modifier = Modifier
-                                            .fillMaxWidth()
-                                            .background(Color.White)
-                                            .height(200.dp)
+                                            .animateContentSize(
+                                                animationSpec = tween(
+                                                    durationMillis = 400,
+                                                    easing = LinearOutSlowInEasing
+                                                )
+                                            )
+                                            .padding(
+                                                start = 15.dp,
+                                                end = 15.dp,
+                                                top = 10.dp,
+                                                bottom = 15.dp
+                                            )
+                                            .clickable {
+                                                //Toast.makeText(context,"hello$index",Toast.LENGTH_SHORT).show()
+                                                viewModel.onHomePageToAddPackingDetails()
+                                                baseViewModel.plant.value = packaging.plant
+                                                baseViewModel.shift.value = packaging.shift
+                                                baseViewModel.date.value = packaging.date
+                                                baseViewModel.mixingSupervisor.value =
+                                                    packaging.mixing_supervisor
+                                                baseViewModel.productType.value =
+                                                    packaging.product_type
+                                                baseViewModel.packingSupervisor.value =
+                                                    viewModel.userName.value
+                                            },
+                                        shape = RoundedCornerShape(8.dp),
+                                        border = BorderStroke(1.dp, Color.LightGray),
+                                        elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)
                                     ) {
-
-
+                                        Column(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .background(Color.White)
+                                                .height(200.dp)
+                                        ) {
                                             Column(modifier = Modifier.weight(1f)) {
 
-                                                Row(modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 20.dp)
+                                                Row(modifier = Modifier
+                                                    .padding(
+                                                        start = 20.dp,
+                                                        end = 20.dp,
+                                                        top = 20.dp
+                                                    )
                                                     .fillMaxWidth()
                                                     .wrapContentHeight()
-                                                    ) {
+                                                ) {
                                                     Text(
-                                                        text = "Plant 1 - Shift A",
+                                                        text = "Plant ${packaging.plant} - Shift ${packaging.shift}",
                                                         modifier = Modifier.weight(1f),
-                                                         //   .wrapContentSize(),
+                                                        //   .wrapContentSize(),
                                                         fontSize = 18.sp,
                                                         color = Color.DarkGray,
                                                         fontWeight = FontWeight.Bold
                                                     )
                                                     Text(
-                                                        text = "02/07/2023",
+                                                        text = "${packaging.date}",
                                                         modifier = Modifier
                                                             .wrapContentSize(),
                                                         fontSize = 16.sp,
@@ -305,7 +329,7 @@ fun ShiftPlantSelectionPage(
                                                         //textAlign =
                                                     )
                                                     Text(
-                                                        text = "Suman Sarkar",
+                                                        text = "${packaging.mixing_supervisor}",
                                                         modifier = Modifier.wrapContentSize(),
                                                         fontSize = 16.sp,
                                                         color = Color.DarkGray,
@@ -313,18 +337,23 @@ fun ShiftPlantSelectionPage(
                                                         //textAlign =
                                                     )
                                                 }
-                                                Row(modifier = Modifier.fillMaxWidth().height(50.dp).background(Color.DarkGray)) {
+                                                Row(modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .height(50.dp)
+                                                    .background(Color.DarkGray)) {
                                                     Text(
-                                                        text = "Dream Marie",
+                                                        text = "${packaging.product_type}",
                                                         fontSize = 16.sp,
                                                         color = Color.White,
-                                                        modifier = Modifier.align(Alignment.CenterVertically).padding(start = 20.dp)
+                                                        modifier = Modifier
+                                                            .align(Alignment.CenterVertically)
+                                                            .padding(start = 20.dp)
                                                     )
                                                 }
 
                                                 Row(modifier = Modifier.padding(horizontal = 20.dp, vertical = 15.dp)) {
                                                     Text(
-                                                        text = "Mixing Supervisor : ",
+                                                        text = "Packing Supervisor : ",
                                                         modifier = Modifier
                                                             .wrapContentSize(),
                                                         fontSize = 16.sp,
@@ -332,7 +361,7 @@ fun ShiftPlantSelectionPage(
                                                         //textAlign =
                                                     )
                                                     Text(
-                                                        text = "-",
+                                                        text = "${packaging.packing_supervisor}",
                                                         modifier = Modifier.wrapContentSize(),
                                                         fontSize = 16.sp,
                                                         color = Color.DarkGray,
@@ -342,9 +371,11 @@ fun ShiftPlantSelectionPage(
                                                 }
                                             }
 
-                                    }//column
+                                        }//column
 
+                                    }
                                 }
+
 
                             }//for loop
 
@@ -371,9 +402,14 @@ fun ShiftPlantSelectionPage(
                 }
 
             }
+        }//Scaffold
+        LaunchedEffect(true){
+            viewModel.selectedShiftBtnName.value
+            viewModel.selectedPlantName.value
         }
 
-    }
-}
+    }//parentColumn
+}//ShiftPlantSelectionPage
+
 
 

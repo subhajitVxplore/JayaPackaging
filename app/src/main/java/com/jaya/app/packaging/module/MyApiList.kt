@@ -2,12 +2,17 @@ package com.jaya.app.packaging.module
 
 import com.jaya.app.core.domain.models.AddProductModel
 import com.jaya.app.core.domain.models.AppVersionModel
+import com.jaya.app.core.domain.models.AvailablePlantShiftModel
 import com.jaya.app.core.domain.models.BaseUrlModel
 import com.jaya.app.core.domain.models.GetOtpModel
+import com.jaya.app.core.domain.models.PackingLabourListModel
+import com.jaya.app.core.domain.models.PlantListModel
 import com.jaya.app.core.domain.models.ProductTypesModel
 import com.jaya.app.core.domain.models.RecentPackagingModel
+import com.jaya.app.core.domain.models.RunningShiftListModel
 import com.jaya.app.core.domain.models.UserDetailsModel
 import com.jaya.app.core.domain.models.VerifyOtpModel
+import com.jaya.app.core.domain.models.WorkersListModel
 import okhttp3.MultipartBody
 import retrofit2.http.*
 
@@ -28,8 +33,23 @@ interface MyApiList {
     @GET("b67e7dc541c962d4707e")
     suspend fun getUserDetails(): UserDetailsModel
 
-    @GET("30f115b34c98e47c8ec9")
-    suspend fun getPackagingList(): RecentPackagingModel
+//    @GET("30f115b34c98e47c8ec9")
+//    suspend fun getPackagingList(): RecentPackagingModel
+
+    @GET("eff18e1aec9cc5e3edb8")
+    suspend fun getRunningShiftList(): RunningShiftListModel
+
+    @GET("73413359935d2cab6f44")
+    suspend fun getAvailablePlantShiftList(): AvailablePlantShiftModel
+
+    @GET("d1e20e6edb0b9a3a8e11")
+    suspend fun getAvailableWorkersList(): WorkersListModel
+
+    @GET("d0de5e7bea81aac26729")
+    suspend fun getPackingLabourList(): PackingLabourListModel
+
+    @GET("ee6a6917bee1f42a44e5")
+    suspend fun getPlants(): PlantListModel
 
     @GET("61acf630747f10fb04da")
     suspend fun getProductTypes(): ProductTypesModel
@@ -47,8 +67,8 @@ interface MyApiList {
         @Field("product_type") product_type: String,
         @Field("start_time") start_time: String,
         @Field("end_time") end_time: String,
-        @Part video_clip_list:List<MultipartBody.Part>
-       // @Part("video_clip_list") videoFiles:List<MultipartBody.Part>
+        @Part video_clip_list: List<MultipartBody.Part>
+        // @Part("video_clip_list") videoFiles:List<MultipartBody.Part>
     ): AddProductModel
 
 

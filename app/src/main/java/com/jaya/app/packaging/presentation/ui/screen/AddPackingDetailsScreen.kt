@@ -38,6 +38,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -154,16 +155,16 @@ fun AddPackingDetailsScreen(
                             .height(160.dp)
                     ) {
 
-
                         Column(modifier = Modifier.weight(1f)) {
 
-                            Row(modifier = Modifier
-                                .padding(start = 20.dp, end = 20.dp, top = 20.dp)
-                                .fillMaxWidth()
-                                .wrapContentHeight()
+                            Row(
+                                modifier = Modifier
+                                    .padding(start = 20.dp, end = 20.dp, top = 20.dp)
+                                    .fillMaxWidth()
+                                    .wrapContentHeight()
                             ) {
                                 Text(
-                                    text = "Plant 1 - Shift A",
+                                    text = "Plant ${baseViewModel.plant.value} - Shift ${baseViewModel.shift.value}",
                                     modifier = Modifier.weight(1f),
                                     //   .wrapContentSize(),
                                     fontSize = 18.sp,
@@ -171,7 +172,7 @@ fun AddPackingDetailsScreen(
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
-                                    text = "02/07/2023",
+                                    text = "${baseViewModel.date.value}",
                                     modifier = Modifier
                                         .wrapContentSize(),
                                     fontSize = 16.sp,
@@ -190,7 +191,7 @@ fun AddPackingDetailsScreen(
                                     //textAlign =
                                 )
                                 Text(
-                                    text = "Suman Sarkar",
+                                    text = "${baseViewModel.mixingSupervisor.value}",
                                     modifier = Modifier.wrapContentSize(),
                                     fontSize = 16.sp,
                                     color = Color.DarkGray,
@@ -198,12 +199,14 @@ fun AddPackingDetailsScreen(
                                     //textAlign =
                                 )
                             }
-                            Row(modifier = Modifier
-                                .fillMaxWidth()
-                                .height(50.dp)
-                                .background(Color.DarkGray)) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(50.dp)
+                                    .background(Color.DarkGray)
+                            ) {
                                 Text(
-                                    text = "Dream Marie",
+                                    text = "${baseViewModel.productType.value}",
                                     fontSize = 16.sp,
                                     color = Color.White,
                                     modifier = Modifier
@@ -219,10 +222,12 @@ fun AddPackingDetailsScreen(
                 }
 
                 OutlinedTextField(
-                    value = viewModel.packingSupervisorName.value,
+                    readOnly = true,
+                    enabled = false,
+                    value = baseViewModel.packingSupervisor.value,
                     onValueChange = { viewModel.packingSupervisorName.value = it },
                     //label = { Text("your mobile number") },
-                    placeholder = { Text("Enter Packing Supervisor Name", color = Color.Gray) },
+                    placeholder = { Text("Packing Supervisor Name", color = Color.Gray) },
                     colors = TextFieldDefaults.outlinedTextFieldColors(
                         focusedBorderColor = Color.Gray,
                         unfocusedBorderColor = Color.Gray
@@ -236,7 +241,8 @@ fun AddPackingDetailsScreen(
                 PackingMistriDropdown(
                     viewModel,
                     false,
-                    listOf("Mistri A","Mistri B","Mistri C","Mistri D","Mistri E"),
+                    // listOf("Mistri A","Mistri B","Mistri C","Mistri D","Mistri E"),
+                    viewModel.packingMistriList.collectAsState().value,
                     onSelect = {
                         //  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                         //viewModel.selectedPincode.value = it
@@ -245,7 +251,8 @@ fun AddPackingDetailsScreen(
                 PackingOperatorDropdown(
                     viewModel,
                     false,
-                    listOf("Operator A","Operator B","Operator C","Operator D","Operator E"),
+                    //listOf("Operator A","Operator B","Operator C","Operator D","Operator E"),
+                    viewModel.packingOperatorList.collectAsState().value,
                     onSelect = {
                         //  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                         //viewModel.selectedPincode.value = it
@@ -254,7 +261,8 @@ fun AddPackingDetailsScreen(
                 PackersNumberDropdown(
                     viewModel,
                     false,
-                    listOf("Packers 1","Packers 2","Packers 3","Packers 4","Packers 5"),
+                    // listOf("Packers 1","Packers 2","Packers 3","Packers 4","Packers 5"),
+                    viewModel.packersNumberList.collectAsState().value,
                     onSelect = {
                         //  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                         //viewModel.selectedPincode.value = it
@@ -263,38 +271,40 @@ fun AddPackingDetailsScreen(
                 LabourSearchDropdown(
                     viewModel,
                     false,
-                    listOf("hello","Subhajit","Sunil","Samaresh"),
+                    // listOf("hello","Subhajit","Sunil","Samaresh"),
+                    viewModel.packingLabours.collectAsState().value,
                     onSelect = {
                         //  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                         //viewModel.selectedPincode.value = it
                     })
 
-                for ((index, workersName) in viewModel.packingLabourList.withIndex() ) {
-
+                for ((index, workersName) in viewModel.packingLabourList.withIndex()) {
 //                    var value by remember(workersName) {
 //                        mutableStateOf(workersName)
 //                    }
-
-                    Row(modifier = Modifier
-                        .padding(start = 20.dp, end = 20.dp, top = 10.dp)
-                        .fillMaxWidth()
-                        .wrapContentHeight()
+                    Row(
+                        modifier = Modifier
+                            .padding(start = 20.dp, end = 20.dp, top = 10.dp)
+                            .fillMaxWidth()
+                            .wrapContentHeight()
                     ) {
                         Text(
-                            text = "${index+1}. $workersName",
-                            modifier = Modifier.weight(1f).align(Alignment.CenterVertically),
+                            text = "${index + 1}. $workersName",
+                            modifier = Modifier
+                                .weight(1f)
+                                .align(Alignment.CenterVertically),
                             //   .wrapContentSize(),
                             fontSize = 17.sp,
                             color = Color.DarkGray,
-                           // fontWeight = FontWeight.Bold
+                            // fontWeight = FontWeight.Bold
                         )
                         IconButton(onClick = {
-                          //  viewModel.showHidepasswordText.value = false
+                            //  viewModel.showHidepasswordText.value = false
                         }) {
                             Icon(
                                 painter = painterResource(id = R.drawable.delete_labour_svg),
                                 contentDescription = null,
-                                 tint = LogoutRed,
+                                tint = LogoutRed,
                                 modifier = Modifier
                                     .width(screenWidth * 0.15f)
                                     .align(Alignment.CenterVertically)
@@ -302,7 +312,7 @@ fun AddPackingDetailsScreen(
                                         indication = null,
                                         interactionSource = remember { MutableInteractionSource() },
                                         onClick = {
-                                                 viewModel.packingLabourList.removeAt(index)
+                                            viewModel.packingLabourList.removeAt(index)
                                         },
                                         role = Role.Image
                                     )
@@ -311,7 +321,6 @@ fun AddPackingDetailsScreen(
 
                     }
                 }
-
 
 
             }//column
@@ -397,7 +406,7 @@ fun AddPackingDetailsScreen(
                             onClick = {
                                 viewModel.loadingg.value = true
 
-                                viewModel.addProduct()
+                                // viewModel.addProduct()
 
                                 val timer = object : CountDownTimer(5000, 1000) {
                                     override fun onTick(millisUntilFinished: Long) {

@@ -8,13 +8,17 @@ import androidx.lifecycle.viewModelScope
 import com.example.core.utils.AppNavigator
 import com.jaya.app.core.common.Destination
 import com.jaya.app.core.common.EmitType
+import com.jaya.app.core.domain.models.AvailablePlantShift
 import com.jaya.app.core.domain.models.Packaging
+import com.jaya.app.core.domain.models.Plant
+import com.jaya.app.core.domain.models.RunningShift
 import com.jaya.app.core.domain.models.UserData
 import com.jaya.app.core.domain.useCases.DashboardUseCases
 import com.jaya.app.packaging.extensions.MyDialog
 import com.jaya.app.packaging.extensions.castListToRequiredTypes
 import com.jaya.app.packaging.extensions.castValueToRequiredTypes
 import com.jaya.app.packaging.helpers_impl.SavableMutableState
+import com.jaya.app.packaging.ui.theme.SplashGreen
 import com.jaya.app.packaging.utility.UiData
 import com.vxplore.core.common.DialogData
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -42,17 +46,27 @@ class DashboardViewModel @Inject constructor(
     var designation = mutableStateOf("")
     var packagingShift = mutableStateOf("")
     var packagingPlant = mutableStateOf("")
-    private val _packagingList = MutableStateFlow(emptyList<Packaging>())
-    val packagingList = _packagingList.asStateFlow()
+
+    private val _runningShiftList = MutableStateFlow(emptyList<RunningShift>())
+    val runningShiftList = _runningShiftList.asStateFlow()
+
+    private val _availableShiftList = MutableStateFlow(emptyList<AvailablePlantShift>())
+    val availableShiftList = _availableShiftList.asStateFlow()
+
+    private val _plantList = MutableStateFlow(emptyList<Plant>())
+    val plantList = _plantList.asStateFlow()
+
+
     val dashboardBack = mutableStateOf<MyDialog?>(null)
 
 
     var selectedShiftBtnStatus = mutableStateOf(false)
-    var selectedShiftBtnName = mutableStateOf("false")
+    var selectedShiftBtnName = mutableStateOf("A")
+    var selectedPlantName = mutableStateOf("1")
 
-    var isShiftAselected = mutableStateOf(false)
-    var shiftABtnBackColor = mutableStateOf(Color.White)
-    var shiftATxtColor = mutableStateOf(Color.DarkGray)
+    var isShiftAselected = mutableStateOf(true)
+    var shiftABtnBackColor = mutableStateOf(SplashGreen)
+    var shiftATxtColor = mutableStateOf(Color.White)
 
     var isShiftBselected = mutableStateOf(false)
     var shiftBBtnBackColor = mutableStateOf(Color.White)
@@ -66,9 +80,7 @@ class DashboardViewModel @Inject constructor(
 
     var loadingButton = mutableStateOf(true)
     var loadingg = mutableStateOf(false)
-
     var isHomePageShow = mutableStateOf(true)
-
     var showVideoImageDialog = mutableStateOf(false)
 
     var cameraImageFlag = mutableStateOf(false)
@@ -76,7 +88,9 @@ class DashboardViewModel @Inject constructor(
 
     init {
         getUserDetails()
-        getPackagingList()
+        getRunningShiftList()
+        getAvailablePlantShiftList()
+        getPlants()
         //isShiftAselected.value=true
     }
 
@@ -190,26 +204,81 @@ class DashboardViewModel @Inject constructor(
             }.launchIn(viewModelScope)
     }
 
-    private fun getPackagingList() {
-        dashBoardUseCases.getPackagingList()
+    private fun getPlants() {
+        dashBoardUseCases.getPlants()
             .flowOn(Dispatchers.IO)
             .onEach {
                 when (it.type) {
-                    EmitType.PACKAGING_PLANT -> {
-                        it.value?.castValueToRequiredTypes<String>()?.let {
-                            packagingShift.value = it
+
+                    EmitType.PLANT_LIST -> {
+                        it.value?.castListToRequiredTypes<Plant>()?.let { packaging ->
+                            _plantList.update { packaging }
                         }
                     }
 
-                    EmitType.PACKAGING_SHIFT -> {
-                        it.value?.castValueToRequiredTypes<String>()?.let {
-                            packagingPlant.value = it
+                    EmitType.NetworkError -> {
+                        it.value?.apply {
+                            castValueToRequiredTypes<String>()?.let {
+
+                            }
                         }
                     }
+
+                    EmitType.Loading -> {
+                        it.value?.apply {
+                            castValueToRequiredTypes<Boolean>()?.let {
+                                dataLoading.setValue(it)
+                            }
+                        }
+                    }
+
+                    else -> {}
+                }
+            }.launchIn(viewModelScope)
+    }
+
+    private fun getRunningShiftList() {
+        dashBoardUseCases.getRunningShiftList()
+            .flowOn(Dispatchers.IO)
+            .onEach {
+                when (it.type) {
 
                     EmitType.PACKAGING_LIST -> {
-                        it.value?.castListToRequiredTypes<Packaging>()?.let { packaging ->
-                            _packagingList.update { packaging }
+                        it.value?.castListToRequiredTypes<RunningShift>()?.let { packaging ->
+                            _runningShiftList.update { packaging }
+                        }
+                    }
+
+                    EmitType.NetworkError -> {
+                        it.value?.apply {
+                            castValueToRequiredTypes<String>()?.let {
+
+                            }
+                        }
+                    }
+
+                    EmitType.Loading -> {
+                        it.value?.apply {
+                            castValueToRequiredTypes<Boolean>()?.let {
+                                dataLoading.setValue(it)
+                            }
+                        }
+                    }
+
+                    else -> {}
+                }
+            }.launchIn(viewModelScope)
+    }
+
+    private fun getAvailablePlantShiftList() {
+        dashBoardUseCases.getAvailablePlantShiftList()
+            .flowOn(Dispatchers.IO)
+            .onEach {
+                when (it.type) {
+
+                    EmitType.PACKAGING_LIST -> {
+                        it.value?.castListToRequiredTypes<AvailablePlantShift>()?.let { packaging ->
+                            _availableShiftList.update { packaging }
                         }
                     }
 
@@ -246,7 +315,7 @@ class DashboardViewModel @Inject constructor(
     fun onHomePageToAddPackingDetails() {
         appNavigator.tryNavigateTo(
             route = Destination.AddPackingDetails(),
-            popUpToRoute = Destination.Dashboard(),
+            //popUpToRoute = Destination.Dashboard(),
             isSingleTop = true,
             inclusive = true
         )
@@ -255,7 +324,7 @@ class DashboardViewModel @Inject constructor(
     fun onHomePageToFinalReport() {
         appNavigator.tryNavigateTo(
             route = Destination.FinalReport(),
-           //popUpToRoute = Destination.Dashboard(),
+            //popUpToRoute = Destination.Dashboard(),
             isSingleTop = true,
             inclusive = true
         )

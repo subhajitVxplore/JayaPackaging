@@ -220,7 +220,7 @@ fun BodyContentComponent(
 ) {
     when (currentScreen) {
 
-        DrawerAppScreen.Home ->if(viewModel.isHomePageShow.value) HomePage(openDrawer, viewModel,baseViewModel) else ShiftPlantSelectionPage(openDrawer, viewModel)
+        DrawerAppScreen.Home ->if(viewModel.isHomePageShow.value) HomePage(openDrawer, viewModel,baseViewModel) else ShiftPlantSelectionPage(openDrawer, viewModel,baseViewModel)
         // DrawerAppScreen.Home -> ShiftPlantSelectionPage(openDrawer, viewModel)
     }
 }

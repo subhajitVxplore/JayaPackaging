@@ -9,6 +9,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -83,8 +84,10 @@ fun FinalReportScreen(
                     .width(screenWidth * 0.15f)
                     .align(Alignment.CenterVertically)
                     .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() },
                         onClick = {
-                            viewModel.onVideoCaptureToDashboard()
+                            viewModel.onFinalReportToDashboard()
                         },
                         role = Role.Image
                     )
@@ -140,7 +143,7 @@ fun FinalReportScreen(
                             .wrapContentHeight()
                     ) {
                         Text(
-                            text = "Plant 1 - Shift A",
+                            text = "Plant ${baseViewModel.plant.value} - Shift ${baseViewModel.shift.value}",
                             modifier = Modifier.weight(1f),
                             //   .wrapContentSize(),
                             fontSize = 18.sp,
@@ -148,7 +151,7 @@ fun FinalReportScreen(
                             fontWeight = FontWeight.Bold
                         )
                         Text(
-                            text = "02/07/2023",
+                            text = "${baseViewModel.date.value}",
                             modifier = Modifier
                                 .wrapContentSize(),
                             fontSize = 16.sp,
@@ -171,7 +174,7 @@ fun FinalReportScreen(
                             //textAlign =
                         )
                         Text(
-                            text = "Suman Sarkar",
+                            text = "${baseViewModel.mixingSupervisor.value}",
                             modifier = Modifier.wrapContentSize(),
                             fontSize = 16.sp,
                             color = Color.DarkGray,
@@ -186,7 +189,7 @@ fun FinalReportScreen(
                             .background(Color.DarkGray)
                     ) {
                         Text(
-                            text = "Dream Marie",
+                            text = "${baseViewModel.productType.value}",
                             fontSize = 16.sp,
                             color = Color.White,
                             modifier = Modifier
@@ -202,7 +205,7 @@ fun FinalReportScreen(
                         )
                     ) {
                         Text(
-                            text = "Mixing Supervisor : ",
+                            text = "Packing Supervisor : ",
                             modifier = Modifier
                                 .wrapContentSize(),
                             fontSize = 16.sp,
@@ -210,7 +213,7 @@ fun FinalReportScreen(
                             //textAlign =
                         )
                         Text(
-                            text = "Suman Sarkar",
+                            text = "${baseViewModel.packingSupervisor.value}",
                             modifier = Modifier.wrapContentSize(),
                             fontSize = 16.sp,
                             color = Color.DarkGray,
@@ -228,7 +231,7 @@ fun FinalReportScreen(
         Button(
             onClick = {
                 //   Toast.makeText(context, "continue", Toast.LENGTH_SHORT).show()
-                viewModel.onHomePageToImageCapture()
+                viewModel.onFinalReportToProductionReport()
             },
             enabled = viewModel.loadingButton.value,
             shape = RoundedCornerShape(5.dp),
@@ -256,7 +259,7 @@ fun FinalReportScreen(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp),
+                .padding(start = 20.dp),
             //horizontalArrangement = Arrangement.SpaceBetween,
             // verticalAlignment = Alignment.CenterVertically
         ) {
@@ -297,7 +300,7 @@ fun FinalReportScreen(
                 Text(
                     text = "Image",
                     modifier = Modifier
-                        .padding(top = 5.dp, end = 40.dp),
+                        .padding(start=15.dp,top = 5.dp, end = 40.dp),
                     // .align(Alignment.End),
                     color = Color.DarkGray,
                     style = LocalTextStyle.current.copy(fontSize = 15.sp)
@@ -409,7 +412,7 @@ fun FinalReportScreen(
                     Row(
                         modifier = Modifier
                             .align(Alignment.End)
-                            .padding(top = 10.dp)
+                            .padding(top = 10.dp, end = 10.dp)
                             .wrapContentSize()
                     ) {
                         Card(

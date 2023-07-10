@@ -11,7 +11,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.core.utils.AppNavigator
 import com.jaya.app.core.common.Destination
 import com.jaya.app.core.common.EmitType
+import com.jaya.app.core.domain.models.AvailablePackersNumber
+import com.jaya.app.core.domain.models.AvailablePackingMistri
+import com.jaya.app.core.domain.models.AvailablePackingOperator
+import com.jaya.app.core.domain.models.PackingLabour
 import com.jaya.app.core.domain.models.ProductType
+import com.jaya.app.core.domain.useCases.AddPackingDetailsUseCases
 import com.jaya.app.core.domain.useCases.AddProductUseCases
 import com.jaya.app.core.helpers.AppStore
 import com.jaya.app.packaging.extensions.MyDialog
@@ -34,7 +39,7 @@ import javax.inject.Inject
 @HiltViewModel
 class AddPackingDetailsViewModel @Inject constructor(
     private val appNavigator: AppNavigator,
-    private val addProductUseCases: AddProductUseCases,
+    private val addPackingDetailsUseCases: AddPackingDetailsUseCases,
     private val pref: AppStore,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -42,35 +47,31 @@ class AddPackingDetailsViewModel @Inject constructor(
     val loader = SavableMutableState(UiData.LOADER, savedStateHandle, false)
     var productName = mutableStateOf("")
     var packingSupervisorName = mutableStateOf("")
-    var batchNumber = mutableStateOf("")
-    var selectedProduct = mutableStateOf("Choose Product")
+
     var selectedPackingMistri = mutableStateOf("Packing Mistri")
     var selectedPackingOperator = mutableStateOf("Packing Operator")
     var selectedPackersNumber = mutableStateOf("Packers Number")
 
     var packingLabourList = mutableStateListOf<String>()
 
-    var showWorkersNameDialog = mutableStateOf(false)
-    var workersNameTxt = mutableStateOf("")
-
-    //var isSuggestionVisible by mutableStateOf(false)
     var isSuggestionVisible = mutableStateOf(false)
-    var currentSuggestion = mutableStateOf("")
-    var selectedSuggestion = mutableStateOf("")
 
-    //    private val _productTypes = MutableStateFlow(emptyList<ProductType>())
-//    val productTypes = _productTypes.asStateFlow()
-    private val _productTypes = MutableStateFlow<List<ProductType>?>(null)
-    val productTypes = _productTypes.asStateFlow()
+    private val _packingMistriList = MutableStateFlow<List<AvailablePackingMistri>?>(null)
+    val packingMistriList = _packingMistriList.asStateFlow()
 
-//    private val _vendors = MutableStateFlow<List<Vendor>?>(null)
-//    val vendors = _vendors.asStateFlow()
+    private val _packingOperatorList = MutableStateFlow<List<AvailablePackingOperator>?>(null)
+    val packingOperatorList = _packingOperatorList.asStateFlow()
 
-    var startTimeSelected = mutableStateOf("Start Time")
-    var endTimeSelected = mutableStateOf("End Time")
+    private val _packersNumberList = MutableStateFlow<List<AvailablePackersNumber>?>(null)
+    val packersNumberList = _packersNumberList.asStateFlow()
+
+//    private val _packingLabours = MutableStateFlow<List<PackingLabour>?>(null)
+//    val packingLabours = _packingLabours.asStateFlow()
+
+    private val _packingLabours = MutableStateFlow(emptyList<PackingLabour>())
+    var packingLabours = _packingLabours.asStateFlow()
 
     var backendMessage = mutableStateOf("")
-
     var loadingButton = mutableStateOf(true)
     var loadingg = mutableStateOf(false)
     val saveDetailsDialog = mutableStateOf<MyDialog?>(null)
@@ -81,7 +82,9 @@ class AddPackingDetailsViewModel @Inject constructor(
 
 
     init {
-       // getProductTypes()
+        // getProductTypes()
+        getAvailableWorkersList()
+        getPackingLabourList()
     }
 
 
@@ -145,138 +148,69 @@ class AddPackingDetailsViewModel @Inject constructor(
     }
 
 
-//   fun getProductTypes(query: TextFieldValue) {
-//
-//       packingLabourSearchQuery = query
-//        addProductUseCases.getProductTypesTest(query.text)
-//            .flowOn(Dispatchers.IO)
-//            .onEach {
-//                when (it.type) {
-//
-//                    EmitType.PRODUCT_TYPES -> {
-//                        it.value?.castListToRequiredTypes<ProductType>()?.let { products ->
-//                            _productTypes.update { products }
-//                        }
-//                    }
-//
-//                    EmitType.NetworkError -> {
-//                        it.value?.apply {
-//                            castValueToRequiredTypes<String>()?.let {
-//
-//                            }
-//                        }
-//                    }
-//
-//
-//                    else -> {}
-//                }
-//            }.launchIn(viewModelScope)
-//    }
-
-    fun addProduct() {
-        addProductUseCases.addProduct()
+    fun getAvailableWorkersList() {
+        addPackingDetailsUseCases.getAvailableWorkersList()
             .flowOn(Dispatchers.IO)
             .onEach {
                 when (it.type) {
 
-                    EmitType.Navigate -> {
-                        it.value?.apply {
-
-                            castValueToRequiredTypes<Destination.NoArgumentsDestination>()?.let { destination ->
-                                appNavigator.tryNavigateTo(
-                                    destination(),
-                                    popUpToRoute = Destination.AddProduct(),
-                                    isSingleTop = true,
-                                    inclusive = true
-                                )
+                    EmitType.PACKING_MISTRI_LIST -> {
+                        it.value?.castListToRequiredTypes<AvailablePackingMistri>()
+                            ?.let { products ->
+                                _packingMistriList.update { products }
                             }
-                        }
                     }
 
-                    EmitType.Loading -> {
-                        it.value?.castValueToRequiredTypes<Boolean>()?.let {
-                            loadingButton.value = it
-                        }
+                    EmitType.PACKING_OPERATOR_LIST -> {
+                        it.value?.castListToRequiredTypes<AvailablePackingOperator>()
+                            ?.let { products ->
+                                _packingOperatorList.update { products }
+                            }
                     }
 
-                    EmitType.BackendSuccess -> {
-                        it.value?.apply {
-                            castValueToRequiredTypes<String>()?.let {
-                                backendMessage.value = it
+                    EmitType.PACKING_NUMBER_LIST -> {
+                        it.value?.castListToRequiredTypes<AvailablePackersNumber>()
+                            ?.let { products ->
+                                _packersNumberList.update { products }
                             }
-                        }
                     }
 
                     EmitType.NetworkError -> {
                         it.value?.apply {
                             castValueToRequiredTypes<String>()?.let {
-                                backendMessage.value = it
+
                             }
                         }
                     }
+
 
                     else -> {}
                 }
             }.launchIn(viewModelScope)
     }
 
-    fun submitPackingDetails(
-        product_name: String,
-        packing_name: String,
-        batch_number: String,
-        product_type: String,
-        start_time: String,
-        end_time: String,
-        video_clip_list: List<MultipartBody.Part>
-    ) {
-        addProductUseCases.submitPackingDetails(
-            product_name,
-            packing_name,
-            batch_number,
-            product_type,
-            start_time,
-            end_time,
-            video_clip_list
-        )
+    fun getPackingLabourList() {
+        addPackingDetailsUseCases.getPackingLabourList()
             .flowOn(Dispatchers.IO)
             .onEach {
                 when (it.type) {
 
-                    EmitType.Navigate -> {
-                        it.value?.apply {
-
-                            castValueToRequiredTypes<Destination.NoArgumentsDestination>()?.let { destination ->
-                                appNavigator.tryNavigateTo(
-                                    destination(),
-                                    popUpToRoute = Destination.AddProduct(),
-                                    isSingleTop = true,
-                                    inclusive = true
-                                )
+                    EmitType.PACKING_LABOUR_LIST -> {
+                        it.value?.castListToRequiredTypes<PackingLabour>()
+                            ?.let { products ->
+                                _packingLabours.update { products }
                             }
-                        }
                     }
 
-                    EmitType.Loading -> {
-                        it.value?.castValueToRequiredTypes<Boolean>()?.let {
-                            loadingButton.value = it
-                        }
-                    }
-
-                    EmitType.BackendSuccess -> {
-                        it.value?.apply {
-                            castValueToRequiredTypes<String>()?.let {
-                                backendMessage.value = it
-                            }
-                        }
-                    }
 
                     EmitType.NetworkError -> {
                         it.value?.apply {
                             castValueToRequiredTypes<String>()?.let {
-                                backendMessage.value = it
+
                             }
                         }
                     }
+
 
                     else -> {}
                 }

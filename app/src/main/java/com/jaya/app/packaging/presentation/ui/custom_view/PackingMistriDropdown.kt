@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jaya.app.core.domain.models.AvailablePackingMistri
 import com.jaya.app.core.domain.models.ProductType
 import com.jaya.app.packaging.extensions.bottomToUp
 import com.jaya.app.packaging.extensions.screenHeight
@@ -37,7 +38,7 @@ import com.jaya.app.packaging.presentation.viewModels.BaseViewModel
 fun PackingMistriDropdown(
     viewModel: AddPackingDetailsViewModel,
     loading: Boolean,
-    dataList: List<String>,
+    dataList: List<AvailablePackingMistri>?,
     onSelect: (String) -> Unit
 ) {//need to inherit "DropDownItem" to model classes
 
@@ -109,11 +110,11 @@ fun PackingMistriDropdown(
                     expanded = mExpanded,
                     onDismissRequest = { mExpanded = false },
                 ) {
-                    dataList.forEach { item ->
+                    dataList?.forEach { item ->
                         DropdownMenuItem(
                             text = {
                                 Column {
-                                    Text(text = item)
+                                    Text(text = item.packing_mistri_name)
                                     Divider(
                                         color = Color.LightGray,
                                         thickness = 0.8.dp,
@@ -122,7 +123,7 @@ fun PackingMistriDropdown(
                                 }
                                    },
                             onClick = {
-                            mSelectedText = item
+                            mSelectedText = item.packing_mistri_name
                             mExpanded = false
                             onSelect(mSelectedText)
                         })

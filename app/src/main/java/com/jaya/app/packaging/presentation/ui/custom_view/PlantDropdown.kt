@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jaya.app.core.domain.models.Plant
 import com.jaya.app.packaging.extensions.bottomToUp
 import com.jaya.app.packaging.extensions.screenHeight
 import com.jaya.app.packaging.extensions.screenWidth
@@ -31,7 +32,7 @@ import com.jaya.app.packaging.extensions.upToBottom
 fun PlantDropdown(
     // viewModel: AddProductViewModel,
     loading: Boolean,
-    dataList: List<String>,
+    dataList: List<Plant>,
     onSelect: (String) -> Unit
 ) {//need to inherit "DropDownItem" to model classes
 
@@ -40,7 +41,8 @@ fun PlantDropdown(
 
     //  mSelectedText=baseViewModel.prefilledExpenseType
     if (mSelectedText.isEmpty()) {
-        mSelectedText = "Select Plant"
+       // mSelectedText = "Select Plant"
+        mSelectedText = "1"
     }
 
     val icon = if (mExpanded)
@@ -76,13 +78,16 @@ fun PlantDropdown(
                         .fillMaxHeight()
                         .weight(1f)
                         .padding(start = 15.dp)) {
-                        Text(
-                            text = mSelectedText,
+                         Text(
+                            //text = if (mSelectedText=="Select Plant") mSelectedText else "Plant${mSelectedText}",
+                            text = "Plant${mSelectedText}",
                             //label = label,
                             color = Color.DarkGray,
                             fontSize = 17.sp,
                             modifier = Modifier.align(Alignment.CenterVertically)
                         )
+
+
                     }
                     Icon(icon, "contentDescription",
                         Modifier
@@ -105,7 +110,7 @@ fun PlantDropdown(
                         DropdownMenuItem(
                             text = {
                                 Column {
-                                    Text(text = item)
+                                    Text(text = "Plant${item.plant_no}")
                                     Divider(
                                         color = Color.LightGray,
                                         thickness = 0.8.dp,
@@ -114,7 +119,7 @@ fun PlantDropdown(
                                 }
                             },
                             onClick = {
-                                mSelectedText = item
+                                mSelectedText = item.plant_no
                                 mExpanded = false
                                 onSelect(mSelectedText)
                             })

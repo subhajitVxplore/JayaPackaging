@@ -1,5 +1,6 @@
 package com.jaya.app.packaging.presentation.ui.custom_view
 
+import android.widget.Toast
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.BorderStroke
@@ -29,8 +30,10 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jaya.app.core.domain.models.PackingLabour
 import com.jaya.app.core.domain.models.ProductType
 import com.jaya.app.packaging.extensions.bottomToUp
 import com.jaya.app.packaging.extensions.screenHeight
@@ -48,7 +51,7 @@ import java.util.Locale
 fun LabourSearchDropdown(
     viewModel: AddPackingDetailsViewModel,
     loading: Boolean,
-    dataList: List<String>,
+    dataList: List<PackingLabour>,//PackingLabour
     onSelect: (String) -> Unit
 ) {//need to inherit "DropDownItem" to model classes
 
@@ -87,7 +90,8 @@ fun LabourSearchDropdown(
 
                         Row(modifier = Modifier
                             //.clickable { mExpanded = !mExpanded }
-                            .fillMaxHeight().fillMaxWidth()
+                            .fillMaxHeight()
+                            .fillMaxWidth()
                             .weight(1f)) {
 
 
@@ -99,7 +103,7 @@ fun LabourSearchDropdown(
 
                                                 },
                                 //label = { Text("your mobile number") },
-                                placeholder = { Text("Search Packing Labour", color = Color.Gray) },
+                                placeholder = { Text("Search Labour", color = Color.Gray) },
                                 colors = TextFieldDefaults.outlinedTextFieldColors(
                                     focusedBorderColor = Color.Gray,
                                     unfocusedBorderColor = Color.Gray
@@ -124,24 +128,32 @@ fun LabourSearchDropdown(
                                         imageVector = Icons.Filled.Clear,
                                         contentDescription = "",
                                         modifier = Modifier
-                                            .clickable { mSelectedText="" }
+                                            .clickable { mSelectedText = "" }
                                             .height(32.dp)
                                             .width(32.dp),
                                         tint = Color.LightGray
                                     )
                                 },
-
                             )
                         }
+                        val context= LocalContext.current
                         Button(
                             contentPadding = PaddingValues(0.dp),
                             onClick = {
                                // viewModel.showWorkersNameDialog.value = true  //for Dialog
-                                viewModel.packingLabourList.add(mSelectedText)
-                                mSelectedText=""
+                                if (mSelectedText.isNullOrEmpty()){
+                                    Toast.makeText(context, "Please search & select a name", Toast.LENGTH_SHORT).show()
+                                }else{
+                                    viewModel.packingLabourList.add(mSelectedText)
+                                    mSelectedText=""
+                                }
+
                             },
                             colors = ButtonDefaults.buttonColors(SplashGreen),
-                            modifier = Modifier.height(55.dp).width(55.dp).align(Alignment.CenterVertically),
+                            modifier = Modifier
+                                .height(55.dp)
+                                .width(55.dp)
+                                .align(Alignment.CenterVertically),
                             shape = RoundedCornerShape(5.dp),
                         ) {
                             Icon(
@@ -158,7 +170,7 @@ fun LabourSearchDropdown(
 
 //------------------------------------------------------------------------------------//
 
-                var filteredList: List<String>
+                var filteredList: List<PackingLabour>
                 DropdownMenu(
                     modifier= Modifier.wrapContentHeight(),
                     expanded = mExpanded,
@@ -169,10 +181,11 @@ fun LabourSearchDropdown(
                     filteredList = if (searchedText.isEmpty()) {
                         dataList
                     } else {
-                        val resultList = ArrayList<String>()
+                        val resultList = ArrayList<PackingLabour>()
                         for (datum in dataList) {
                           //  if (datum.lowercase(Locale.getDefault()).contains(searchedText.lowercase(Locale.getDefault()))
-                            if (datum.lowercase(Locale.getDefault()).startsWith(searchedText.lowercase(Locale.getDefault()))) {
+                           // if (datum.lowercase(Locale.getDefault()).startsWith(searchedText.lowercase(Locale.getDefault()))) {
+                            if (datum.packing_labour_name.lowercase(Locale.getDefault()).startsWith(searchedText.lowercase(Locale.getDefault()))) {
 
 
                                 resultList.add(datum)
@@ -185,7 +198,7 @@ fun LabourSearchDropdown(
                         DropdownMenuItem(
                             text = {
                                 Column {
-                                    Text(text = if (item.startsWith(mSelectedText)) item else item)
+                                    Text(text = if (item.packing_labour_name.startsWith(mSelectedText)) item.packing_labour_name else item.packing_labour_name)
                                     Divider(
                                         color = Color.LightGray,
                                         thickness = 0.8.dp,
@@ -194,7 +207,7 @@ fun LabourSearchDropdown(
                                 }
                                    },
                             onClick = {
-                            mSelectedText = item
+                            mSelectedText = item.packing_labour_name
                             mExpanded = false
                             onSelect(mSelectedText)
                         })

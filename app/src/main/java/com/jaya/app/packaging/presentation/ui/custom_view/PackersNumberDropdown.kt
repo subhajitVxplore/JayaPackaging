@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jaya.app.core.domain.models.AvailablePackersNumber
 import com.jaya.app.core.domain.models.ProductType
 import com.jaya.app.packaging.extensions.bottomToUp
 import com.jaya.app.packaging.extensions.screenHeight
@@ -37,7 +38,7 @@ import com.jaya.app.packaging.presentation.viewModels.BaseViewModel
 fun PackersNumberDropdown(
     viewModel: AddPackingDetailsViewModel,
     loading: Boolean,
-    dataList: List<String>,
+    dataList: List<AvailablePackersNumber>?,
     onSelect: (String) -> Unit
 ) {//need to inherit "DropDownItem" to model classes
 
@@ -103,17 +104,16 @@ fun PackersNumberDropdown(
 
 //------------------------------------------------------------------------------------//
 
-
                 DropdownMenu(
                     modifier= Modifier.wrapContentHeight(),
                     expanded = mExpanded,
                     onDismissRequest = { mExpanded = false },
                 ) {
-                    dataList.forEach { item ->
+                    dataList?.forEach { item ->
                         DropdownMenuItem(
                             text = {
                                 Column {
-                                    Text(text = item)
+                                    Text(text = item.packers_number)
                                     Divider(
                                         color = Color.LightGray,
                                         thickness = 0.8.dp,
@@ -122,7 +122,7 @@ fun PackersNumberDropdown(
                                 }
                                    },
                             onClick = {
-                            mSelectedText = item
+                            mSelectedText = item.packers_number
                             mExpanded = false
                             onSelect(mSelectedText)
                         })

@@ -79,7 +79,15 @@ class FinalReportViewModel @Inject constructor(
 
 
 
-    fun onHomePageToImageCapture() {
+    fun onFinalReportToProductionReport() {
+        appNavigator.tryNavigateTo(
+            route = Destination.ProductionReport(),
+            //popUpToRoute = Destination.Dashboard(),
+            isSingleTop = true,
+            inclusive = true
+        )
+    }
+  fun onHomePageToImageCapture() {
         appNavigator.tryNavigateTo(
             route = Destination.ImageCapture(),
             //popUpToRoute = Destination.Dashboard(),
@@ -97,10 +105,10 @@ fun onHomePageToVideoCapture() {
         )
     }
 
-    fun onVideoCaptureToDashboard() {
+    fun onFinalReportToDashboard() {
         appNavigator.tryNavigateTo(
-            route = Destination.FinalReport(),
-            popUpToRoute = Destination.CaptureVideo(),
+            route = Destination.Dashboard(),
+            popUpToRoute = Destination.FinalReport(),
             isSingleTop = true,
             inclusive = true
         )

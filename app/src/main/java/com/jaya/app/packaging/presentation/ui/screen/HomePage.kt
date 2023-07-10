@@ -129,7 +129,7 @@ fun HomePage(
                                 .fillMaxSize()
                                 .verticalScroll(rememberScrollState())
                         ) {
-                            for ((index, packaging) in viewModel.packagingList.collectAsState().value.withIndex()) {
+                            for ((index, packaging) in viewModel.runningShiftList.collectAsState().value.withIndex()) {
                                 Card(
                                     modifier = Modifier
                                         .animateContentSize(
@@ -147,6 +147,12 @@ fun HomePage(
                                         .clickable {
                                             //Toast.makeText(context,"hello$index",Toast.LENGTH_SHORT).show()
                                             viewModel.onHomePageToFinalReport()
+                                            baseViewModel.plant.value=packaging.plant
+                                            baseViewModel.shift.value=packaging.shift
+                                            baseViewModel.date.value=packaging.date
+                                            baseViewModel.mixingSupervisor.value=packaging.mixing_supervisor
+                                            baseViewModel.productType.value=packaging.product_type
+                                            baseViewModel.packingSupervisor.value=viewModel.userName.value
                                         },
                                     shape = RoundedCornerShape(8.dp),
                                     border = BorderStroke(1.dp, Color.LightGray),
@@ -156,7 +162,7 @@ fun HomePage(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .background(Color.White)
-                                            .height(480.dp)
+                                            .height(280.dp)
                                     ) {
                                         Column(modifier = Modifier.weight(1f)) {
                                             Row(
@@ -170,7 +176,8 @@ fun HomePage(
                                                     .wrapContentHeight()
                                             ) {
                                                 Text(
-                                                    text = "Plant 1 - Shift A",
+                                                    //text = "Plant 1 - Shift A",
+                                                    text = "Plant ${packaging.plant} - Shift ${packaging.shift}",
                                                     modifier = Modifier.weight(1f),
                                                     //   .wrapContentSize(),
                                                     fontSize = 18.sp,
@@ -178,7 +185,7 @@ fun HomePage(
                                                     fontWeight = FontWeight.Bold
                                                 )
                                                 Text(
-                                                    text = "02/07/2023",
+                                                    text = "${packaging.date}",
                                                     modifier = Modifier
                                                         .wrapContentSize(),
                                                     fontSize = 16.sp,
@@ -201,7 +208,7 @@ fun HomePage(
                                                     //textAlign =
                                                 )
                                                 Text(
-                                                    text = "Suman Sarkar",
+                                                    text = "${packaging.mixing_supervisor}",
                                                     modifier = Modifier.wrapContentSize(),
                                                     fontSize = 16.sp,
                                                     color = Color.DarkGray,
@@ -216,7 +223,7 @@ fun HomePage(
                                                     .background(Color.DarkGray)
                                             ) {
                                                 Text(
-                                                    text = "Dream Marie",
+                                                    text = "${packaging.product_type}",
                                                     fontSize = 16.sp,
                                                     color = Color.White,
                                                     modifier = Modifier
@@ -232,7 +239,7 @@ fun HomePage(
                                                 )
                                             ) {
                                                 Text(
-                                                    text = "Mixing Supervisor : ",
+                                                    text = "Packing Supervisor : ",
                                                     modifier = Modifier
                                                         .wrapContentSize(),
                                                     fontSize = 16.sp,
@@ -240,7 +247,7 @@ fun HomePage(
                                                     //textAlign =
                                                 )
                                                 Text(
-                                                    text = "Suman Sarkar",
+                                                    text = "${packaging.packing_supervisor}",
                                                     modifier = Modifier.wrapContentSize(),
                                                     fontSize = 16.sp,
                                                     color = Color.DarkGray,
@@ -249,44 +256,8 @@ fun HomePage(
                                                 )
                                             }
 
-//                                            OutlinedTextField(readOnly = true,
-//                                                value = viewModel.uploadProofBtnTxt.value,
-//                                                onValueChange = {
-//                                                    viewModel.uploadProofBtnTxt.value = it
-//                                                },
-//                                                modifier = Modifier.focusRequester(focusRequester)
-//                                                    .onFocusChanged {
-//                                                        if (it.isFocused) {
-//                                                            // viewModel.onHomePageToBreakDownReport()
-//                                                            viewModel.showVideoImageDialog.value=true
-//                                                            focusManager.clearFocus()
-//                                                        } else {
-//                                                            // not focused
-//                                                        }
-//                                                    }
-//                                                    .fillMaxWidth()
-//                                                    .padding(horizontal = 15.dp),
-//                                                textStyle = TextStyle.Default.copy(
-//                                                    fontSize = 17.sp,
-//                                                    fontWeight = FontWeight.Bold
-//                                                ),
-//                                                colors = TextFieldDefaults.outlinedTextFieldColors(
-//                                                    containerColor = Color.LightGray,
-//                                                    textColor = Color.DarkGray,
-//                                                    unfocusedBorderColor = Color.Gray,
-//                                                    focusedBorderColor = Color.Gray
-//                                                ),
-//                                                leadingIcon = {
-//                                                    Icon(
-//                                                        painter = painterResource(id = R.drawable.upload_cloud_svg),
-//                                                        contentDescription = "",
-//                                                        modifier = Modifier.padding(start = 10.dp)
-//                                                        // tint = Color.LightGray
-//                                                    )
-//                                                })
-
                                             Text(
-                                                text = "${baseViewModel.videoMultipartList.size} Video Uploaded",
+                                                text = "${packaging.video_count} Video Uploaded",
                                                 modifier = Modifier
                                                     .wrapContentSize()
                                                     .padding(start = 20.dp, top = 10.dp),
@@ -296,7 +267,7 @@ fun HomePage(
                                                 //textAlign =
                                             )
                                             Text(
-                                                text = "${baseViewModel.imageMultipartList.size} Image Uploaded",
+                                                text = "${packaging.image_count} Image Uploaded",
                                                 modifier = Modifier
                                                     .wrapContentSize()
                                                     .padding(start = 20.dp, top = 10.dp),
@@ -305,8 +276,6 @@ fun HomePage(
                                                 fontWeight = FontWeight.Bold
                                                 //textAlign =
                                             )
-
-
                                         }
 
                                     }//column
