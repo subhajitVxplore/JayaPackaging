@@ -68,7 +68,7 @@ fun DashboardScreen(
 ) {
 //    baseViewModel.statusBarColor.value= AppBarYellow
 //    LaunchedEffect(true){baseViewModel.statusBarColor.value}
-    val currentScreen = remember { mutableStateOf(DrawerAppScreen.Home) }
+    var currentScreen = remember { mutableStateOf(DrawerAppScreen.Home) }
     val coroutineScope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val ctx = LocalContext.current
@@ -83,7 +83,8 @@ fun DashboardScreen(
             DrawerContentComponent(
                 currentScreen = currentScreen,
                 closeDrawer = { coroutineScope.launch { drawerState.close() } },
-                viewModel
+                viewModel,
+                baseViewModel
             )
         }
     ) {
@@ -208,7 +209,10 @@ enum class DrawerAppScreen { Home }
 
 fun getScreenBasedOnIndex(index: Int) = when (index) {
     0 -> DrawerAppScreen.Home
+   // 1 -> DrawerAppScreen.ShiftPlant
     else -> DrawerAppScreen.Home
+
+    //viewModel.isHomePageShow.value = false
 }
 
 @Composable
@@ -220,8 +224,8 @@ fun BodyContentComponent(
 ) {
     when (currentScreen) {
 
-        DrawerAppScreen.Home ->if(viewModel.isHomePageShow.value) HomePage(openDrawer, viewModel,baseViewModel) else ShiftPlantSelectionPage(openDrawer, viewModel,baseViewModel)
-        // DrawerAppScreen.Home -> ShiftPlantSelectionPage(openDrawer, viewModel)
+        DrawerAppScreen.Home ->if(baseViewModel.isHomePageShow.value) HomePage(openDrawer, viewModel,baseViewModel) else ShiftPlantSelectionPage(openDrawer, viewModel,baseViewModel)
+        // DrawerAppScreen.ShiftPlant -> ShiftPlantSelectionPage(openDrawer, viewModel,baseViewModel)
     }
 }
 
@@ -229,7 +233,8 @@ fun BodyContentComponent(
 fun DrawerContentComponent(
     currentScreen: MutableState<DrawerAppScreen>,
     closeDrawer: () -> Unit,
-    viewModel: DashboardViewModel
+    viewModel: DashboardViewModel,
+    baseViewModel: BaseViewModel
 ) {
 
     Column(
@@ -301,6 +306,7 @@ fun DrawerContentComponent(
         for (index in DrawerAppScreen.values().indices) {
             val screen = getScreenBasedOnIndex(index)
             Column(Modifier.clickable(onClick = {
+                baseViewModel.isHomePageShow.value = true
                 currentScreen.value = screen
                 closeDrawer()
             }), content = {

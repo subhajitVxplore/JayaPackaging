@@ -59,41 +59,41 @@ class OtpUseCases @Inject constructor(
         }
     }
 
-    fun resendOtp() = flow {
-        emit(Data(EmitType.Loading, true))
-        when (val response = loginRepository.getOtp()) {
-            is Resource.Success -> {
-                emit(Data(EmitType.Loading, false))
-                response.data?.apply {
-                    when (status) {
-                        true -> {
-                            if (isUser) {
-                                emit(Data(type = EmitType.BackendSuccess, value ="OTP=$otp"))
-                            } else {
-                                emit(Data(type = EmitType.BackendError, value =message))
-                            }
-                        }
-
-                        else -> {
-                            emit(Data(type = EmitType.BackendError, value = message))
-                        }
-                    }
-                }
-            }
-
-            is Resource.Error -> {
-                handleFailedResponse(
-                    response = response,
-                    message = response.message,
-                    emitType = EmitType.NetworkError
-                )
-            }
-
-            else -> {
-
-            }
-        }
-    }
+//    fun resendOtp() = flow {
+//        emit(Data(EmitType.Loading, true))
+//        when (val response = loginRepository.getOtp()) {
+//            is Resource.Success -> {
+//                emit(Data(EmitType.Loading, false))
+//                response.data?.apply {
+//                    when (status) {
+//                        true -> {
+//                            if (isUser) {
+//                                emit(Data(type = EmitType.BackendSuccess, value ="OTP=$otp"))
+//                            } else {
+//                                emit(Data(type = EmitType.BackendError, value =message))
+//                            }
+//                        }
+//
+//                        else -> {
+//                            emit(Data(type = EmitType.BackendError, value = message))
+//                        }
+//                    }
+//                }
+//            }
+//
+//            is Resource.Error -> {
+//                handleFailedResponse(
+//                    response = response,
+//                    message = response.message,
+//                    emitType = EmitType.NetworkError
+//                )
+//            }
+//
+//            else -> {
+//
+//            }
+//        }
+//    }
 
 
 }

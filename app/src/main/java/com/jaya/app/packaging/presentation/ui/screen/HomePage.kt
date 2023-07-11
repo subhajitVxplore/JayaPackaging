@@ -87,7 +87,7 @@ fun HomePage(
             floatingActionButton = {
                 FloatingActionButton(
                     onClick = {
-                        viewModel.isHomePageShow.value = false
+                        baseViewModel.isHomePageShow.value = false
                     },
                     modifier = Modifier.size(55.dp),
                     //backgroundColor = WhiteGray,
@@ -153,6 +153,7 @@ fun HomePage(
                                             baseViewModel.mixingSupervisor.value=packaging.mixing_supervisor
                                             baseViewModel.productType.value=packaging.product_type
                                             baseViewModel.packingSupervisor.value=viewModel.userName.value
+
                                         },
                                     shape = RoundedCornerShape(8.dp),
                                     border = BorderStroke(1.dp, Color.LightGray),

@@ -17,62 +17,30 @@ import javax.inject.Inject
 
 class LoginUseCases @Inject constructor(
     private val loginRepository: LoginRepository,
-    private val otpRepository: OtpRepository,
     private val appStore: AppStore
 ) {
 
     fun login() = flow {
         emit(Data(EmitType.Loading, true))
-        when (val response = otpRepository.verifyOtp()) {
-            is Resource.Success -> {
-                emit(Data(EmitType.Loading, false))
-                response.data?.apply {
-                    when (status) {
-                        true -> {
-                            if (isMatched) {
-                                appStore.login(userId)
-                                emit(Data(type = EmitType.BackendSuccess, value =message))
-                                emit(Data(type = EmitType.Navigate, value = Destination.Dashboard))
-                            } else {
-                                emit(Data(type = EmitType.BackendError, value =message))
-                            }
-                        }
-
-                        else -> {
-                            emit(Data(type = EmitType.BackendError, value = message))
-                        }
-                    }
-                }
-            }
-
-            is Resource.Error -> {
-                handleFailedResponse(
-                    response = response,
-                    message = response.message,
-                    emitType = EmitType.NetworkError
-                )
-            }
-
-            else -> {
-
-            }
-        }
-    }
-
-
-    fun getOtp() = flow {
-        emit(Data(EmitType.Loading, true))
-        when (val response = loginRepository.getOtp()) {
+        when (val response = loginRepository.login()) {
             is Resource.Success -> {
                 emit(Data(EmitType.Loading, false))
                 response.data?.apply {
                     when (status) {
                         true -> {
                             if (isUser) {
-                                emit(Data(type = EmitType.BackendSuccess, value ="$message \n  OTP=$otp"))
-                                emit(Data(type = EmitType.Navigate, value = Destination.Dashboard))
-                            } else {
-                                emit(Data(type = EmitType.BackendError, value =message))
+                                appStore.login(userId)
+                                if (isMatched) {
+                                    emit(Data(type = EmitType.BackendSuccess, value = message))
+                                    emit(
+                                        Data(
+                                            type = EmitType.Navigate,
+                                            value = Destination.Dashboard
+                                        )
+                                    )
+                                } else {
+                                    emit(Data(type = EmitType.BackendError, value = message))
+                                }
                             }
                         }
 
@@ -96,6 +64,8 @@ class LoginUseCases @Inject constructor(
             }
         }
     }
+
+
 
 
 }

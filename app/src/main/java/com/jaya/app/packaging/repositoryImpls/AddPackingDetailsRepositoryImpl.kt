@@ -2,6 +2,7 @@ package com.jaya.app.packaging.repositoryImpls
 
 
 import com.jaya.app.core.common.Resource
+import com.jaya.app.core.domain.models.AddPackingDetailsModel
 import com.jaya.app.core.domain.models.AddProductModel
 import com.jaya.app.core.domain.models.AppVersionModel
 import com.jaya.app.core.domain.models.BaseUrlModel
@@ -35,6 +36,14 @@ class AddPackingDetailsRepositoryImpl @Inject constructor(
     override suspend fun getPackingLabourList(): Resource<PackingLabourListModel> {
         return try {
             Resource.Success(myApiList.getPackingLabourList())
+        } catch (ex: Exception) {
+            Resource.Error(message = ex.message)
+        }
+    }
+
+    override suspend fun addPackingDetails(): Resource<AddPackingDetailsModel> {
+        return try {
+            Resource.Success(myApiList.addPackingDetails())
         } catch (ex: Exception) {
             Resource.Error(message = ex.message)
         }

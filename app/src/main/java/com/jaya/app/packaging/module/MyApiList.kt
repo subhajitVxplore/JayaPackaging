@@ -1,10 +1,14 @@
 package com.jaya.app.packaging.module
 
+import com.jaya.app.core.domain.models.AddPackingDetailsModel
 import com.jaya.app.core.domain.models.AddProductModel
 import com.jaya.app.core.domain.models.AppVersionModel
 import com.jaya.app.core.domain.models.AvailablePlantShiftModel
 import com.jaya.app.core.domain.models.BaseUrlModel
+import com.jaya.app.core.domain.models.BatchNoListModel
+import com.jaya.app.core.domain.models.FinalReportSubmitModel
 import com.jaya.app.core.domain.models.GetOtpModel
+import com.jaya.app.core.domain.models.LoginModel
 import com.jaya.app.core.domain.models.PackingLabourListModel
 import com.jaya.app.core.domain.models.PlantListModel
 import com.jaya.app.core.domain.models.ProductTypesModel
@@ -26,6 +30,9 @@ interface MyApiList {
 
     @GET("e3e6637118816ba631ca")
     suspend fun getOtp(): GetOtpModel
+
+    @GET("e3e6637118816ba631ca")
+    suspend fun login(): LoginModel
 
     @GET("16549f6d32a350455f94")
     suspend fun verifyOtp(): VerifyOtpModel
@@ -51,11 +58,20 @@ interface MyApiList {
     @GET("ee6a6917bee1f42a44e5")
     suspend fun getPlants(): PlantListModel
 
+    @GET("fb46a8f5ea514a7f6538")
+    suspend fun getBatches(): BatchNoListModel
+
     @GET("61acf630747f10fb04da")
     suspend fun getProductTypes(): ProductTypesModel
 
     @GET("87e9ad8f2bd0dc6bf02e")
     suspend fun addProduct(): AddProductModel
+
+    @GET("414cac3af7e41d0cc0aa")
+    suspend fun addPackingDetails(): AddPackingDetailsModel
+
+    @GET("d084b99f3b31724300e1")
+    suspend fun submitFinalReport(): FinalReportSubmitModel
 
     @Multipart
     @POST("add_packing_data/{user_id}")

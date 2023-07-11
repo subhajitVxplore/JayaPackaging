@@ -335,7 +335,8 @@ fun AddPackingDetailsScreen(
             Button(
                 onClick = {
 
-
+                          viewModel.addPackingDetails()
+                    baseViewModel.isHomePageShow.value = true
                 },
                 enabled = viewModel.loadingButton.value,
                 shape = RoundedCornerShape(5.dp),

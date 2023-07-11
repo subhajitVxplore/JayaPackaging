@@ -116,7 +116,7 @@ fun LoginScreen(
                     //label = { Text("your mobile number") },
                     leadingIcon = {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_launcher_background),
+                            painter = painterResource(id = R.drawable.outline_email_logo),
                             contentDescription = "",
                             modifier = Modifier
                                 .height(32.dp)
@@ -254,7 +254,7 @@ fun LoginScreen(
                 ) {
                     if (!viewModel.loadingg.value) {
                         Text(
-                            text = "Get OTP Verification",
+                            text = "Login Now",
                             color = Color.White,
                             fontSize = 18.sp,
                         )

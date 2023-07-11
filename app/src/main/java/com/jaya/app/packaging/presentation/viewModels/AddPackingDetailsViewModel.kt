@@ -202,7 +202,6 @@ class AddPackingDetailsViewModel @Inject constructor(
                             }
                     }
 
-
                     EmitType.NetworkError -> {
                         it.value?.apply {
                             castValueToRequiredTypes<String>()?.let {
@@ -211,6 +210,52 @@ class AddPackingDetailsViewModel @Inject constructor(
                         }
                     }
 
+                    else -> {}
+                }
+            }.launchIn(viewModelScope)
+    }
+
+    fun addPackingDetails() {
+        addPackingDetailsUseCases.addPackingDetails()
+            .flowOn(Dispatchers.IO)
+            .onEach {
+                when (it.type) {
+
+                    EmitType.Navigate -> {
+                        it.value?.apply {
+
+                            castValueToRequiredTypes<Destination.NoArgumentsDestination>()?.let { destination ->
+                                appNavigator.tryNavigateTo(
+                                    destination(),
+                                    popUpToRoute = Destination.AddPackingDetails(),
+                                    isSingleTop = true,
+                                    inclusive = true
+                                )
+                            }
+                        }
+                    }
+
+                    EmitType.Loading -> {
+                        it.value?.castValueToRequiredTypes<Boolean>()?.let {
+                            loadingButton.value = it
+                        }
+                    }
+
+                    EmitType.BackendSuccess -> {
+                        it.value?.apply {
+                            castValueToRequiredTypes<String>()?.let {
+                                backendMessage.value = it
+                            }
+                        }
+                    }
+
+                    EmitType.NetworkError -> {
+                        it.value?.apply {
+                            castValueToRequiredTypes<String>()?.let {
+                                backendMessage.value = it
+                            }
+                        }
+                    }
 
                     else -> {}
                 }

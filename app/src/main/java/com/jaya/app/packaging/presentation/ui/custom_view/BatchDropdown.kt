@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.jaya.app.core.domain.models.Batches
 import com.jaya.app.packaging.extensions.bottomToUp
 import com.jaya.app.packaging.extensions.screenHeight
 import com.jaya.app.packaging.extensions.screenWidth
@@ -30,7 +31,7 @@ import com.jaya.app.packaging.extensions.upToBottom
 fun BatchDropdown(
    // viewModel: AddProductViewModel,
     loading: Boolean,
-    dataList: List<String>,
+    dataList: List<Batches>,
     onSelect: (String) -> Unit
 ) {//need to inherit "DropDownItem" to model classes
 
@@ -103,7 +104,7 @@ fun BatchDropdown(
                         DropdownMenuItem(
                             text = {
                                 Column {
-                                    Text(text = item)
+                                    Text(text = item.batch_no)
                                     Divider(
                                         color = Color.LightGray,
                                         thickness = 0.8.dp,
@@ -112,7 +113,7 @@ fun BatchDropdown(
                                 }
                                    },
                             onClick = {
-                            mSelectedText = item
+                            mSelectedText = item.batch_no
                             mExpanded = false
                             onSelect(mSelectedText)
                         })

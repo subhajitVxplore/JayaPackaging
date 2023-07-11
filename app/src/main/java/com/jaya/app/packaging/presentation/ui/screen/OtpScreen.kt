@@ -226,7 +226,7 @@ fun OtpScreen(
                                 Toast.makeText(context,"Please enter a valid email address",Toast.LENGTH_SHORT).show()
 
                             } else{
-                                viewModel.resendOtp()
+                                //viewModel.resendOtp()
                                 val timer = object : CountDownTimer(15000, 1000) {
                                     override fun onTick(millisUntilFinished: Long) {
                                         viewModel.resendButtonTxt.value ="00:0${(millisUntilFinished / 1000)}"

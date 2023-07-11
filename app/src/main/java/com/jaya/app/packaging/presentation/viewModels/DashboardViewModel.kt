@@ -80,7 +80,7 @@ class DashboardViewModel @Inject constructor(
 
     var loadingButton = mutableStateOf(true)
     var loadingg = mutableStateOf(false)
-    var isHomePageShow = mutableStateOf(true)
+    //var isHomePageShow = mutableStateOf(true)
     var showVideoImageDialog = mutableStateOf(false)
 
     var cameraImageFlag = mutableStateOf(false)
@@ -232,7 +232,9 @@ class DashboardViewModel @Inject constructor(
                         }
                     }
 
-                    else -> {}
+                    else -> {
+
+                    }
                 }
             }.launchIn(viewModelScope)
     }

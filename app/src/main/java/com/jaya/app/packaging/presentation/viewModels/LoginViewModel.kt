@@ -26,7 +26,6 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val appNavigator: AppNavigator,
     private val loginUseCases: LoginUseCases,
-    private val otpUseCases: OtpUseCases,
     private val pref: AppStore,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
@@ -53,7 +52,7 @@ class LoginViewModel @Inject constructor(
 
     fun login() {
         // viewModelScope.launch {
-        otpUseCases.verifyOtp()
+        loginUseCases.login()
             .flowOn(Dispatchers.IO)
             .onEach {
                 when (it.type) {
@@ -94,55 +93,7 @@ class LoginViewModel @Inject constructor(
             }.launchIn(viewModelScope)
         // }
     }
-    fun getOtp() {
-       // viewModelScope.launch {
-            loginUseCases.getOtp()
-                .flowOn(Dispatchers.IO)
-                .onEach {
-                    when (it.type) {
 
-                        EmitType.BackendSuccess -> {
-                            it.value?.castValueToRequiredTypes<String>()?.let {
-                                    successMessage.value = it
-                                    Log.d("getOtp", "getOtp: ${successMessage.value}++++")
-                                    //_successMessage.update { it }
-
-                                }
-
-                        }
-
-                        EmitType.BackendError -> {
-                            it.value?.apply {
-                                castValueToRequiredTypes<String>()?.let {
-                                    errorMessage.value = it
-                                }
-                            }
-                        }
-                        EmitType.Loading -> {
-                            it.value?.castValueToRequiredTypes<Boolean>()?.let {
-                                loadingButton.value = it
-                            }
-                        }
-
-                        EmitType.Navigate -> {
-                            it.value?.apply {
-
-                                castValueToRequiredTypes<Destination.NoArgumentsDestination>()?.let { destination ->
-                                    appNavigator.tryNavigateTo(
-                                        destination(),
-                                        popUpToRoute = Destination.Login(),
-                                        isSingleTop = true,
-                                        inclusive = true
-                                    )
-                                }
-                            }
-                        }
-
-                        else -> {}
-                    }
-                }.launchIn(viewModelScope)
-       // }
-    }
 
 
     fun onLoginToOtp() {

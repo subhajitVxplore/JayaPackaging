@@ -35,6 +35,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -175,7 +176,7 @@ fun ProductionReportScreen(
                                 .fillMaxHeight(),
                         ) {
                             Text(
-                                text = "Plant 5 (Shift A)",
+                                text = "Plant ${baseViewModel.plant.value} (Shift ${baseViewModel.shift.value})",
                                 color = Color.DarkGray,
                                 fontSize = 17.sp,
                                 modifier = Modifier
@@ -230,7 +231,8 @@ fun ProductionReportScreen(
                             BatchDropdown(
                                 //viewModel,
                                 false,
-                                listOf("12", "13", "14", "15"),
+                                //listOf("12", "13", "14", "15"),
+                                viewModel.batchList.collectAsState().value,
                                 onSelect = {
                                     viewModel.batchName.value=it
                                     //  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
@@ -280,7 +282,7 @@ fun ProductionReportScreen(
                                 .fillMaxHeight(),
                         ) {
                             Text(
-                                text = "Dream Marie",
+                                text = "${baseViewModel.productType.value}",
                                 color = Color.DarkGray,
                                 fontSize = 17.sp,
                                 modifier = Modifier
@@ -488,7 +490,7 @@ fun ProductionReportScreen(
 //                        baseViewModel.isProductionReportDone.value = true
 //                        CoroutineScope(Dispatchers.Default).launch {viewModel.popScreen()}
 //                    }
-
+                    viewModel.onBack()
 
                 },
                 enabled = viewModel.loadingButton.value,

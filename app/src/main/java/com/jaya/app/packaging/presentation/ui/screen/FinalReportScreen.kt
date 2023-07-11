@@ -1,6 +1,7 @@
 package com.jaya.app.packaging.presentation.ui.screen
 
 import android.os.Build
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearOutSlowInEasing
@@ -100,7 +101,7 @@ fun FinalReportScreen(
                 style = LocalTextStyle.current.copy(fontSize = 20.sp)
             )
         }
-//---------------------
+//--------------------------------------------------------------------------------------------------
 
         Card(
             modifier = Modifier
@@ -266,6 +267,7 @@ fun FinalReportScreen(
 
             Column(modifier = Modifier.padding(top = 20.dp)) {
                 // CaptureImage(viewModel = viewModel, baseViewModel = baseViewModel)//ImageSource`.Camera)
+                val context= LocalContext.current
                 Card(
                     border = BorderStroke(2.dp, Color.DarkGray),
                     elevation = CardDefaults.cardElevation(defaultElevation = 20.dp),
@@ -275,7 +277,14 @@ fun FinalReportScreen(
                         .padding(end = 20.dp)
                         .clickable {
                             // ImageSource.Camera
-                            viewModel.showImageDialog.value = true
+                            if (viewModel.capturedImagesList.size < 3){
+                                viewModel.showImageDialog.value = true
+                            }else{
+                                Toast
+                                    .makeText(context, "Maximum image limit is Three(3)", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+
                         }
                         // .align(Alignment.End)
                         .width(80.dp)
@@ -370,7 +379,14 @@ fun FinalReportScreen(
                     modifier = Modifier
                         .padding(end = 20.dp)
                         .clickable {
-                            viewModel.onHomePageToVideoCapture()
+                            if (baseViewModel.videoMultipartList.size < 3) {
+                                viewModel.onHomePageToVideoCapture()
+                            } else {
+                                Toast
+                                    .makeText(context, "Maximum video limit is Three(3)", Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+
                         }
                         .align(Alignment.End)
                         .width(80.dp)
@@ -457,6 +473,7 @@ fun FinalReportScreen(
                 onClick = {
                     //   Toast.makeText(context, "continue", Toast.LENGTH_SHORT).show()
                     //viewModel.onHomePageToReportSubmitSuccess()
+                          viewModel.submitFinalReport()
                 },
                 enabled = viewModel.loadingButton.value,
                 shape = RoundedCornerShape(5.dp),

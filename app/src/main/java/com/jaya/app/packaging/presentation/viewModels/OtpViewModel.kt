@@ -86,41 +86,41 @@ class OtpViewModel @Inject constructor(
     }
 
 
-    fun resendOtp() {
-        // viewModelScope.launch {
-        otpUseCases.resendOtp()
-            .flowOn(Dispatchers.IO)
-            .onEach {
-                when (it.type) {
-
-                    EmitType.BackendSuccess -> {
-                        it.value?.castValueToRequiredTypes<String>()?.let {
-                            successMessage.value = it
-                            Log.d("getOtp", "getOtp: ${successMessage.value}++++")
-                            //_successMessage.update { it }
-
-                        }
-
-                    }
-
-                    EmitType.BackendError -> {
-                        it.value?.apply {
-                            castValueToRequiredTypes<String>()?.let {
-                                errorMessage.value = it
-                            }
-                        }
-                    }
-                    EmitType.Loading -> {
-                        it.value?.castValueToRequiredTypes<Boolean>()?.let {
-                            loadingButton.value = it
-                        }
-                    }
-
-                    else -> {}
-                }
-            }.launchIn(viewModelScope)
-        // }
-    }
+//    fun resendOtp() {
+//        // viewModelScope.launch {
+//        otpUseCases.resendOtp()
+//            .flowOn(Dispatchers.IO)
+//            .onEach {
+//                when (it.type) {
+//
+//                    EmitType.BackendSuccess -> {
+//                        it.value?.castValueToRequiredTypes<String>()?.let {
+//                            successMessage.value = it
+//                            Log.d("getOtp", "getOtp: ${successMessage.value}++++")
+//                            //_successMessage.update { it }
+//
+//                        }
+//
+//                    }
+//
+//                    EmitType.BackendError -> {
+//                        it.value?.apply {
+//                            castValueToRequiredTypes<String>()?.let {
+//                                errorMessage.value = it
+//                            }
+//                        }
+//                    }
+//                    EmitType.Loading -> {
+//                        it.value?.castValueToRequiredTypes<Boolean>()?.let {
+//                            loadingButton.value = it
+//                        }
+//                    }
+//
+//                    else -> {}
+//                }
+//            }.launchIn(viewModelScope)
+//        // }
+//    }
 
 
 

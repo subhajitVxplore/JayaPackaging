@@ -18,6 +18,7 @@ enum class EmitType {
     PACKING_NUMBER_LIST,
     PACKING_LABOUR_LIST,
     PLANT_LIST,
+    BATCH_LIST,
 
 
 }

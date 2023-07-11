@@ -35,6 +35,8 @@ class BaseViewModel @Inject constructor(
     var productType= mutableStateOf("")
     var packingSupervisor= mutableStateOf("")
 
+    var isHomePageShow = mutableStateOf(true)
+
 
 
 

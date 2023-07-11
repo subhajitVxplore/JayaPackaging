@@ -94,7 +94,41 @@ class AddPackingDetailsUseCases @Inject constructor(
         }
     }
 
+    fun addPackingDetails() = flow {
+        emit(Data(EmitType.Loading, true))
+        when (val response = addPackingDetailsRepository.addPackingDetails()) {//appStore.userId()
+            //when (val response =
+            is Resource.Success -> {
+                emit(Data(EmitType.Loading, false))
+                response.data?.apply {
+                    when (status) {
+                        true -> {
+                            if (isAdded) {
+                                emit(Data(type = EmitType.Navigate, value = Destination.Dashboard))
+                                emit(Data(type = EmitType.BackendSuccess, value = message))
+                            }
+                        }
 
+                        else -> {
+                            emit(Data(type = EmitType.BackendError, value = message))
+                        }
+                    }
+                }
+            }
+
+            is Resource.Error -> {
+                handleFailedResponse(
+                    response = response,
+                    message = response.message,
+                    emitType = EmitType.NetworkError
+                )
+            }
+
+            else -> {
+
+            }
+        }
+    }
 
 
 
