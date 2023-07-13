@@ -55,6 +55,9 @@ class ProductionReportViewModel @Inject constructor(
     //var packedDetailsList= mutableStateListOf<String>()
     var packedDetailsList= mutableStateListOf<AddProductInfoRequest>()
 
+    var totalWeight= mutableStateOf(0f)
+    var totalWeightTxt= mutableStateOf("")
+
     private val _batchList = MutableStateFlow(emptyList<Batches>())
     val batchList = _batchList.asStateFlow()
 

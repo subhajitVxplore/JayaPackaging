@@ -117,10 +117,6 @@ fun FinalReportScreen(
                     top = 20.dp,
                     bottom = 15.dp
                 ),
-//                .clickable {
-//                    //Toast.makeText(context,"hello$index",Toast.LENGTH_SHORT).show()
-//                    viewModel.onHomePageToFinalReport()
-//                },
             shape = RoundedCornerShape(8.dp),
             border = BorderStroke(1.dp, Color.LightGray),
             elevation = CardDefaults.cardElevation(defaultElevation = 5.dp)

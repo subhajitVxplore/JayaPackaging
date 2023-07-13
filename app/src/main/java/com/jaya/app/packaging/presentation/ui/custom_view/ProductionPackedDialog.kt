@@ -189,6 +189,7 @@ fun ProductionPackedDialog(
                                // viewModel.packingLabourList.add(viewModel.workersNameTxt.value)
                                // viewModel.packedDetailsList.add("${viewModel.packedGmsText.value}")
                                 viewModel.packedDetailsList.add(AddProductInfoRequest("${viewModel.packedGmsText.value}","${viewModel.packedUnitText.value}","${viewModel.packedCbText.value}"))
+                                viewModel.totalWeight.value=viewModel.totalWeight.value + (viewModel.packedGmsText.value.toInt() * viewModel.packedUnitText.value.toInt() * viewModel.packedCbText.value.toInt())
                                 setShowDialog(false)
                                 viewModel.packedGmsText.value = ""
                                 viewModel.packedUnitText.value = ""

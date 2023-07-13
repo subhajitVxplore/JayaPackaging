@@ -1,5 +1,6 @@
 package com.jaya.app.packaging.presentation.ui.screen
 
+import android.provider.MediaStore.Video
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,14 +28,17 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -224,21 +228,66 @@ fun ProductionReportScreen(
                         }
                         Row(
                             modifier = Modifier
-
                                 .weight(1f)
                                 .fillMaxHeight(),
                         ) {
-                            BatchDropdown(
-                                //viewModel,
-                                false,
-                                //listOf("12", "13", "14", "15"),
-                                viewModel.batchList.collectAsState().value,
-                                onSelect = {
-                                    viewModel.batchName.value=it
-                                    //  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                                    //viewModel.selectedPincode.value = it
-                                })
+                            TextField(
+                                value = viewModel.batchName.value,
+                                onValueChange = {
+                                    if (it.length <= 5) viewModel.batchName.value = it
+                                },
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .focusRequester(focusRequester),
+                                // placeholder = { Text("Qty.") },
+                                colors = TextFieldDefaults.textFieldColors(
+                                    textColor = Color.DarkGray,
+                                    disabledTextColor = Color.Transparent,
+                                    focusedIndicatorColor = Color.Transparent,
+                                    unfocusedIndicatorColor = Color.Transparent,
+                                    disabledIndicatorColor = Color.Transparent,
+                                    containerColor = Color.White
+                                ),
+                                singleLine = true,
+                                keyboardOptions = KeyboardOptions(
+                                    imeAction = ImeAction.Done,
+                                    keyboardType = KeyboardType.Number
+                                ),
+                            )
+
+                            Divider(
+                                color = Color.LightGray, modifier = Modifier
+                                    .fillMaxHeight()
+                                    .width(1.dp)
+                            )
+
+                            Text(
+                                text = "Kgs",
+                                color = Color.DarkGray,
+                                fontSize = 17.sp,
+                                modifier = Modifier
+                                    .padding(horizontal = 10.dp)
+                                    .align(Alignment.CenterVertically),
+                                textAlign = TextAlign.Center,
+                            )
                         }
+//                        Row(
+//                            modifier = Modifier
+//
+//                                .weight(1f)
+//                                .fillMaxHeight(),
+//                        ) {
+//                            BatchDropdown(
+//                                //viewModel,
+//                                false,
+//                                //listOf("12", "13", "14", "15"),
+//                                viewModel.batchList.collectAsState().value,
+//                                onSelect = {
+//                                    viewModel.batchName.value=it
+//                                    //  Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
+//                                    //viewModel.selectedPincode.value = it
+//                                })
+//                        }
                     }//row
                 }//card
 
@@ -458,7 +507,7 @@ fun ProductionReportScreen(
                // CaptureImage(baseViewModel)
 
                 Text(
-                    text = "Total Weight = 3.76 Tons",
+                    text = "Total Weight = ${viewModel.totalWeightTxt.value}",
                     modifier = Modifier
                         .wrapContentSize()
                         .padding(top = 20.dp)
@@ -514,7 +563,16 @@ fun ProductionReportScreen(
         }
     }//surface
     //------------------------------------------------------------------------------
-
+    LaunchedEffect(viewModel.totalWeight.value) {
+        //viewModel.totalWeight.value
+        if (viewModel.totalWeight.value < 1000) {
+            viewModel.totalWeightTxt.value = "${viewModel.totalWeight.value} gram"
+        }else if ((viewModel.totalWeight.value >= 1000) and (viewModel.totalWeight.value < 1000000)) {
+            viewModel.totalWeightTxt.value = "${viewModel.totalWeight.value / 1000} kg"
+        }else{
+            viewModel.totalWeightTxt.value = "${viewModel.totalWeight.value / 1000000} ton"
+        }
+    }
 }//LoginScreen
 
 //=====================================================================================
