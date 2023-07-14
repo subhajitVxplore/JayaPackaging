@@ -72,7 +72,7 @@ fun ProductionPackedDialog(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier.fillMaxWidth().weight(1f),
                             textAlign = TextAlign.Center,
                             text = "Add Packed Info",
                             style = TextStyle(
@@ -84,7 +84,7 @@ fun ProductionPackedDialog(
                         Icon(
                             imageVector = Icons.Filled.Close,
                             contentDescription = "",
-                            tint = colorResource(android.R.color.darker_gray),
+                            tint = Color.Gray,
                             modifier = Modifier
                                 .width(30.dp)
                                 .height(30.dp)

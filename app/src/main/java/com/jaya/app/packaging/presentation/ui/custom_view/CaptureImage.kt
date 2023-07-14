@@ -67,6 +67,8 @@ fun CaptureImage(viewModel: FinalReportViewModel, baseViewModel: BaseViewModel) 
             capturedImageUri = uri
         }
 
+
+//====================================================================================================
     val permissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) {
@@ -108,8 +110,8 @@ fun CaptureImage(viewModel: FinalReportViewModel, baseViewModel: BaseViewModel) 
             modifier = Modifier
                 .padding(start = 20.dp)
                 .clickable {
-                    val permissionCheckResult =
-                        ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+                    val permissionCheckResult =ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+
                     if (permissionCheckResult == PackageManager.PERMISSION_GRANTED) {
                         cameraLauncher.launch(uri)
                     } else {

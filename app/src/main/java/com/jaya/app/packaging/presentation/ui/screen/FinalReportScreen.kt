@@ -1,5 +1,6 @@
 package com.jaya.app.packaging.presentation.ui.screen
 
+import android.Manifest
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -43,6 +44,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.jaya.app.packaging.R
 import com.jaya.app.packaging.extensions.screenWidth
 import com.jaya.app.packaging.presentation.ui.custom_view.ImageCaptureDialog
@@ -59,6 +61,13 @@ fun FinalReportScreen(
     baseViewModel: BaseViewModel,
     viewModel: FinalReportViewModel = hiltViewModel(),
 ) {
+
+    val permissionState = rememberMultiplePermissionsState(
+        permissions = listOf(
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO
+        )
+    )
 
     if (viewModel.showImageDialog.value)
         ImageCaptureDialog(
@@ -93,7 +102,6 @@ fun FinalReportScreen(
                         role = Role.Image
                     )
             )
-
             Text(
                 text = "Final Report",
                 modifier = Modifier.align(Alignment.CenterVertically),
@@ -225,33 +233,7 @@ fun FinalReportScreen(
             }//column
         }//card
 
-        Button(
-            onClick = {
-                //   Toast.makeText(context, "continue", Toast.LENGTH_SHORT).show()
-                viewModel.onFinalReportToProductionReport()
-            },
-            enabled = viewModel.loadingButton.value,
-            shape = RoundedCornerShape(5.dp),
-            modifier = Modifier
-                .padding(
-                    start = 15.dp,
-                    end = 15.dp,
-                    top = 15.dp
-                )
-                .fillMaxWidth()
-                .height(53.dp),
-            colors = ButtonDefaults.buttonColors(Color.Gray)
-        ) {
-            if (!viewModel.loadingg.value) {
-                Text(
-                    text = "Add Production Info",
-                    color = Color.White,
-                    fontSize = 18.sp,
-                )
-            } else {
-                CircularProgressIndicator(color = Color.White)
-            }
-        }
+
 //----------------------------------------------------------------------------------------
         Row(
             modifier = Modifier
@@ -261,7 +243,7 @@ fun FinalReportScreen(
             // verticalAlignment = Alignment.CenterVertically
         ) {
 
-            Column(modifier = Modifier.padding(top = 20.dp)) {
+            Column(modifier = Modifier.padding(top = 10.dp)) {
                 // CaptureImage(viewModel = viewModel, baseViewModel = baseViewModel)//ImageSource`.Camera)
                 val context= LocalContext.current
                 Card(
@@ -273,11 +255,16 @@ fun FinalReportScreen(
                         .padding(end = 20.dp)
                         .clickable {
                             // ImageSource.Camera
-                            if (viewModel.capturedImagesList.size < 3){
+                            permissionState.launchMultiplePermissionRequest()
+                            if (viewModel.capturedImagesList.size < 3) {
                                 viewModel.showImageDialog.value = true
-                            }else{
+                            } else {
                                 Toast
-                                    .makeText(context, "Maximum image limit is Three(3)", Toast.LENGTH_SHORT)
+                                    .makeText(
+                                        context,
+                                        "Maximum image limit is Three(3)",
+                                        Toast.LENGTH_SHORT
+                                    )
                                     .show()
                             }
 
@@ -361,7 +348,7 @@ fun FinalReportScreen(
 //--------------------------------------------------------------------------------------------------------------------
             Column(
                 modifier = Modifier
-                    .padding(top = 20.dp)
+                    .padding(top = 10.dp)
                     .weight(1f)
             ) {
                 val context = LocalContext.current
@@ -379,7 +366,11 @@ fun FinalReportScreen(
                                 viewModel.onHomePageToVideoCapture()
                             } else {
                                 Toast
-                                    .makeText(context, "Maximum video limit is Three(3)", Toast.LENGTH_SHORT)
+                                    .makeText(
+                                        context,
+                                        "Maximum video limit is Three(3)",
+                                        Toast.LENGTH_SHORT
+                                    )
                                     .show()
                             }
 
@@ -465,35 +456,64 @@ fun FinalReportScreen(
         }
 
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
-            Button(
-                onClick = {
-                    //   Toast.makeText(context, "continue", Toast.LENGTH_SHORT).show()
-                    //viewModel.onHomePageToReportSubmitSuccess()
-                          viewModel.submitFinalReport()
-                },
-                enabled = viewModel.loadingButton.value,
-                shape = RoundedCornerShape(5.dp),
-                modifier = Modifier
-                    .padding(
-                        start = 15.dp,
-                        end = 15.dp,
-                        top = 15.dp,
-                        bottom = 20.dp
-                    )
-                    .fillMaxWidth()
-                    .height(53.dp),
-                colors = ButtonDefaults.buttonColors(SplashGreen)
-            ) {
-                if (!viewModel.loadingg.value) {
-                    Text(
-                        text = "Submit Report",
-                        color = Color.White,
-                        fontSize = 18.sp,
-                    )
-                } else {
-                    CircularProgressIndicator(color = Color.White)
+            Column() {
+                Button(
+                    onClick = {
+                        viewModel.submitFinalReport()
+                    },
+                    enabled = viewModel.loadingButton.value,
+                    shape = RoundedCornerShape(5.dp),
+                    modifier = Modifier
+                        .padding(
+                            start = 15.dp,
+                            end = 15.dp,
+                            top = 15.dp,
+                            bottom = 10.dp
+                        )
+                        .fillMaxWidth()
+                        .height(53.dp),
+                    colors = ButtonDefaults.buttonColors(SplashGreen)
+                ) {
+                    if (!viewModel.loadingg.value) {
+                        Text(
+                            text = "Submit Report",
+                            color = Color.White,
+                            fontSize = 18.sp,
+                        )
+                    } else {
+                        CircularProgressIndicator(color = Color.White)
+                    }
+                }
+
+                Button(
+                    onClick = {
+                        //   Toast.makeText(context, "continue", Toast.LENGTH_SHORT).show()
+                        viewModel.onFinalReportToProductionReport()
+                    },
+                    enabled = viewModel.loadingButton.value,
+                    shape = RoundedCornerShape(5.dp),
+                    modifier = Modifier
+                        .padding(
+                            start = 15.dp,
+                            end = 15.dp,
+                            bottom = 20.dp
+                        )
+                        .fillMaxWidth()
+                        .height(53.dp),
+                    colors = ButtonDefaults.buttonColors(Color.Gray)
+                ) {
+                    if (!viewModel.loadingg.value) {
+                        Text(
+                            text = "Add Production Info",
+                            color = Color.White,
+                            fontSize = 18.sp,
+                        )
+                    } else {
+                        CircularProgressIndicator(color = Color.White)
+                    }
                 }
             }
+
         }
 //        ImageSection(
 //            onSelected = viewModel::onInvoiceSelected,
